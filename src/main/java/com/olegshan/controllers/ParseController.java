@@ -17,13 +17,15 @@ import java.util.List;
  * Created by olegshan on 24.09.2016.
  */
 @RestController
-@RequestMapping("/")
 public class ParseController {
 
     private static List<Job> jobs = new ArrayList<>();
 
     private Document doc = null;
-    private Document dateDoc = null;
+
+
+                                                    // Rabota.ua
+
 
     @RequestMapping("/rabota")
     public String findJobAtRabota() {
@@ -50,12 +52,12 @@ public class ParseController {
 
         jobs.forEach(System.out::println);
 
-        return "Rabota done";
+        return "Rabota.ua done";
     }
 
     //date on rabota.ua isn't on search result page, so we need to go inside of each vacancy page
     private Date getDateForRabotaUa(String url) {
-
+        Document dateDoc = null;
         Date date = null;
         String dateLine = "";
         String[] dateParts;
@@ -108,4 +110,64 @@ public class ParseController {
         return date;
     }
 
+
+                                            // Work.ua
+
+
+    @RequestMapping("/work")
+    public String findJobAtWork() {
+
+        try {
+            doc = Jsoup.connect("https://www.work.ua/jobs-kyiv-java/").get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Elements jobBlocks = doc.getElementsByAttributeValueStarting("class", "card card-hover card-visited job-link");
+
+        jobBlocks.forEach(job -> {
+            Elements titleBlock = job.getElementsByTag("a");
+            String url = "https://work.ua/" + titleBlock.attr("href");
+            String title = titleBlock.text();
+            String company = getCompanyNameForWorkUa(url);
+            String description = job.getElementsByAttributeValue("class", "text-muted overflow").text();
+            String source = "work.ua";
+            Date date = getDateForWorkUa(titleBlock.attr("title"));
+
+            Job workJob = new Job(title, description, company, source, url, date);
+            jobs.add(workJob);
+        });
+
+        jobs.forEach(System.out::println);
+
+        return "Work.ua done";
+    }
+
+    private Date getDateForWorkUa(String line) {
+        String dateLine[] = line.substring(line.length() - 8).split("\\.");
+        int day = Integer.parseInt(dateLine[0]);
+        if (dateLine[1].startsWith("0")) {
+            dateLine[1] = dateLine[1].substring(1);
+        }
+        int month = Integer.parseInt(dateLine[1]) - 1;
+        int year = 2000 + Integer.parseInt(dateLine[2]);
+
+        return new Date(year, month, day);
+    }
+
+    private String getCompanyNameForWorkUa(String url) {
+        Document companyDoc = null;
+        String company = "";
+
+        try {
+            companyDoc = Jsoup.connect(url).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Elements companyBlock = companyDoc.getElementsByAttributeValue("class", "dl-horizontal");
+
+        for (Element e : companyBlock) {
+            company = e.getElementsByTag("a").text();
+        }
+        return company;
+    }
 }

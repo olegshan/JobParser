@@ -77,7 +77,7 @@ public class Job {
                 "Description: " + description + ",\n" +
                 "Company: " + company + ",\n" +
                 "Source: " + source + ",\n" +
-                "Date: " + date +
+                "Date: " + date + ",\n" +
                 "URL: " + url + ",\n\n";
     }
 }
