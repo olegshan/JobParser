@@ -73,11 +73,11 @@ public class Job {
 
     @Override
     public String toString() {
-        return "Title: " + title + ",\n" +
-                "Description: " + description + ",\n" +
-                "Company: " + company + ",\n" +
-                "Source: " + source + ",\n" +
-                "Date: " + date + ",\n" +
-                "URL: " + url + ",\n\n";
+        return "Title: " + title + "\n" +
+                "Description: " + description + "\n" +
+                "Company: " + company + "\n" +
+                "Source: " + source + "\n" +
+                "Date: " + date + "\n" +
+                "URL: " + url + "\n\n";
     }
 }
