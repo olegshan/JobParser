@@ -49,10 +49,8 @@ public class WorkUaService {
 
     private static Date getDateForWorkUa(String line) {
         String dateLine[] = line.substring(line.length() - 8).split("\\.");
+        MonthsTools.removeZero(dateLine);
         int day = Integer.parseInt(dateLine[0]);
-        if (dateLine[1].startsWith("0")) {
-            dateLine[1] = dateLine[1].substring(1);
-        }
         int month = Integer.parseInt(dateLine[1]) - 1;
         int year = 2000 + Integer.parseInt(dateLine[2]);
 

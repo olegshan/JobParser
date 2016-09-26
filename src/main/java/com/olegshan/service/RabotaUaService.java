@@ -80,20 +80,16 @@ public class RabotaUaService {
                 return null;
             }
         }
-
         try {
             dateParts = dateLine.split("\\.");
-            if (dateParts[1].startsWith("0")) {
-                dateParts[1] = dateParts[1].substring(1);
-            }
+            MonthsTools.removeZero(dateParts);
+
             year = Integer.parseInt(dateParts[2]);
             month = Integer.parseInt(dateParts[1]) - 1;
             day = Integer.parseInt(dateParts[0]);
         } catch (ArrayIndexOutOfBoundsException e) {
             dateParts = dateLine.split("-");
-            if (dateParts[1].startsWith("0")) {
-                dateParts[1] = dateParts[1].substring(1);
-            }
+            MonthsTools.removeZero(dateParts);
             year = Integer.parseInt(dateParts[0]);
             month = Integer.parseInt(dateParts[1]) - 1;
             day = Integer.parseInt(dateParts[2]);
