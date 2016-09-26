@@ -1,4 +1,4 @@
-package com.olegshan.service;
+package com.olegshan.tools;
 
 import java.util.HashMap;
 import java.util.Map;
