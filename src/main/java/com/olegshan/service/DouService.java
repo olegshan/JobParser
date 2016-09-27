@@ -16,17 +16,13 @@ import java.util.List;
  */
 public class DouService {
 
-    private static Document doc = null;
-
-    public static List<Job> douJobs() {
+    public static List<Job> douJobs() throws IOException {
 
         List<Job> jobs = new ArrayList<>();
 
-        try {
-            doc = Jsoup.connect("https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D1%97%D0%B2&category=Java").get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        Document doc = Jsoup.connect("https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D1%97%D0%B2&category=Java").get();
+
         Elements jobBlocks = doc.getElementsByAttributeValue("class", "vacancy");
 
         jobBlocks.forEach(job -> {
@@ -69,7 +65,7 @@ public class DouService {
         return new Date(year, month, day);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         douJobs();
     }
 }

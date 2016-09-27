@@ -17,17 +17,13 @@ import java.util.List;
  */
 public class WorkUaService {
 
-    private static Document doc = null;
-
-    public static List<Job> workUaJobs() {
+    public static List<Job> workUaJobs() throws IOException {
 
         List<Job> jobs = new ArrayList<>();
 
-        try {
-            doc = Jsoup.connect("https://www.work.ua/jobs-kyiv-java/").get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        Document doc = Jsoup.connect("https://www.work.ua/jobs-kyiv-java/").get();
+
         Elements jobBlocks = doc.getElementsByAttributeValueStarting("class", "card card-hover card-visited job-link");
 
         jobBlocks.forEach(job -> {
@@ -75,7 +71,7 @@ public class WorkUaService {
         return company;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         workUaJobs();
     }
 }

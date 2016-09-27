@@ -17,15 +17,12 @@ import java.util.List;
  */
 public class RabotaUaService {
 
-    private static Document doc = null;
 
-    public static List<Job> rabotaUaJobs() {
+    public static List<Job> rabotaUaJobs() throws IOException {
         List<Job> jobs = new ArrayList<>();
-        try {
-            doc = Jsoup.connect("http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2").get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        Document doc = Jsoup.connect("http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2").get();
+
         Elements jobBlocks = doc.getElementsByAttributeValue("class", "v");
 
         jobBlocks.forEach(job -> {
@@ -103,7 +100,11 @@ public class RabotaUaService {
     }
 
     public static void main(String[] args) {
-        rabotaUaJobs();
+        try {
+            rabotaUaJobs();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
