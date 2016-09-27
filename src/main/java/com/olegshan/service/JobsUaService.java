@@ -4,7 +4,6 @@ import com.olegshan.entity.Job;
 import com.olegshan.tools.MonthsTools;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -26,9 +25,6 @@ public class JobsUaService {
         Elements jobBlocks = doc.getElementsByAttributeValue("class", "div_vac_list");
 
         jobBlocks.forEach(job -> {
-            /*System.out.println(job);
-            System.out.println();
-            System.out.println();*/
             Elements titleBlock = job.getElementsByAttributeValue("class", "jvac_view");
             String url = "http://www.jobs.ua" + titleBlock.attr("href");
             String title = titleBlock.text();
