@@ -4,6 +4,7 @@ import com.olegshan.entity.Job;
 import com.olegshan.tools.MonthsTools;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class JobsUaService {
 
-    public static List<Job> jobsUaJobs() throws IOException {
+    public static List<Job> getJobs() throws IOException {
 
         List<Job> jobs = new ArrayList<>();
 
@@ -29,7 +30,7 @@ public class JobsUaService {
             String url = "http://www.jobs.ua" + titleBlock.attr("href");
             String title = titleBlock.text();
             //can't parse data from vacancy page
-            String company = "N/A";
+            String company = getCompanyName(url);
             String description = job.getElementsByAttributeValue("style", "padding-top:12px;").text();
             String source = "jobs.ua";
 
@@ -58,7 +59,24 @@ public class JobsUaService {
         return new Date(year, month, day);
     }
 
+    private static String getCompanyName(String url) {
+        Document jobDoc = null;
+        String company = "";
+        try {
+            jobDoc = Jsoup.connect(url).userAgent("Mozilla").get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Elements vacancyBlock = jobDoc.getElementsByAttributeValue("class", "viewcontcenter");
+
+        for (Element e : vacancyBlock) {
+            company = e.getElementsByTag("a").text();
+        }
+        return company;
+    }
+
+
     public static void main(String[] args) throws IOException {
-        jobsUaJobs();
+        getJobs();
     }
 }

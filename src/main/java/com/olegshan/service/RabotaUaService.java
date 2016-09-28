@@ -18,7 +18,7 @@ import java.util.List;
 public class RabotaUaService {
 
 
-    public static List<Job> rabotaUaJobs() throws IOException {
+    public static List<Job> getJobs() throws IOException {
         List<Job> jobs = new ArrayList<>();
 
         Document doc = Jsoup.connect("http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2").get();
@@ -54,7 +54,7 @@ public class RabotaUaService {
         int day;
 
         try {
-            dateDoc = Jsoup.connect(url).get();
+            dateDoc = Jsoup.connect(url).userAgent("Mozilla").get();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,7 +75,7 @@ public class RabotaUaService {
             dateLine = dateDoc.getElementsByAttributeValue("itemprop", "datePosted").text();
             if (dateLine.length() == 0) {
                 //no date at all, sometimes it happens
-                return null;
+                return new Date();
             }
         }
         try {
@@ -101,7 +101,7 @@ public class RabotaUaService {
 
     public static void main(String[] args) {
         try {
-            rabotaUaJobs();
+            getJobs();
         } catch (IOException e) {
             e.printStackTrace();
         }

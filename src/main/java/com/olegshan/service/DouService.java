@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class DouService {
 
-    public static List<Job> douJobs() throws IOException {
+    public static List<Job> getJobs() throws IOException {
 
         List<Job> jobs = new ArrayList<>();
 
@@ -66,6 +66,6 @@ public class DouService {
     }
 
     public static void main(String[] args) throws IOException {
-        douJobs();
+        getJobs();
     }
 }

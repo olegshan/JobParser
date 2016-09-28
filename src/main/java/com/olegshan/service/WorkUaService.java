@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class WorkUaService {
 
-    public static List<Job> workUaJobs() throws IOException {
+    public static List<Job> getJobs() throws IOException {
 
         List<Job> jobs = new ArrayList<>();
 
@@ -72,6 +72,6 @@ public class WorkUaService {
     }
 
     public static void main(String[] args) throws IOException {
-        workUaJobs();
+        getJobs();
     }
 }
