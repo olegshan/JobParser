@@ -36,7 +36,7 @@ public class JobsUaService implements JobService {
             String title = titleBlock.text();
             String company = getCompanyName(url);
             String description = job.getElementsByAttributeValue("style", "padding-top:12px;").text();
-            String source = "jobs.ua";
+            String source = "Jobs.ua";
 
             String dateLine = job.getElementsByAttributeValue("style", "padding-top:10px").text();
             LocalDate date = getDate(dateLine);

@@ -35,7 +35,7 @@ public class DouService implements JobService {
             String title = titleBlock.text();
             String company = job.getElementsByAttributeValue("class", "company").text();
             String description = job.getElementsByAttributeValue("class", "sh-info").text();
-            String source = "dou.ua";
+            String source = "Dou.ua";
             LocalDate date = getDate(url);
 
             Job douJob = new Job(title, description, company, source, url, date);

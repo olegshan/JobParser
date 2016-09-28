@@ -37,7 +37,7 @@ public class WorkUaService implements JobService {
             String title = titleBlock.text();
             String company = getCompanyName(url);
             String description = job.getElementsByAttributeValue("class", "text-muted overflow").text();
-            String source = "work.ua";
+            String source = "Work.ua";
             String dateLine = titleBlock.attr("title");
             LocalDate date = getDate(dateLine);
 

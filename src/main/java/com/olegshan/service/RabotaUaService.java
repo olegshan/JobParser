@@ -36,7 +36,7 @@ public class RabotaUaService implements JobService {
             String title = titleBlock.text();
             String company = job.getElementsByAttributeValue("class", "rua-p-c-default").text();
             String description = job.getElementsByAttributeValue("class", "d").text();
-            String source = "rabota.ua";
+            String source = "Rabota.ua";
             LocalDate date = getDate(url);
 
             Job rabotaJob = new Job(title, description, company, source, url, date);
@@ -48,10 +48,8 @@ public class RabotaUaService implements JobService {
         return jobs;
     }
 
-    //date on rabota.ua isn't on search result page, so we need to go inside of each vacancy page
-    private static LocalDate getDate(String url) {
+    private LocalDate getDate(String url) {
         Document dateDoc = null;
-        LocalDate date = null;
         String dateLine = "";
         String[] dateParts;
         int year;
@@ -90,17 +88,18 @@ public class RabotaUaService implements JobService {
             year = Integer.parseInt(dateParts[2]);
             month = Integer.parseInt(dateParts[1]);
             day = Integer.parseInt(dateParts[0]);
+
         } catch (ArrayIndexOutOfBoundsException e) {
+
             dateParts = dateLine.split("-");
             MonthsTools.removeZero(dateParts);
+
             year = Integer.parseInt(dateParts[0]);
             month = Integer.parseInt(dateParts[1]);
             day = Integer.parseInt(dateParts[2]);
         }
 
-        date = LocalDate.of(year, month, day);
-
-        return date;
+        return LocalDate.of(year, month, day);
     }
 
     public static void main(String[] args) {
