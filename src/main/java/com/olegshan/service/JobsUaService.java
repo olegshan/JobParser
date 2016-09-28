@@ -15,13 +15,18 @@ import java.util.List;
 /**
  * Created by olegshan on 27.09.2016.
  */
-public class JobsUaService {
+public class JobsUaService implements JobService {
 
-    public static List<Job> getJobs() throws IOException {
+    public List<Job> getJobs() {
 
         List<Job> jobs = new ArrayList<>();
 
-        Document doc = Jsoup.connect("http://www.jobs.ua/vacancy/rabota-kiev-java/").get();
+        Document doc = null;
+        try {
+            doc = Jsoup.connect("http://www.jobs.ua/vacancy/rabota-kiev-java/").get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Elements jobBlocks = doc.getElementsByAttributeValue("class", "div_vac_list");
 
@@ -35,7 +40,7 @@ public class JobsUaService {
             String source = "jobs.ua";
 
             String dateLine = job.getElementsByAttributeValue("style", "padding-top:10px").text();
-            Date date = getDateForJobsUa(dateLine);
+            Date date = getDate(dateLine);
 
             Job jobsUaJob = new Job(title, description, company, source, url, date);
             jobs.add(jobsUaJob);
@@ -44,7 +49,7 @@ public class JobsUaService {
         return jobs;
     }
 
-    private static Date getDateForJobsUa(String dateLine) {
+    private static Date getDate(String dateLine) {
         int day;
         int month;
         int year;
@@ -77,6 +82,6 @@ public class JobsUaService {
 
 
     public static void main(String[] args) throws IOException {
-        getJobs();
+        new JobsUaService().getJobs();
     }
 }

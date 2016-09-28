@@ -15,13 +15,18 @@ import java.util.List;
 /**
  * Created by olegshan on 26.09.2016.
  */
-public class RabotaUaService {
+public class RabotaUaService implements JobService {
 
 
-    public static List<Job> getJobs() throws IOException {
+    public List<Job> getJobs() {
         List<Job> jobs = new ArrayList<>();
 
-        Document doc = Jsoup.connect("http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2").get();
+        Document doc = null;
+        try {
+            doc = Jsoup.connect("http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2").get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Elements jobBlocks = doc.getElementsByAttributeValue("class", "v");
 
@@ -32,7 +37,7 @@ public class RabotaUaService {
             String company = job.getElementsByAttributeValue("class", "rua-p-c-default").text();
             String description = job.getElementsByAttributeValue("class", "d").text();
             String source = "rabota.ua";
-            Date date = getDateForRabotaUa(url);
+            Date date = getDate(url);
 
             Job rabotaJob = new Job(title, description, company, source, url, date);
             jobs.add(rabotaJob);
@@ -44,7 +49,7 @@ public class RabotaUaService {
     }
 
     //date on rabota.ua isn't on search result page, so we need to go inside of each vacancy page
-    private static Date getDateForRabotaUa(String url) {
+    private static Date getDate(String url) {
         Document dateDoc = null;
         Date date = null;
         String dateLine = "";
@@ -100,11 +105,6 @@ public class RabotaUaService {
     }
 
     public static void main(String[] args) {
-        try {
-            getJobs();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new RabotaUaService().getJobs();
     }
-
 }

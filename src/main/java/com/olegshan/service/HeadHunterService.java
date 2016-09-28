@@ -14,13 +14,18 @@ import java.util.List;
 /**
  * Created by olegshan on 28.09.2016.
  */
-public class HeadHunterService {
+public class HeadHunterService implements JobService {
 
-    public static List<Job> getJobs() throws IOException {
+    public List<Job> getJobs() {
 
         List<Job> jobs = new ArrayList<>();
 
-        Document doc = Jsoup.connect("https://hh.ua/search/vacancy?text=java&area=115").userAgent("Mozilla").get();
+        Document doc = null;
+        try {
+            doc = Jsoup.connect("https://hh.ua/search/vacancy?text=java&area=115").userAgent("Mozilla").get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Elements jobBlocks = doc.getElementsByAttributeValue("class", "search-result-description");
         jobBlocks.forEach(job -> {
@@ -57,7 +62,7 @@ public class HeadHunterService {
     }
 
     public static void main(String[] args) throws IOException {
-        getJobs();
+        new HeadHunterService().getJobs();
     }
 
 }

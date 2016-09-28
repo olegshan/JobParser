@@ -14,14 +14,18 @@ import java.util.List;
 /**
  * Created by olegshan on 26.09.2016.
  */
-public class DouService {
+public class DouService implements JobService {
 
-    public static List<Job> getJobs() throws IOException {
+    public List<Job> getJobs() {
 
         List<Job> jobs = new ArrayList<>();
 
-
-        Document doc = Jsoup.connect("https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D1%97%D0%B2&category=Java").get();
+        Document doc = null;
+        try {
+            doc = Jsoup.connect("https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D1%97%D0%B2&category=Java").get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Elements jobBlocks = doc.getElementsByAttributeValue("class", "vacancy");
 
@@ -32,7 +36,7 @@ public class DouService {
             String company = job.getElementsByAttributeValue("class", "company").text();
             String description = job.getElementsByAttributeValue("class", "sh-info").text();
             String source = "dou.ua";
-            Date date = getDateForDou(url);
+            Date date = getDate(url);
 
             Job douJob = new Job(title, description, company, source, url, date);
             jobs.add(douJob);
@@ -41,7 +45,7 @@ public class DouService {
         return jobs;
     }
 
-    private static Date getDateForDou(String url) {
+    private static Date getDate(String url) {
         Document dateDoc = null;
         String dateLine = "";
         String[] dateParts;
@@ -66,6 +70,6 @@ public class DouService {
     }
 
     public static void main(String[] args) throws IOException {
-        getJobs();
+        new DouService().getJobs();
     }
 }

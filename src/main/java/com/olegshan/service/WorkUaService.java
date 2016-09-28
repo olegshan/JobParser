@@ -15,14 +15,19 @@ import java.util.List;
 /**
  * Created by olegshan on 26.09.2016.
  */
-public class WorkUaService {
+public class WorkUaService implements JobService {
 
-    public static List<Job> getJobs() throws IOException {
+    public List<Job> getJobs() {
 
         List<Job> jobs = new ArrayList<>();
 
 
-        Document doc = Jsoup.connect("https://www.work.ua/jobs-kyiv-java/").get();
+        Document doc = null;
+        try {
+            doc = Jsoup.connect("https://www.work.ua/jobs-kyiv-java/").get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Elements jobBlocks = doc.getElementsByAttributeValueStarting("class", "card card-hover card-visited job-link");
 
@@ -30,10 +35,10 @@ public class WorkUaService {
             Elements titleBlock = job.getElementsByTag("a");
             String url = "https://work.ua" + titleBlock.attr("href");
             String title = titleBlock.text();
-            String company = getCompanyNameForWorkUa(url);
+            String company = getCompanyName(url);
             String description = job.getElementsByAttributeValue("class", "text-muted overflow").text();
             String source = "work.ua";
-            Date date = getDateForWorkUa(titleBlock.attr("title"));
+            Date date = getDate(titleBlock.attr("title"));
 
             Job workJob = new Job(title, description, company, source, url, date);
             jobs.add(workJob);
@@ -44,7 +49,7 @@ public class WorkUaService {
         return jobs;
     }
 
-    private static Date getDateForWorkUa(String line) {
+    private static Date getDate(String line) {
         String dateLine[] = line.substring(line.length() - 8).split("\\.");
         MonthsTools.removeZero(dateLine);
         int day = Integer.parseInt(dateLine[0]);
@@ -54,7 +59,7 @@ public class WorkUaService {
         return new Date(year, month, day);
     }
 
-    private static String getCompanyNameForWorkUa(String url) {
+    private static String getCompanyName(String url) {
         Document companyDoc = null;
         String company = "";
 
@@ -72,6 +77,6 @@ public class WorkUaService {
     }
 
     public static void main(String[] args) throws IOException {
-        getJobs();
+        new WorkUaService().getJobs();
     }
 }
