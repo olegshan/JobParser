@@ -8,8 +8,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,7 +38,8 @@ public class WorkUaService implements JobService {
             String company = getCompanyName(url);
             String description = job.getElementsByAttributeValue("class", "text-muted overflow").text();
             String source = "work.ua";
-            Date date = getDate(titleBlock.attr("title"));
+            String dateLine = titleBlock.attr("title");
+            LocalDate date = getDate(dateLine);
 
             Job workJob = new Job(title, description, company, source, url, date);
             jobs.add(workJob);
@@ -49,14 +50,14 @@ public class WorkUaService implements JobService {
         return jobs;
     }
 
-    private static Date getDate(String line) {
+    private static LocalDate getDate(String line) {
         String dateLine[] = line.substring(line.length() - 8).split("\\.");
         MonthsTools.removeZero(dateLine);
         int day = Integer.parseInt(dateLine[0]);
-        int month = Integer.parseInt(dateLine[1]) - 1;
+        int month = Integer.parseInt(dateLine[1]);
         int year = 2000 + Integer.parseInt(dateLine[2]);
 
-        return new Date(year, month, day);
+        return LocalDate.of(year, month, day);
     }
 
     private static String getCompanyName(String url) {

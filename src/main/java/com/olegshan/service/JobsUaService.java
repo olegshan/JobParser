@@ -8,8 +8,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,13 +34,12 @@ public class JobsUaService implements JobService {
             Elements titleBlock = job.getElementsByAttributeValue("class", "jvac_view");
             String url = "http://www.jobs.ua" + titleBlock.attr("href");
             String title = titleBlock.text();
-            //can't parse data from vacancy page
             String company = getCompanyName(url);
             String description = job.getElementsByAttributeValue("style", "padding-top:12px;").text();
             String source = "jobs.ua";
 
             String dateLine = job.getElementsByAttributeValue("style", "padding-top:10px").text();
-            Date date = getDate(dateLine);
+            LocalDate date = getDate(dateLine);
 
             Job jobsUaJob = new Job(title, description, company, source, url, date);
             jobs.add(jobsUaJob);
@@ -49,7 +48,7 @@ public class JobsUaService implements JobService {
         return jobs;
     }
 
-    private static Date getDate(String dateLine) {
+    private static LocalDate getDate(String dateLine) {
         int day;
         int month;
         int year;
@@ -58,10 +57,10 @@ public class JobsUaService implements JobService {
         MonthsTools.removeZero(dateParts);
 
         day = Integer.parseInt(dateParts[0]);
-        month = Integer.parseInt(dateParts[1]) - 1;
+        month = Integer.parseInt(dateParts[1]);
         year = Integer.parseInt(dateParts[2]);
 
-        return new Date(year, month, day);
+        return LocalDate.of(year, month, day);
     }
 
     private static String getCompanyName(String url) {
@@ -79,7 +78,6 @@ public class JobsUaService implements JobService {
         }
         return company;
     }
-
 
     public static void main(String[] args) throws IOException {
         new JobsUaService().getJobs();

@@ -1,6 +1,6 @@
 package com.olegshan.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Created by olegshan on 24.09.2016.
@@ -12,9 +12,9 @@ public class Job {
     private String company;
     private String source;
     private String url;
-    private Date date;
+    private LocalDate date;
 
-    public Job(String title, String description, String company, String source, String url, Date date) {
+    public Job(String title, String description, String company, String source, String url, LocalDate date) {
         this.title = title;
         this.description = description;
         this.company = company;
@@ -63,11 +63,11 @@ public class Job {
         this.url = url;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

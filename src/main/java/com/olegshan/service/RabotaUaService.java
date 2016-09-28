@@ -8,8 +8,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,7 +37,7 @@ public class RabotaUaService implements JobService {
             String company = job.getElementsByAttributeValue("class", "rua-p-c-default").text();
             String description = job.getElementsByAttributeValue("class", "d").text();
             String source = "rabota.ua";
-            Date date = getDate(url);
+            LocalDate date = getDate(url);
 
             Job rabotaJob = new Job(title, description, company, source, url, date);
             jobs.add(rabotaJob);
@@ -49,9 +49,9 @@ public class RabotaUaService implements JobService {
     }
 
     //date on rabota.ua isn't on search result page, so we need to go inside of each vacancy page
-    private static Date getDate(String url) {
+    private static LocalDate getDate(String url) {
         Document dateDoc = null;
-        Date date = null;
+        LocalDate date = null;
         String dateLine = "";
         String[] dateParts;
         int year;
@@ -80,7 +80,7 @@ public class RabotaUaService implements JobService {
             dateLine = dateDoc.getElementsByAttributeValue("itemprop", "datePosted").text();
             if (dateLine.length() == 0) {
                 //no date at all, sometimes it happens
-                return new Date();
+                return LocalDate.now();
             }
         }
         try {
@@ -88,18 +88,17 @@ public class RabotaUaService implements JobService {
             MonthsTools.removeZero(dateParts);
 
             year = Integer.parseInt(dateParts[2]);
-            month = Integer.parseInt(dateParts[1]) - 1;
+            month = Integer.parseInt(dateParts[1]);
             day = Integer.parseInt(dateParts[0]);
         } catch (ArrayIndexOutOfBoundsException e) {
             dateParts = dateLine.split("-");
             MonthsTools.removeZero(dateParts);
             year = Integer.parseInt(dateParts[0]);
-            month = Integer.parseInt(dateParts[1]) - 1;
+            month = Integer.parseInt(dateParts[1]);
             day = Integer.parseInt(dateParts[2]);
         }
 
-        //temporary, this will be replaced by something not deprecated
-        date = new Date(year, month, day);
+        date = LocalDate.of(year, month, day);
 
         return date;
     }

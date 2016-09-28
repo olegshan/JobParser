@@ -7,8 +7,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,7 +36,7 @@ public class DouService implements JobService {
             String company = job.getElementsByAttributeValue("class", "company").text();
             String description = job.getElementsByAttributeValue("class", "sh-info").text();
             String source = "dou.ua";
-            Date date = getDate(url);
+            LocalDate date = getDate(url);
 
             Job douJob = new Job(title, description, company, source, url, date);
             jobs.add(douJob);
@@ -45,7 +45,7 @@ public class DouService implements JobService {
         return jobs;
     }
 
-    private static Date getDate(String url) {
+    private static LocalDate getDate(String url) {
         Document dateDoc = null;
         String dateLine = "";
         String[] dateParts;
@@ -61,12 +61,13 @@ public class DouService implements JobService {
 
         dateLine = dateDoc.getElementsByAttributeValue("class", "date").text();
         dateParts = dateLine.split(" ");
+        MonthsTools.removeZero(dateParts);
         day = Integer.parseInt(dateParts[0]);
         year = Integer.parseInt(dateParts[2]);
 
         month = MonthsTools.MONTHS.get(dateParts[1].toLowerCase());
 
-        return new Date(year, month, day);
+        return LocalDate.of(year, month, day);
     }
 
     public static void main(String[] args) throws IOException {
