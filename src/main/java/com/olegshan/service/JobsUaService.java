@@ -75,7 +75,7 @@ public class JobsUaService implements JobService {
         Elements vacancyBlock = jobDoc.getElementsByAttributeValue("class", "viewcontcenter");
 
         for (Element e : vacancyBlock) {
-            company = e.getElementsByTag("a").text();
+            company = e.getElementsByTag("a").first().text();
         }
         return company;
     }
