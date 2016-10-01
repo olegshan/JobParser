@@ -1,6 +1,7 @@
 package com.olegshan.entity;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Created by olegshan on 24.09.2016.
@@ -13,6 +14,7 @@ public class Job {
     private String source;
     private String url;
     private LocalDate date;
+    private String dateToDisplay;
 
     public Job(String title, String description, String company, String source, String url, LocalDate date) {
         this.title = title;
@@ -69,6 +71,11 @@ public class Job {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getDateToDisplay() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM");
+        return date.format(formatter);
     }
 
     @Override
