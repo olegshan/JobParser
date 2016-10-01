@@ -1,0 +1,16 @@
+.logo {
+    margin: 20px 0px 40px 0px;
+}
+
+.logo h1, .logo span {
+    display: inline-block;
+}
+
+.logo h1 {
+    margin-bottom: 0px;
+}
+
+.logo p {
+    margin-top: 0px;
+}
+
