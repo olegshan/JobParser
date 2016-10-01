@@ -14,3 +14,22 @@
     margin-top: 0px;
 }
 
+.under {
+    font-size: 12px;
+}
+
+.container {
+    max-width: 70%;
+}
+
+.footer {
+    margin: 40px 0px 40px 0px;
+}
+
+.table {
+    border: hidden;
+}
+
+.table td {
+    border: hidden;
+}

@@ -4,7 +4,9 @@
 <div layout:fragment="content">
     <div class="logo">
         <h1>
-            <small>JavaJobParser</small>
+            <small>
+                Java job parser
+            </small>
         </h1>
         <sup><span>&beta;</span></sup>
         <p>Jobs for Java developers in Kyiv</p>
@@ -19,7 +21,7 @@
                     </h2>
                 </a>
                 <p data-th-text="${job.description}"></p>
-                <div>
+                <div class="under">
                     <span data-th-text="${job.dateToDisplay}"></span>
                     <mark data-th-text="${job.company}"></mark>
                     <span data-th-text="${job.source}"></span>
