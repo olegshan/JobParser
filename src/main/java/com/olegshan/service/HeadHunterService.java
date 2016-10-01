@@ -22,7 +22,8 @@ public class HeadHunterService implements JobService {
 
         Document doc = null;
         try {
-            doc = Jsoup.connect("https://hh.ua/search/vacancy?text=java&area=115").userAgent("Mozilla").get();
+            doc = Jsoup.connect("https://hh.ua/search/vacancy?text=java&area=115").userAgent("Mozilla")
+                    .timeout(0).get();
         } catch (IOException e) {
             e.printStackTrace();
         }

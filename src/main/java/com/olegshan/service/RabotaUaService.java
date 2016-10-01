@@ -23,7 +23,8 @@ public class RabotaUaService implements JobService {
 
         Document doc = null;
         try {
-            doc = Jsoup.connect("http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2").get();
+            doc = Jsoup.connect("http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2")
+                    .timeout(0).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,7 +56,7 @@ public class RabotaUaService implements JobService {
         int day;
 
         try {
-            dateDoc = Jsoup.connect(url).userAgent("Mozilla").get();
+            dateDoc = Jsoup.connect(url).userAgent("Mozilla").timeout(0).get();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -24,7 +24,7 @@ public class WorkUaService implements JobService {
 
         Document doc = null;
         try {
-            doc = Jsoup.connect("https://www.work.ua/jobs-kyiv-java/").get();
+            doc = Jsoup.connect("https://www.work.ua/jobs-kyiv-java/").timeout(0).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -63,7 +63,7 @@ public class WorkUaService implements JobService {
         String company = "";
 
         try {
-            companyDoc = Jsoup.connect(url).get();
+            companyDoc = Jsoup.connect(url).timeout(0).get();
         } catch (IOException e) {
             e.printStackTrace();
         }

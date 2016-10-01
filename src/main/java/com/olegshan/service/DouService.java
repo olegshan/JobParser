@@ -22,7 +22,8 @@ public class DouService implements JobService {
 
         Document doc = null;
         try {
-            doc = Jsoup.connect("https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D1%97%D0%B2&category=Java").get();
+            doc = Jsoup.connect("https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D1%97%D0%B2&category=Java")
+                    .timeout(0).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,7 +54,7 @@ public class DouService implements JobService {
         int day;
 
         try {
-            dateDoc = Jsoup.connect(url).get();
+            dateDoc = Jsoup.connect(url).timeout(0).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
