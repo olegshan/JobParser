@@ -44,7 +44,6 @@ public class JobsUaService implements JobService {
             Job jobsUaJob = new Job(title, description, company, source, url, date);
             jobs.add(jobsUaJob);
         });
-        jobs.forEach(System.out::println);
         return jobs;
     }
 
@@ -77,9 +76,5 @@ public class JobsUaService implements JobService {
             company = e.getElementsByTag("a").first().text();
         }
         return company;
-    }
-
-    public static void main(String[] args) throws IOException {
-        new JobsUaService().getJobs();
     }
 }

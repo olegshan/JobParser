@@ -45,8 +45,6 @@ public class WorkUaService implements JobService {
             jobs.add(workJob);
         });
 
-        jobs.forEach(System.out::println);
-
         return jobs;
     }
 
@@ -75,9 +73,5 @@ public class WorkUaService implements JobService {
             company = e.getElementsByTag("a").text();
         }
         return company;
-    }
-
-    public static void main(String[] args) throws IOException {
-        new WorkUaService().getJobs();
     }
 }

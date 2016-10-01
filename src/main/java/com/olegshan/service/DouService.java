@@ -41,7 +41,6 @@ public class DouService implements JobService {
             Job douJob = new Job(title, description, company, source, url, date);
             jobs.add(douJob);
         });
-        jobs.forEach(System.out::println);
         return jobs;
     }
 
@@ -68,9 +67,5 @@ public class DouService implements JobService {
         month = MonthsTools.MONTHS.get(dateParts[1].toLowerCase());
 
         return LocalDate.of(year, month, day);
-    }
-
-    public static void main(String[] args) throws IOException {
-        new DouService().getJobs();
     }
 }

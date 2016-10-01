@@ -43,8 +43,6 @@ public class RabotaUaService implements JobService {
             jobs.add(rabotaJob);
         });
 
-        jobs.forEach(System.out::println);
-
         return jobs;
     }
 
@@ -100,9 +98,5 @@ public class RabotaUaService implements JobService {
         }
 
         return LocalDate.of(year, month, day);
-    }
-
-    public static void main(String[] args) {
-        new RabotaUaService().getJobs();
     }
 }

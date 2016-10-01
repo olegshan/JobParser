@@ -43,7 +43,6 @@ public class HeadHunterService implements JobService {
             jobs.add(rabotaJob);
 
         });
-        jobs.forEach(System.out::println);
         return jobs;
     }
 
@@ -61,9 +60,4 @@ public class HeadHunterService implements JobService {
 
         return LocalDate.of(year, month, day);
     }
-
-    public static void main(String[] args) throws IOException {
-        new HeadHunterService().getJobs();
-    }
-
 }
