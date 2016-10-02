@@ -86,14 +86,4 @@ public class Job {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM");
         return date.format(formatter);
     }
-
-    @Override
-    public String toString() {
-        return "Title: " + title + "\n" +
-                "Description: " + description + "\n" +
-                "Company: " + company + "\n" +
-                "Source: " + source + "\n" +
-                "Date: " + date + "\n" +
-                "URL: " + url + "\n\n";
-    }
 }

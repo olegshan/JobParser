@@ -8,8 +8,8 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>JobParser</name>
-    <description>Demo project for Spring Boot</description>
+    <name>jParser</name>
+    <description>Java jobs aggregator</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
