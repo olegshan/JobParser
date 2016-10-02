@@ -1,11 +1,11 @@
 package com.olegshan.controllers;
 
 import com.olegshan.entity.Job;
+import com.olegshan.repository.JobRepository;
 import com.olegshan.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
@@ -29,18 +29,32 @@ public class ParseController {
     @Autowired
     HeadHunterService headHunterService;
 
+    @Autowired
+    JobRepository jobRepository;
+
     @RequestMapping("/")
     public String index(Model model) {
         List<Job> allJobs = new ArrayList<>();
 
-        allJobs.addAll(douService.getJobs());
+        douService.parse();
+        headHunterService.parse();
+        jobsUaService.parse();
+        rabotaUaService.parse();
+        workUaService.parse();
+
+        List<Job> result = jobRepository.findAll();
+        result.sort(Comparator.comparing(Job::getDate).reversed());
+
+        model.addAttribute("jobs", result);
+
+        /*allJobs.addAll(douService.getJobs());
         allJobs.addAll(rabotaUaService.getJobs());
         allJobs.addAll(workUaService.getJobs());
         allJobs.addAll(jobsUaService.getJobs());
         allJobs.addAll(headHunterService.getJobs());
 
         allJobs.sort(Comparator.comparing(Job::getDate).reversed());
-        model.addAttribute("jobs", allJobs);
+        model.addAttribute("jobs", allJobs);*/
 
         return "index";
     }

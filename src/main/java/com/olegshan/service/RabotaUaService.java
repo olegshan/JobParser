@@ -1,17 +1,19 @@
 package com.olegshan.service;
 
+import com.olegshan.entity.Doc;
 import com.olegshan.entity.Job;
+import com.olegshan.repository.DocRepository;
+import com.olegshan.repository.JobRepository;
 import com.olegshan.tools.MonthsTools;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by olegshan on 26.09.2016.
@@ -19,11 +21,17 @@ import java.util.List;
 @Component
 public class RabotaUaService implements JobService {
 
+    @Autowired
+    private DocRepository docRepository;
 
-    public List<Job> getJobs() {
-        List<Job> jobs = new ArrayList<>();
+    @Autowired
+    private JobRepository jobRepository;
 
+    public void parse() {
         Document doc = null;
+        String docName = this.getClass().getSimpleName();
+        Doc savedDoc = docRepository.findOne(docName);
+
         try {
             doc = Jsoup.connect("http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2")
                     .timeout(0).get();
@@ -31,11 +39,19 @@ public class RabotaUaService implements JobService {
             e.printStackTrace();
         }
 
+        if (savedDoc != null) {
+            if (savedDoc.getDoc().equals(doc.toString())) {
+                return;
+            }
+        }
         Elements jobBlocks = doc.getElementsByAttributeValue("class", "v");
 
-        jobBlocks.forEach(job -> {
+        for (Element job : jobBlocks) {
             Elements titleBlock = job.getElementsByAttributeValue("class", "t");
             String url = "http://rabota.ua" + titleBlock.attr("href");
+            if (jobRepository.findOne(url) != null) {
+                continue;
+            }
             String title = titleBlock.text();
             String company = job.getElementsByAttributeValue("class", "rua-p-c-default").text();
             String description = job.getElementsByAttributeValue("class", "d").text();
@@ -43,11 +59,10 @@ public class RabotaUaService implements JobService {
             LocalDate date = getDate(url);
 
             Job rabotaJob = new Job(title, description, company, source, url, date);
-            jobs.add(rabotaJob);
-        });
-
-        return jobs;
+            jobRepository.save(rabotaJob);
+        }
     }
+
 
     private LocalDate getDate(String url) {
         Document dateDoc = null;

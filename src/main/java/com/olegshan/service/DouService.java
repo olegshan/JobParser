@@ -1,16 +1,19 @@
 package com.olegshan.service;
 
+import com.olegshan.entity.Doc;
 import com.olegshan.entity.Job;
+import com.olegshan.repository.DocRepository;
+import com.olegshan.repository.JobRepository;
 import com.olegshan.tools.MonthsTools;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by olegshan on 26.09.2016.
@@ -18,11 +21,17 @@ import java.util.List;
 @Component
 public class DouService implements JobService {
 
-    public List<Job> getJobs() {
+    @Autowired
+    private DocRepository docRepository;
 
-        List<Job> jobs = new ArrayList<>();
+    @Autowired
+    private JobRepository jobRepository;
 
+    public void parse() {
         Document doc = null;
+        String docName = this.getClass().getSimpleName();
+        Doc savedDoc = docRepository.findOne(docName);
+
         try {
             doc = Jsoup.connect("https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D1%97%D0%B2&category=Java")
                     .timeout(0).get();
@@ -30,11 +39,20 @@ public class DouService implements JobService {
             e.printStackTrace();
         }
 
+        if (savedDoc != null) {
+            if (savedDoc.getDoc().equals(doc.toString())) {
+                return;
+            }
+        }
+
         Elements jobBlocks = doc.getElementsByAttributeValue("class", "vacancy");
 
-        jobBlocks.forEach(job -> {
+        for (Element job : jobBlocks) {
             Elements titleBlock = job.getElementsByAttributeValue("class", "vt");
             String url = titleBlock.attr("href");
+            if (jobRepository.findOne(url) != null) {
+                continue;
+            }
             String title = titleBlock.text();
             String company = job.getElementsByAttributeValue("class", "company").text();
             String description = job.getElementsByAttributeValue("class", "sh-info").text();
@@ -42,10 +60,11 @@ public class DouService implements JobService {
             LocalDate date = getDate(url);
 
             Job douJob = new Job(title, description, company, source, url, date);
-            jobs.add(douJob);
-        });
 
-        return jobs;
+            jobRepository.save(douJob);
+        }
+
+        docRepository.save(new Doc(docName, doc.toString()));
     }
 
     private static LocalDate getDate(String url) {

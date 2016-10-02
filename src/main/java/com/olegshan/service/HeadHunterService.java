@@ -1,16 +1,19 @@
 package com.olegshan.service;
 
+import com.olegshan.entity.Doc;
 import com.olegshan.entity.Job;
+import com.olegshan.repository.DocRepository;
+import com.olegshan.repository.JobRepository;
 import com.olegshan.tools.MonthsTools;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by olegshan on 28.09.2016.
@@ -18,11 +21,17 @@ import java.util.List;
 @Component
 public class HeadHunterService implements JobService {
 
-    public List<Job> getJobs() {
+    @Autowired
+    private DocRepository docRepository;
 
-        List<Job> jobs = new ArrayList<>();
+    @Autowired
+    private JobRepository jobRepository;
 
+    public void parse() {
         Document doc = null;
+        String docName = this.getClass().getSimpleName();
+        Doc savedDoc = docRepository.findOne(docName);
+
         try {
             doc = Jsoup.connect("https://hh.ua/search/vacancy?text=java&area=115").userAgent("Mozilla")
                     .timeout(0).get();
@@ -30,10 +39,20 @@ public class HeadHunterService implements JobService {
             e.printStackTrace();
         }
 
+        if (savedDoc != null) {
+            if (savedDoc.getDoc().equals(doc.toString())) {
+                return;
+            }
+        }
+
         Elements jobBlocks = doc.getElementsByAttributeValue("class", "search-result-description");
-        jobBlocks.forEach(job -> {
+
+        for (Element job : jobBlocks) {
             Elements titleBlock = job.getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy-title");
             String url = titleBlock.attr("href");
+            if (jobRepository.findOne(url) != null) {
+                continue;
+            }
             String title = titleBlock.text();
             String description = job.
                     getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy_snippet_requirement").text();
@@ -42,11 +61,11 @@ public class HeadHunterService implements JobService {
             String dateLine = job.getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy-date").text();
             LocalDate date = getDate(dateLine);
 
-            Job rabotaJob = new Job(title, description, company, source, url, date);
-            jobs.add(rabotaJob);
+            Job headHunterJob = new Job(title, description, company, source, url, date);
+            jobRepository.save(headHunterJob);
+        }
 
-        });
-        return jobs;
+        docRepository.save(new Doc(docName, doc.toString()));
     }
 
     private static LocalDate getDate(String line) {

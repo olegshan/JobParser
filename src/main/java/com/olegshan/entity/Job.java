@@ -1,20 +1,29 @@
 package com.olegshan.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
  * Created by olegshan on 24.09.2016.
  */
+@Entity
 public class Job {
 
+    @Id
+    private String url;
     private String title;
+    @Column(length = Integer.MAX_VALUE)
     private String description;
     private String company;
     private String source;
-    private String url;
     private LocalDate date;
     private String dateToDisplay;
+
+    public Job() {
+    }
 
     public Job(String title, String description, String company, String source, String url, LocalDate date) {
         this.title = title;
