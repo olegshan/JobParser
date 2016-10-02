@@ -2,7 +2,9 @@ package com.olegshan.controllers;
 
 import com.olegshan.entity.Job;
 import com.olegshan.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -16,24 +18,30 @@ import java.util.List;
 @Controller
 public class ParseController {
 
-    @RequestMapping("/")
-    public String index() {
-        findJobs();
-        return "index";
-    }
+    @Autowired
+    DouService douService;
+    @Autowired
+    RabotaUaService rabotaUaService;
+    @Autowired
+    JobsUaService jobsUaService;
+    @Autowired
+    WorkUaService workUaService;
+    @Autowired
+    HeadHunterService headHunterService;
 
-    @ModelAttribute("jobs")
-    public List<Job> findJobs() {
+    @RequestMapping("/")
+    public String index(Model model) {
         List<Job> allJobs = new ArrayList<>();
 
-        allJobs.addAll(new RabotaUaService().getJobs());
-        allJobs.addAll(new WorkUaService().getJobs());
-        allJobs.addAll(new DouService().getJobs());
-        allJobs.addAll(new JobsUaService().getJobs());
-        allJobs.addAll(new HeadHunterService().getJobs());
+        allJobs.addAll(douService.getJobs());
+        allJobs.addAll(rabotaUaService.getJobs());
+        allJobs.addAll(workUaService.getJobs());
+        allJobs.addAll(jobsUaService.getJobs());
+        allJobs.addAll(headHunterService.getJobs());
 
         allJobs.sort(Comparator.comparing(Job::getDate).reversed());
+        model.addAttribute("jobs", allJobs);
 
-        return allJobs;
+        return "index";
     }
 }
