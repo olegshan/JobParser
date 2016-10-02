@@ -14,6 +14,10 @@
     margin-top: 0px;
 }
 
+.logo small, .logo span, .logo p {
+    color: cadetblue;
+}
+
 .under {
     font-size: 12px;
 }
@@ -26,10 +30,6 @@
     margin: 40px 0px 40px 0px;
 }
 
-.table {
-    border: hidden;
-}
-
-.table td {
+.table, .table td {
     border: hidden;
 }
