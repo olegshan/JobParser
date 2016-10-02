@@ -47,15 +47,6 @@ public class ParseController {
 
         model.addAttribute("jobs", result);
 
-        /*allJobs.addAll(douService.getJobs());
-        allJobs.addAll(rabotaUaService.getJobs());
-        allJobs.addAll(workUaService.getJobs());
-        allJobs.addAll(jobsUaService.getJobs());
-        allJobs.addAll(headHunterService.getJobs());
-
-        allJobs.sort(Comparator.comparing(Job::getDate).reversed());
-        model.addAttribute("jobs", allJobs);*/
-
         return "index";
     }
 }
