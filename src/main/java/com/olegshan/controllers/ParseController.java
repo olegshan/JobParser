@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -34,7 +33,6 @@ public class ParseController {
 
     @RequestMapping("/")
     public String index(Model model) {
-        List<Job> allJobs = new ArrayList<>();
 
         douService.parse();
         headHunterService.parse();
