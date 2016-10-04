@@ -44,22 +44,46 @@ public class ParseHelper {
         String source = siteName;
         LocalDate date = null;
 
-        Document doc = null;
         String docName = jobService.getClass().getSimpleName();
         Doc savedDoc = docRepository.findOne(docName);
-
-        try {
-            doc = Jsoup.connect(siteToParse).userAgent("Mozilla").timeout(0).get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Document doc = getDoc(siteToParse);
 
         if (savedDoc != null) {
+            //if site didn't change since last visit, do nothing
             if (savedDoc.getDoc().equals(doc.toString())) {
                 return;
             }
         }
 
+        Elements jobBlocks = getJobBlocks(jobService, doc, jobBox);
+
+        for (Element job : jobBlocks) {
+
+            Elements titleBlock = getTitleBlock(jobService, job, titleBox);
+            url = urlPrefix + titleBlock.attr("href");
+            title = titleBlock.text();
+            description = job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
+            company = getCompany(jobService, job, url, companyData);
+            date = getDate(jobService, url, dateData, titleBlock, job);
+
+            Job parsedJob = new Job(title, description, company, source, url, date);
+            jobRepository.save(parsedJob);
+        }
+
+        docRepository.save(new Doc(docName, doc.toString()));
+    }
+
+    private Document getDoc(String siteToParse) {
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(siteToParse).userAgent("Mozilla").timeout(0).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return doc;
+    }
+
+    private Elements getJobBlocks(JobService jobService, Document doc, String[] jobBox) {
         Elements jobBlocks = null;
 
         if (jobService instanceof WorkUaService) {
@@ -67,56 +91,40 @@ public class ParseHelper {
         } else {
             jobBlocks = doc.getElementsByAttributeValue(jobBox[0], jobBox[1]);
         }
-
-        for (Element job : jobBlocks) {
-            Elements titleBlock = null;
-            if (jobService instanceof WorkUaService) {
-                titleBlock = job.getElementsByTag("a");
-            } else {
-                titleBlock = job.getElementsByAttributeValue(titleBox[0], titleBox[1]);
-            }
-            url = urlPrefix + titleBlock.attr("href");
-            title = titleBlock.text();
-            description = job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
-
-            if (jobService instanceof JobsUaService || jobService instanceof WorkUaService) {
-                company = getCompany(url, companyData);
-            } else {
-                company = job.getElementsByAttributeValue(companyData[0], companyData[1]).text();
-            }
-
-            if (jobService instanceof DouService || jobService instanceof RabotaUaService) {
-                date = getDateByUrl(jobService, url, dateData);
-            } else {
-                String dateLine;
-                if (jobService instanceof WorkUaService) {
-                    dateLine = titleBlock.attr("title");
-                } else {
-                    dateLine = job.getElementsByAttributeValue(dateData[0], dateData[1]).text();
-                }
-                date = getDateByLine(jobService, dateLine);
-            }
-
-            Job parsedJob = new Job(title, description, company, source, url, date);
-
-            jobRepository.save(parsedJob);
-        }
-
-        docRepository.save(new Doc(docName, doc.toString()));
+        return jobBlocks;
     }
 
+    private Elements getTitleBlock(JobService jobService, Element job, String[] titleBox) {
+        Elements titleBlock = null;
+        if (jobService instanceof WorkUaService) {
+            titleBlock = job.getElementsByTag("a");
+        } else {
+            titleBlock = job.getElementsByAttributeValue(titleBox[0], titleBox[1]);
+        }
+        return titleBlock;
+    }
+
+    private LocalDate getDate(JobService jobService, String url, String[] dateData, Elements titleBlock, Element job) {
+        LocalDate date = null;
+        if (jobService instanceof DouService || jobService instanceof RabotaUaService) {
+            date = getDateByUrl(jobService, url, dateData);
+        } else {
+            String dateLine;
+            if (jobService instanceof WorkUaService) {
+                dateLine = titleBlock.attr("title");
+            } else {
+                dateLine = job.getElementsByAttributeValue(dateData[0], dateData[1]).text();
+            }
+            date = getDateByLine(jobService, dateLine);
+        }
+        return date;
+    }
 
     private LocalDate getDateByUrl(JobService jobService, String url, String[] dateData) {
 
-        Document dateDoc = null;
         String dateLine = "";
         LocalDate date = null;
-
-        try {
-            dateDoc = Jsoup.connect(url).timeout(0).get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Document dateDoc = getDoc(url);
 
         if (jobService instanceof DouService) {
 
@@ -126,11 +134,12 @@ public class ParseHelper {
         } else if (jobService instanceof RabotaUaService) {
 
         /*
-        * RabotaUa madness
+        * RabotaUa madness.
         * There are several problems here.
         * First: there are two types of date tags, used on the site on different pages: "d-date" and "datePosted".
         * Second: sometimes date format is dd.mm.yyyy and sometimes — yyyy-mm-dd. Hrrrrrr.
         * Third: sometimes there is no date at all.
+        * So the code and date data for RabotaUa are hardcored.
         */
 
             String[] dateParts;
@@ -216,18 +225,21 @@ public class ParseHelper {
         return LocalDate.of(year, month, day);
     }
 
-    private String getCompany(String url, String companyData[]) {
-        Document jobDoc = null;
-        String company = "";
-        try {
-            jobDoc = Jsoup.connect(url).userAgent("Mozilla").timeout(0).get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Elements companyBlock = jobDoc.getElementsByAttributeValue(companyData[0], companyData[1]);
+    private String getCompany(JobService jobService, Element job, String url, String[] companyData) {
 
-        for (Element e : companyBlock) {
-            company = e.getElementsByTag("a").first().text();
+        String company = "";
+
+        if (jobService instanceof JobsUaService || jobService instanceof WorkUaService) {
+
+            Document jobDoc = getDoc(url);
+
+            Elements companyBlock = jobDoc.getElementsByAttributeValue(companyData[0], companyData[1]);
+
+            for (Element e : companyBlock) {
+                company = e.getElementsByTag("a").first().text();
+            }
+        } else {
+            company = job.getElementsByAttributeValue(companyData[0], companyData[1]).text();
         }
         return company;
     }
