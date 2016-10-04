@@ -1,9 +1,10 @@
-package com.olegshan.service;
+package com.olegshan.parser;
 
 import com.olegshan.entity.Doc;
 import com.olegshan.entity.Job;
 import com.olegshan.repository.DocRepository;
 import com.olegshan.repository.JobRepository;
+import com.olegshan.service.*;
 import com.olegshan.tools.MonthsTools;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,7 +20,7 @@ import java.time.LocalDate;
  * Created by olegshan on 03.10.2016.
  */
 @Component
-public class ParseHelper {
+public class Parser {
 
     @Autowired
     private DocRepository docRepository;

@@ -1,5 +1,6 @@
 package com.olegshan.service;
 
+import com.olegshan.parser.Parser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class RabotaUaService implements JobService {
 
     @Autowired
-    private ParseHelper parseHelper;
+    private Parser parser;
 
     private static final String SITE = "Rabota.ua";
     private static final String SITE_TO_PARSE = "http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2";
@@ -22,7 +23,7 @@ public class RabotaUaService implements JobService {
     private static final String[] DATE_DATA = {"", ""};
 
     public void parse() {
-        parseHelper.parse(this, SITE, SITE_TO_PARSE, JOB_BOX, TITLE_BOX, URL_PREFIX,
+        parser.parse(this, SITE, SITE_TO_PARSE, JOB_BOX, TITLE_BOX, URL_PREFIX,
                 COMPANY_DATA, DESCRIPTION_DATA, DATE_DATA);
     }
 }
