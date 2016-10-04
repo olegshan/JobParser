@@ -12,16 +12,17 @@ public class DouService implements JobService {
     @Autowired
     private ParseHelper parseHelper;
 
-    private String site = "Dou.ua";
-    private String siteToParse = "https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D1%97%D0%B2&category=Java";
-    private String[] jobBox = {"class", "vacancy"};
-    private String[] titleBox = {"class", "vt"};
-    private String urlPrefix = "";
-    private String[] companyData = {"class", "company"};
-    private String[] descriptionData = {"class", "sh-info"};
-    private String[] dateData = {"class", "date"};
+    private static final String SITE = "Dou.ua";
+    private static final String SITE_TO_PARSE = "https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D1%97%D0%B2&category=Java";
+    private static final String[] JOB_BOX = {"class", "vacancy"};
+    private static final String[] TITLE_BOX = {"class", "vt"};
+    private static final String URL_PREFIX = "";
+    private static final String[] COMPANY_DATA = {"class", "company"};
+    private static final String[] DESCRIPTION_DATA = {"class", "sh-info"};
+    private static final String[] DATE_DATA = {"class", "date"};
 
     public void parse() {
-        parseHelper.parse(this, site, siteToParse, jobBox, titleBox, urlPrefix, companyData, descriptionData, dateData);
+        parseHelper.parse(this, SITE, SITE_TO_PARSE, JOB_BOX, TITLE_BOX, URL_PREFIX,
+                COMPANY_DATA, DESCRIPTION_DATA, DATE_DATA);
     }
 }
