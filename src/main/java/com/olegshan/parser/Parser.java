@@ -62,6 +62,9 @@ public class Parser {
 
             Elements titleBlock = getTitleBlock(jobService, job, titleBox);
             url = urlPrefix + titleBlock.attr("href");
+            if (jobRepository.findOne(url) != null) {
+                continue;
+            }
             title = titleBlock.text();
             description = job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
             company = getCompany(jobService, job, url, companyData);
