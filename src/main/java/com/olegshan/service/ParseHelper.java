@@ -69,7 +69,6 @@ public class ParseHelper {
             Job parsedJob = new Job(title, description, company, source, url, date);
             jobRepository.save(parsedJob);
         }
-
         docRepository.save(new Doc(docName, doc.toString()));
     }
 
@@ -85,7 +84,6 @@ public class ParseHelper {
 
     private Elements getJobBlocks(JobService jobService, Document doc, String[] jobBox) {
         Elements jobBlocks = null;
-
         if (jobService instanceof WorkUaService) {
             jobBlocks = doc.getElementsByAttributeValueStarting(jobBox[0], jobBox[1]);
         } else {
@@ -132,52 +130,7 @@ public class ParseHelper {
             date = getDateByLine(jobService, dateLine);
 
         } else if (jobService instanceof RabotaUaService) {
-
-        /*
-        * RabotaUa madness.
-        * There are several problems here.
-        * First: there are two types of date tags, used on the site on different pages: "d-date" and "datePosted".
-        * Second: sometimes date format is dd.mm.yyyy and sometimes — yyyy-mm-dd. Hrrrrrr.
-        * Third: sometimes there is no date at all.
-        * So the code and date data for RabotaUa are hardcored.
-        */
-
-            String[] dateParts;
-            int year;
-            int month;
-            int day;
-
-            Elements dateElement = dateDoc.getElementsByAttributeValue("id", "d-date");
-            if (!dateElement.isEmpty()) {
-                for (Element e : dateElement) {
-                    dateLine = e.getElementsByAttributeValue("class", "d-ph-value").text();
-                }
-            } else {
-                dateLine = dateDoc.getElementsByAttributeValue("itemprop", "datePosted").text();
-                if (dateLine.length() == 0) {
-                    //no date at all, sometimes it happens
-                    return LocalDate.now();
-                }
-            }
-            try {
-                dateParts = dateLine.split("\\.");
-                MonthsTools.removeZero(dateParts);
-
-                year = Integer.parseInt(dateParts[2]);
-                month = Integer.parseInt(dateParts[1]);
-                day = Integer.parseInt(dateParts[0]);
-
-            } catch (ArrayIndexOutOfBoundsException e) {
-
-                dateParts = dateLine.split("-");
-                MonthsTools.removeZero(dateParts);
-
-                year = Integer.parseInt(dateParts[0]);
-                month = Integer.parseInt(dateParts[1]);
-                day = Integer.parseInt(dateParts[2]);
-            }
-
-            date = LocalDate.of(year, month, day);
+            date = getDateForRabotaUa(dateDoc, dateLine);
         }
 
         return date;
@@ -189,13 +142,7 @@ public class ParseHelper {
         int year;
         int month;
         int day;
-        String split;
-
-        if (jobService instanceof HeadHunterService) {
-            split = "\u00a0";
-        } else if (jobService instanceof DouService) {
-            split = " ";
-        } else split = "\\.";
+        String split = getSplit(jobService);
 
         if (jobService instanceof JobsUaService) {
             dateLine = dateLine.substring(0, 10);
@@ -225,6 +172,53 @@ public class ParseHelper {
         return LocalDate.of(year, month, day);
     }
 
+    private LocalDate getDateForRabotaUa(Document dateDoc, String dateLine) {
+        /*
+        * RabotaUa madness.
+        * There are several problems here.
+        * First: there are two types of date tags, used on the site on different pages: "d-date" and "datePosted".
+        * Second: sometimes date format is dd.mm.yyyy and sometimes — yyyy-mm-dd. Hrrrrrr.
+        * Third: sometimes there is no date at all.
+        */
+
+        String[] dateParts;
+        int year;
+        int month;
+        int day;
+
+        Elements dateElements = dateDoc.getElementsByAttributeValue("id", "d-date");
+        if (!dateElements.isEmpty()) {
+            for (Element e : dateElements) {
+                dateLine = e.getElementsByAttributeValue("class", "d-ph-value").text();
+            }
+        } else {
+            dateLine = dateDoc.getElementsByAttributeValue("itemprop", "datePosted").text();
+            if (dateLine.length() == 0) {
+                //no date at all, sometimes it happens
+                return LocalDate.now();
+            }
+        }
+        try {
+            dateParts = dateLine.split("\\.");
+            MonthsTools.removeZero(dateParts);
+
+            year = Integer.parseInt(dateParts[2]);
+            month = Integer.parseInt(dateParts[1]);
+            day = Integer.parseInt(dateParts[0]);
+
+        } catch (ArrayIndexOutOfBoundsException e) {
+
+            dateParts = dateLine.split("-");
+            MonthsTools.removeZero(dateParts);
+
+            year = Integer.parseInt(dateParts[0]);
+            month = Integer.parseInt(dateParts[1]);
+            day = Integer.parseInt(dateParts[2]);
+        }
+
+        return LocalDate.of(year, month, day);
+    }
+
     private String getCompany(JobService jobService, Element job, String url, String[] companyData) {
 
         String company = "";
@@ -242,5 +236,15 @@ public class ParseHelper {
             company = job.getElementsByAttributeValue(companyData[0], companyData[1]).text();
         }
         return company;
+    }
+
+    private String getSplit(JobService jobService) {
+        String split;
+        if (jobService instanceof HeadHunterService) {
+            split = "\u00a0";
+        } else if (jobService instanceof DouService) {
+            split = " ";
+        } else split = "\\.";
+        return split;
     }
 }
