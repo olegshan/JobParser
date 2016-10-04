@@ -120,17 +120,16 @@ public class ParseHelper {
 
     private LocalDate getDateByUrl(JobService jobService, String url, String[] dateData) {
 
-        String dateLine = "";
         LocalDate date = null;
         Document dateDoc = getDoc(url);
 
         if (jobService instanceof DouService) {
 
-            dateLine = dateDoc.getElementsByAttributeValue(dateData[0], dateData[1]).text();
+            String dateLine = dateLine = dateDoc.getElementsByAttributeValue(dateData[0], dateData[1]).text();
             date = getDateByLine(jobService, dateLine);
 
         } else if (jobService instanceof RabotaUaService) {
-            date = getDateForRabotaUa(dateDoc, dateLine);
+            date = getDateForRabotaUa(dateDoc);
         }
 
         return date;
@@ -172,7 +171,7 @@ public class ParseHelper {
         return LocalDate.of(year, month, day);
     }
 
-    private LocalDate getDateForRabotaUa(Document dateDoc, String dateLine) {
+    private LocalDate getDateForRabotaUa(Document dateDoc) {
         /*
         * RabotaUa madness.
         * There are several problems here.
@@ -181,6 +180,7 @@ public class ParseHelper {
         * Third: sometimes there is no date at all.
         */
 
+        String dateLine = "";
         String[] dateParts;
         int year;
         int month;
