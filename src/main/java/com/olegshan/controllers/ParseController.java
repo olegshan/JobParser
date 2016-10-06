@@ -2,7 +2,6 @@ package com.olegshan.controllers;
 
 import com.olegshan.entity.Job;
 import com.olegshan.repository.JobRepository;
-import com.olegshan.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,33 +17,13 @@ import java.util.List;
 public class ParseController {
 
     @Autowired
-    DouService douService;
-    @Autowired
-    RabotaUaService rabotaUaService;
-    @Autowired
-    JobsUaService jobsUaService;
-    @Autowired
-    WorkUaService workUaService;
-    @Autowired
-    HeadHunterService headHunterService;
-
-    @Autowired
     JobRepository jobRepository;
 
     @RequestMapping("/")
     public String index(Model model) {
-
-        douService.parse();
-        headHunterService.parse();
-        jobsUaService.parse();
-        rabotaUaService.parse();
-        workUaService.parse();
-
         List<Job> result = jobRepository.findAll();
         result.sort(Comparator.comparing(Job::getDate).reversed());
-
         model.addAttribute("jobs", result);
-
         return "index";
     }
 }
