@@ -17,6 +17,9 @@
 .logo small, .logo span, .logo p {
     color: cadetblue;
 }
+.logo a:hover{
+    text-decoration: none;
+}
 
 .under {
     font-size: 12px;
