@@ -30,17 +30,19 @@ public class Parser {
     public void parse(JobService jobService,
                       String siteName,
                       String siteToParse,
+                      String urlPrefix,
+                      String[] jobList,
                       String[] jobBox,
                       String[] titleBox,
-                      String urlPrefix,
                       String[] companyData,
                       String[] descriptionData,
                       String[] dateData) {
 
         Document doc = getDoc(siteToParse);
         String docName = jobService.getClass().getSimpleName();
+        String savedJobs = getSavedJobs(doc, jobList);
 
-        if (nothingChanged(doc, docName)) {
+        if (isNothingChanged(savedJobs, docName)) {
             return;
         }
         Elements jobBlocks = getJobBlocks(jobService, doc, jobBox);
@@ -58,7 +60,7 @@ public class Parser {
             Job parsedJob = new Job(title, description, company, siteName, url, date);
             jobRepository.save(parsedJob);
         }
-        docRepository.save(new Doc(docName, doc.toString()));
+        docRepository.save(new Doc(docName, savedJobs));
     }
 
     private Document getDoc(String siteToParse) {
@@ -71,10 +73,10 @@ public class Parser {
         return doc;
     }
 
-    private boolean nothingChanged(Document doc, String docName) {
+    private boolean isNothingChanged(String savedJobs, String docName) {
         Doc savedDoc = docRepository.findOne(docName);
         if (savedDoc != null) {
-            if (savedDoc.getDoc().equals(doc.toString())) {
+            if (savedDoc.getDoc().equals(savedJobs)) {
                 return true;
             }
         }
@@ -83,6 +85,10 @@ public class Parser {
 
     private boolean jobExists(String url) {
         return jobRepository.findOne(url) != null;
+    }
+
+    private String getSavedJobs(Document doc, String[] jobList) {
+        return doc.getElementsByAttributeValue(jobList[0], jobList[1]).toString();
     }
 
     private Elements getJobBlocks(JobService jobService, Document doc, String[] jobBox) {
