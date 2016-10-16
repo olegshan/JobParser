@@ -15,7 +15,8 @@ public class Job {
     @Id
     private String url;
     private String title;
-    @Column(length = Integer.MAX_VALUE)
+//    @Column(length = Integer.MAX_VALUE)
+    @Column(length = 10485760)
     private String description;
     private String company;
     private String source;

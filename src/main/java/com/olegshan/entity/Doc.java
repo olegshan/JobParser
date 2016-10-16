@@ -12,7 +12,8 @@ public class Doc {
 
     @Id
     String name;
-    @Column(length = Integer.MAX_VALUE)
+//    @Column(length = Integer.MAX_VALUE)
+    @Column(length = 10485760)
     String doc;
 
     public Doc() {
