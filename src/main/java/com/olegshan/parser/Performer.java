@@ -12,15 +12,15 @@ import org.springframework.stereotype.Component;
 public class Performer {
 
     @Autowired
-    DouService douService;
+    private DouService douService;
     @Autowired
-    RabotaUaService rabotaUaService;
+    private RabotaUaService rabotaUaService;
     @Autowired
-    JobsUaService jobsUaService;
+    private JobsUaService jobsUaService;
     @Autowired
-    WorkUaService workUaService;
+    private WorkUaService workUaService;
     @Autowired
-    HeadHunterService headHunterService;
+    private HeadHunterService headHunterService;
 
     @Scheduled(cron = "0 0 7-23 * * *")
     public void perform() {
