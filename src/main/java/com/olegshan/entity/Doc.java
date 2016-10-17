@@ -12,7 +12,7 @@ public class Doc {
 
     @Id
     String name;
-//    @Column(length = Integer.MAX_VALUE)
+    //  Max value for PostgreSQL
     @Column(length = 10485760)
     String doc;
 
