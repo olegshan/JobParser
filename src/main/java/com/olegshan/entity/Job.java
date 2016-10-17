@@ -3,7 +3,7 @@ package com.olegshan.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -15,18 +15,18 @@ public class Job {
     @Id
     private String url;
     private String title;
-//    @Column(length = Integer.MAX_VALUE)
+    //  Max value for PostgreSQL
     @Column(length = 10485760)
     private String description;
     private String company;
     private String source;
-    private LocalDate date;
+    private LocalDateTime date;
     private String dateToDisplay;
 
     public Job() {
     }
 
-    public Job(String title, String description, String company, String source, String url, LocalDate date) {
+    public Job(String title, String description, String company, String source, String url, LocalDateTime date) {
         this.title = title;
         this.description = description;
         this.company = company;
@@ -75,11 +75,11 @@ public class Job {
         this.url = url;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

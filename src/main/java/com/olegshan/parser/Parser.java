@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * Created by olegshan on 03.10.2016.
@@ -55,7 +57,7 @@ public class Parser {
             String title = titleBlock.text();
             String description = job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
             String company = getCompany(jobService, job, url, companyData);
-            LocalDate date = getDate(jobService, url, dateData, titleBlock, job);
+            LocalDateTime date = getDate(jobService, url, dateData, titleBlock, job);
 
             Job parsedJob = new Job(title, description, company, siteName, url, date);
             jobRepository.save(parsedJob);
@@ -111,8 +113,8 @@ public class Parser {
         return titleBlock;
     }
 
-    private LocalDate getDate(JobService jobService, String url, String[] dateData, Elements titleBlock, Element job) {
-        LocalDate date;
+    private LocalDateTime getDate(JobService jobService, String url, String[] dateData, Elements titleBlock, Element job) {
+        LocalDateTime date;
         String dateLine;
         if (jobService instanceof DouService) {
             Document dateDoc = getDoc(url);
@@ -131,7 +133,7 @@ public class Parser {
         return date;
     }
 
-    private LocalDate getDateByLine(JobService jobService, String dateLine) {
+    private LocalDateTime getDateByLine(JobService jobService, String dateLine) {
         String[] dateParts;
         int year;
         int month;
@@ -155,10 +157,10 @@ public class Parser {
         if (jobService instanceof DouService || jobService instanceof HeadHunterService) {
             month = MonthsTools.MONTHS.get(dateParts[1].toLowerCase());
         } else month = Integer.parseInt(dateParts[1]);
-        return LocalDate.of(year, month, day);
+        return LocalDate.of(year, month, day).atTime(LocalTime.now());
     }
 
-    private LocalDate getDateForRabotaUa(String url) {
+    private LocalDateTime getDateForRabotaUa(String url) {
         /*
         * There are several problems here.
         * First: there are two types of date tags, used on the site on different pages: "d-date" and "datePosted".
@@ -181,7 +183,7 @@ public class Parser {
             dateLine = dateDoc.getElementsByAttributeValue("itemprop", "datePosted").text();
             if (dateLine.length() == 0) {
                 //no date at all, sometimes it happens
-                return LocalDate.now();
+                return LocalDateTime.now();
             }
         }
         try {
@@ -199,7 +201,7 @@ public class Parser {
             month = Integer.parseInt(dateParts[1]);
             day = Integer.parseInt(dateParts[2]);
         }
-        return LocalDate.of(year, month, day);
+        return LocalDate.of(year, month, day).atTime(LocalTime.now());
     }
 
     private String getCompany(JobService jobService, Element job, String url, String[] companyData) {
