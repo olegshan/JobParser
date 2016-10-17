@@ -17,7 +17,8 @@
 .logo small, .logo span, .logo p {
     color: cadetblue;
 }
-.logo a:hover{
+
+.logo a:hover {
     text-decoration: none;
 }
 
@@ -25,8 +26,8 @@
     font-size: 12px;
 }
 
-.container {
-    max-width: 60%;
+.center-block {
+    float: none
 }
 
 .footer {
