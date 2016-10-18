@@ -54,7 +54,7 @@ public class Parser {
             if (jobExists(url)) {
                 continue;
             }
-            String title = titleBlock.text();
+            String title = getTitle(titleBlock);
             String description = job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
             String company = getCompany(jobService, job, url, companyData);
             LocalDateTime date = getDate(jobService, url, dateData, titleBlock, job);
@@ -97,8 +97,21 @@ public class Parser {
         Elements jobBlocks;
         if (jobService instanceof WorkUaService) {
             jobBlocks = doc.getElementsByAttributeValueStarting(jobBox[0], jobBox[1]);
+        } else if (jobService instanceof RabotaUaService) {
+            jobBlocks = getJobBlocksForRabotaUa(doc, jobBox);
         } else {
             jobBlocks = doc.getElementsByAttributeValue(jobBox[0], jobBox[1]);
+        }
+        return jobBlocks;
+    }
+
+    private Elements getJobBlocksForRabotaUa(Document doc, String[] jobBox) {
+        Elements jobBlocks = new Elements();
+        for (int i = 1; i < jobBox.length; i++) {
+            Elements jobElements = doc.getElementsByAttributeValue(jobBox[0], jobBox[i]);
+            if (!jobElements.isEmpty()) {
+                jobBlocks.addAll(jobElements);
+            }
         }
         return jobBlocks;
     }
@@ -111,6 +124,14 @@ public class Parser {
             titleBlock = job.getElementsByAttributeValue(titleBox[0], titleBox[1]);
         }
         return titleBlock;
+    }
+
+    private String getTitle(Elements titleBlock) {
+        String title = titleBlock.text();
+        if (title.endsWith("Горячая")) {
+            title = title.substring(0, title.length() - "Горячая".length());
+        }
+        return title;
     }
 
     private LocalDateTime getDate(JobService jobService, String url, String[] dateData, Elements titleBlock, Element job) {
