@@ -109,7 +109,7 @@ public class Parser {
         Elements jobBlocks = new Elements();
         for (int i = 1; i < jobBox.length; i++) {
             Elements jobElements = doc.getElementsByAttributeValue(jobBox[0], jobBox[i]);
-            if (!jobElements.isEmpty()) {
+            if (jobElements != null && !jobElements.isEmpty()) {
                 jobBlocks.addAll(jobElements);
             }
         }
