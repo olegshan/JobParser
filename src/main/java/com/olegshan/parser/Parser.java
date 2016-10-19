@@ -10,6 +10,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,8 @@ public class Parser {
     @Autowired
     private JobRepository jobRepository;
 
+    private final Logger logger = LoggerFactory.getLogger(Parser.class);
+
     public void parse(JobService jobService,
                       String siteName,
                       String siteToParse,
@@ -45,9 +49,11 @@ public class Parser {
         String savedJobs = getSavedJobs(doc, jobList);
 
         if (isNothingChanged(savedJobs, docName)) {
+            logger.info("Job list of {} didn't change since last parsing", docName);
             return;
         }
         Elements jobBlocks = getJobBlocks(jobService, doc, jobBox);
+        int count = 0;
         for (Element job : jobBlocks) {
             Elements titleBlock = getTitleBlock(jobService, job, titleBox);
             String url = urlPrefix + titleBlock.attr("href");
@@ -61,8 +67,10 @@ public class Parser {
 
             Job parsedJob = new Job(title, description, company, siteName, url, date);
             jobRepository.save(parsedJob);
+            count++;
         }
         docRepository.save(new Doc(docName, savedJobs));
+        logger.info("{} new jobs on {} found", count, siteName);
     }
 
     private Document getDoc(String siteToParse) {
@@ -70,7 +78,7 @@ public class Parser {
         try {
             doc = Jsoup.connect(siteToParse).userAgent("Mozilla").timeout(0).get();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Connecting to {} failed", siteToParse);
         }
         return doc;
     }
