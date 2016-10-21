@@ -1,5 +1,5 @@
 .logo {
-    margin: 20px 0px 40px 10px;
+    margin: 20px 0 40px 10px;
 }
 
 .logo h1, .logo span {
@@ -7,11 +7,11 @@
 }
 
 .logo h1 {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .logo p {
-    margin-top: 0px;
+    margin-top: 0;
 }
 
 .logo small, .logo span, .logo p {
@@ -31,9 +31,13 @@
 }
 
 .footer {
-    margin: 40px 0px 40px 10px;
+    margin: 40px 0 40px 10px;
 }
 
 .table, .table td {
     border: hidden;
+}
+
+.error {
+    margin: 80px 0 80px 10px;
 }
