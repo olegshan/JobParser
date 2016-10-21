@@ -16,7 +16,6 @@ public class WorkUaService implements JobService {
     private static final String SITE = "Work.ua";
     private static final String SITE_TO_PARSE = "https://www.work.ua/jobs-kyiv-java/";
     private static final String URL_PREFIX = "https://work.ua";
-    private static final String[] JOB_LIST = {"class", "col-md-8 col-left"};
     private static final String[] JOB_BOX = {"class", "card card-hover card-visited job-link"};
     private static final String[] TITLE_BOX = {"", ""};
     private static final String[] COMPANY_DATA = {"class", "dl-horizontal"};
@@ -24,7 +23,7 @@ public class WorkUaService implements JobService {
     private static final String[] DATE_DATA = {"", ""};
 
     public void parse() {
-        parser.parse(this, SITE, SITE_TO_PARSE, URL_PREFIX, JOB_LIST, JOB_BOX, TITLE_BOX,
+        parser.parse(this, SITE, SITE_TO_PARSE, URL_PREFIX, JOB_BOX, TITLE_BOX,
                 COMPANY_DATA, DESCRIPTION_DATA, DATE_DATA);
     }
 }

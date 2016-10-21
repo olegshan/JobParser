@@ -1,8 +1,6 @@
 package com.olegshan.parser;
 
-import com.olegshan.entity.Doc;
 import com.olegshan.entity.Job;
-import com.olegshan.repository.DocRepository;
 import com.olegshan.repository.JobRepository;
 import com.olegshan.service.*;
 import com.olegshan.tools.MonthsTools;
@@ -27,8 +25,6 @@ import java.time.LocalTime;
 public class Parser {
 
     @Autowired
-    private DocRepository docRepository;
-    @Autowired
     private JobRepository jobRepository;
 
     private final Logger logger = LoggerFactory.getLogger(Parser.class);
@@ -37,7 +33,6 @@ public class Parser {
                       String siteName,
                       String siteToParse,
                       String urlPrefix,
-                      String[] jobList,
                       String[] jobBox,
                       String[] titleBox,
                       String[] companyData,
@@ -45,13 +40,6 @@ public class Parser {
                       String[] dateData) {
 
         Document doc = getDoc(siteToParse);
-        String docName = jobService.getClass().getSimpleName();
-        String savedJobs = getSavedJobs(doc, jobList);
-
-        if (isNothingChanged(savedJobs, docName)) {
-            logger.info("Job list of {} didn't change since last parsing", docName);
-            return;
-        }
         Elements jobBlocks = getJobBlocks(jobService, doc, jobBox);
         int count = 0;
         for (Element job : jobBlocks) {
@@ -69,7 +57,6 @@ public class Parser {
             jobRepository.save(parsedJob);
             count++;
         }
-        docRepository.save(new Doc(docName, savedJobs));
         logger.info("{} new jobs on {} found", count, siteName);
     }
 
@@ -79,26 +66,13 @@ public class Parser {
             doc = Jsoup.connect(siteToParse).userAgent("Mozilla").timeout(0).get();
         } catch (IOException e) {
             logger.error("Connecting to {} failed", siteToParse);
+            throw new RuntimeException("Connection failed");
         }
         return doc;
     }
 
-    private boolean isNothingChanged(String savedJobs, String docName) {
-        Doc savedDoc = docRepository.findOne(docName);
-        if (savedDoc != null) {
-            if (savedDoc.getDoc().equals(savedJobs)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private boolean jobExists(String url) {
         return jobRepository.findOne(url) != null;
-    }
-
-    private String getSavedJobs(Document doc, String[] jobList) {
-        return doc.getElementsByAttributeValue(jobList[0], jobList[1]).toString();
     }
 
     private Elements getJobBlocks(JobService jobService, Document doc, String[] jobBox) {

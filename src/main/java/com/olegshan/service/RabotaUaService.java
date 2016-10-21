@@ -16,7 +16,6 @@ public class RabotaUaService implements JobService {
     private static final String SITE = "Rabota.ua";
     private static final String SITE_TO_PARSE = "http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2";
     private static final String URL_PREFIX = "http://rabota.ua";
-    private static final String[] JOB_LIST = {"class", "vv"};
     private static final String[] JOB_BOX = {"class", "v f h", "v h", "v"};
     private static final String[] TITLE_BOX = {"class", "t"};
     private static final String[] COMPANY_DATA = {"class", "rua-p-c-default"};
@@ -24,7 +23,7 @@ public class RabotaUaService implements JobService {
     private static final String[] DATE_DATA = {"", ""};
 
     public void parse() {
-        parser.parse(this, SITE, SITE_TO_PARSE, URL_PREFIX, JOB_LIST, JOB_BOX, TITLE_BOX,
+        parser.parse(this, SITE, SITE_TO_PARSE, URL_PREFIX, JOB_BOX, TITLE_BOX,
                 COMPANY_DATA, DESCRIPTION_DATA, DATE_DATA);
     }
 }

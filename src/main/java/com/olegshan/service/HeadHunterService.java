@@ -16,7 +16,6 @@ public class HeadHunterService implements JobService {
     private static final String SITE = "HeadHunter.ua";
     private static final String SITE_TO_PARSE = "https://hh.ua/search/vacancy?text=java&area=115";
     private static final String URL_PREFIX = "";
-    private static final String[] JOB_LIST = {"class", "search-result"};
     private static final String[] JOB_BOX = {"class", "search-result-description"};
     private static final String[] TITLE_BOX = {"data-qa", "vacancy-serp__vacancy-title"};
     private static final String[] COMPANY_DATA = {"data-qa", "vacancy-serp__vacancy-employer"};
@@ -24,7 +23,7 @@ public class HeadHunterService implements JobService {
     private static final String[] DATE_DATA = {"data-qa", "vacancy-serp__vacancy-date"};
 
     public void parse() {
-        parser.parse(this, SITE, SITE_TO_PARSE, URL_PREFIX, JOB_LIST, JOB_BOX, TITLE_BOX,
+        parser.parse(this, SITE, SITE_TO_PARSE, URL_PREFIX, JOB_BOX, TITLE_BOX,
                 COMPANY_DATA, DESCRIPTION_DATA, DATE_DATA);
     }
 }

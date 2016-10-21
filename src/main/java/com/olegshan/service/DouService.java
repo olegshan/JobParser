@@ -16,7 +16,6 @@ public class DouService implements JobService {
     private static final String SITE = "Dou.ua";
     private static final String SITE_TO_PARSE = "https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D1%97%D0%B2&category=Java";
     private static final String URL_PREFIX = "";
-    private static final String[] JOB_LIST = {"class", "l-items"};
     private static final String[] JOB_BOX = {"class", "vacancy"};
     private static final String[] TITLE_BOX = {"class", "vt"};
     private static final String[] COMPANY_DATA = {"class", "company"};
@@ -24,7 +23,7 @@ public class DouService implements JobService {
     private static final String[] DATE_DATA = {"class", "date"};
 
     public void parse() {
-        parser.parse(this, SITE, SITE_TO_PARSE, URL_PREFIX, JOB_LIST, JOB_BOX, TITLE_BOX,
+        parser.parse(this, SITE, SITE_TO_PARSE, URL_PREFIX, JOB_BOX, TITLE_BOX,
                 COMPANY_DATA, DESCRIPTION_DATA, DATE_DATA);
     }
 }
