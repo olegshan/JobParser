@@ -10,11 +10,12 @@
     margin-bottom: 0;
 }
 
-.logo p {
-    margin-top: 0;
+.logo h2 {
+    margin-top: 2px;
+    font-size: 14px;
 }
 
-.logo small, .logo span, .logo p {
+.logo small, .logo span, .logo h2 {
     color: cadetblue;
 }
 
@@ -38,6 +39,6 @@
     border: hidden;
 }
 
-.error {
-    margin: 80px 0 80px 10px;
+.error, .about {
+    margin-left: 10px;
 }

@@ -2,17 +2,6 @@
       xmlns:th="http://www.w3.org/1999/xhtml">
 
 <div layout:fragment="content">
-    <div class="logo">
-        <a href="/">
-            <h1>
-                <small>
-                    jParser
-                </small>
-            </h1>
-            <sup><span>&beta;</span></sup>
-            <p>Jobs for Java developers in Kyiv</p>
-        </a>
-    </div>
     <table class="table">
         <tbody id="tableBody">
         <tr data-th-each="job : ${jobs}">
@@ -36,6 +25,13 @@
         <div class="col-md-12 text-center">
             <ul class="pagination pagination-lg pager" id="myPager"></ul>
         </div>
+    </div>
+    <div class="footer">
+        <p>&copy; <a href="https://github.com/olegshan" target="_blank">olegshan.</a>
+            Have any ideas for improvement?
+            <a href="https://github.com/olegshan/JobParser" target="_blank">Fell free to join.</a>
+        </p>
+        <p><a href="/about">About jParser</a></p>
     </div>
 </div>
 </html>

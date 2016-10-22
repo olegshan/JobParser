@@ -26,4 +26,9 @@ public class ParseController {
         model.addAttribute("jobs", result);
         return "index";
     }
+
+    @RequestMapping("/about")
+    public String about() {
+        return "about";
+    }
 }
