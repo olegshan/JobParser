@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 
 /**
  * Created by olegshan on 03.10.2016.
@@ -24,6 +25,7 @@ import java.time.LocalTime;
 @Component
 public class Parser {
 
+    private static final int HOUR = LocalDateTime.now().get(ChronoField.HOUR_OF_DAY);
     @Autowired
     private JobRepository jobRepository;
 
@@ -61,7 +63,7 @@ public class Parser {
     }
 
     private Document getDoc(String siteToParse) {
-        Document doc = null;
+        Document doc;
         try {
             doc = Jsoup.connect(siteToParse).userAgent("Mozilla").timeout(0).get();
         } catch (IOException e) {
@@ -160,7 +162,7 @@ public class Parser {
         if (jobService instanceof DouService || jobService instanceof HeadHunterService) {
             month = MonthsTools.MONTHS.get(dateParts[1].toLowerCase());
         } else month = Integer.parseInt(dateParts[1]);
-        return LocalDate.of(year, month, day).atTime(LocalTime.now());
+        return LocalDate.of(year, month, day).atTime(LocalTime.of(HOUR, 0, 0));
     }
 
     private LocalDateTime getDateForRabotaUa(String url) {
@@ -204,7 +206,7 @@ public class Parser {
             month = Integer.parseInt(dateParts[1]);
             day = Integer.parseInt(dateParts[2]);
         }
-        return LocalDate.of(year, month, day).atTime(LocalTime.now());
+        return LocalDate.of(year, month, day).atTime(LocalTime.of(HOUR, 0, 0));
     }
 
     private String getCompany(JobService jobService, Element job, String url, String[] companyData) {
