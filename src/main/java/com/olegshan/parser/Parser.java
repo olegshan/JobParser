@@ -1,7 +1,6 @@
 package com.olegshan.parser;
 
 import com.olegshan.entity.Job;
-import com.olegshan.repository.JobRepository;
 import com.olegshan.service.*;
 import com.olegshan.tools.MonthsTools;
 import org.jsoup.Jsoup;
@@ -25,11 +24,10 @@ import java.time.temporal.ChronoField;
 @Component
 public class Parser {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Parser.class);
     private static final int HOUR = LocalDateTime.now().get(ChronoField.HOUR_OF_DAY);
     @Autowired
-    private JobRepository jobRepository;
-
-    private final Logger logger = LoggerFactory.getLogger(Parser.class);
+    private DbService dbService;
 
     public void parse(JobService jobService,
                       String siteName,
@@ -43,23 +41,19 @@ public class Parser {
 
         Document doc = getDoc(siteToParse);
         Elements jobBlocks = getJobBlocks(jobService, doc, jobBox);
-        int count = 0;
+
         for (Element job : jobBlocks) {
             Elements titleBlock = getTitleBlock(jobService, job, titleBox);
             String url = urlPrefix + titleBlock.attr("href");
-            if (jobExists(url)) {
-                continue;
-            }
             String title = getTitle(titleBlock);
             String description = job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
             String company = getCompany(jobService, job, url, companyData);
             LocalDateTime date = getDate(jobService, url, dateData, titleBlock, job);
 
             Job parsedJob = new Job(title, description, company, siteName, url, date);
-            jobRepository.save(parsedJob);
-            count++;
+            dbService.save(parsedJob);
         }
-        logger.info("{} new jobs on {} found", count, siteName);
+        LOGGER.info("Parsing of {} completed", siteName);
     }
 
     private Document getDoc(String siteToParse) {
@@ -67,14 +61,10 @@ public class Parser {
         try {
             doc = Jsoup.connect(siteToParse).userAgent("Mozilla").timeout(0).get();
         } catch (IOException e) {
-            logger.error("Connecting to {} failed", siteToParse);
+            LOGGER.error("Connecting to {} failed", siteToParse);
             throw new RuntimeException("Connection failed");
         }
         return doc;
-    }
-
-    private boolean jobExists(String url) {
-        return jobRepository.findOne(url) != null;
     }
 
     private Elements getJobBlocks(JobService jobService, Document doc, String[] jobBox) {
