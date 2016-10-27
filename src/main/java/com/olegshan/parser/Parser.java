@@ -2,6 +2,7 @@ package com.olegshan.parser;
 
 import com.olegshan.entity.Job;
 import com.olegshan.service.*;
+import com.olegshan.sites.*;
 import com.olegshan.tools.MonthsTools;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,7 +30,7 @@ public class Parser {
     @Autowired
     private DbService dbService;
 
-    public void parse(JobService jobService,
+    public void parse(JobSite jobSite,
                       String siteName,
                       String siteToParse,
                       String urlPrefix,
@@ -40,15 +41,15 @@ public class Parser {
                       String[] dateData) {
 
         Document doc = getDoc(siteToParse);
-        Elements jobBlocks = getJobBlocks(jobService, doc, jobBox);
+        Elements jobBlocks = getJobBlocks(jobSite, doc, jobBox);
 
         for (Element job : jobBlocks) {
-            Elements titleBlock = getTitleBlock(jobService, job, titleBox);
+            Elements titleBlock = getTitleBlock(jobSite, job, titleBox);
             String url = urlPrefix + titleBlock.attr("href");
             String title = getTitle(titleBlock);
             String description = job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
-            String company = getCompany(jobService, job, url, companyData);
-            LocalDateTime date = getDate(jobService, url, dateData, titleBlock, job);
+            String company = getCompany(jobSite, job, url, companyData);
+            LocalDateTime date = getDate(jobSite, url, dateData, titleBlock, job);
 
             Job parsedJob = new Job(title, description, company, siteName, url, date);
             dbService.save(parsedJob);
@@ -67,11 +68,11 @@ public class Parser {
         return doc;
     }
 
-    private Elements getJobBlocks(JobService jobService, Document doc, String[] jobBox) {
+    private Elements getJobBlocks(JobSite jobSite, Document doc, String[] jobBox) {
         Elements jobBlocks;
-        if (jobService instanceof WorkUaService) {
+        if (jobSite instanceof WorkUa) {
             jobBlocks = doc.getElementsByAttributeValueStarting(jobBox[0], jobBox[1]);
-        } else if (jobService instanceof RabotaUaService) {
+        } else if (jobSite instanceof RabotaUa) {
             jobBlocks = getJobBlocksForRabotaUa(doc, jobBox);
         } else {
             jobBlocks = doc.getElementsByAttributeValue(jobBox[0], jobBox[1]);
@@ -90,9 +91,9 @@ public class Parser {
         return jobBlocks;
     }
 
-    private Elements getTitleBlock(JobService jobService, Element job, String[] titleBox) {
+    private Elements getTitleBlock(JobSite jobSite, Element job, String[] titleBox) {
         Elements titleBlock;
-        if (jobService instanceof WorkUaService) {
+        if (jobSite instanceof WorkUa) {
             titleBlock = job.getElementsByTag("a");
         } else {
             titleBlock = job.getElementsByAttributeValue(titleBox[0], titleBox[1]);
@@ -108,48 +109,48 @@ public class Parser {
         return title;
     }
 
-    private LocalDateTime getDate(JobService jobService, String url, String[] dateData, Elements titleBlock, Element job) {
+    private LocalDateTime getDate(JobSite jobSite, String url, String[] dateData, Elements titleBlock, Element job) {
         LocalDateTime date;
         String dateLine;
-        if (jobService instanceof DouService) {
+        if (jobSite instanceof DouUa) {
             Document dateDoc = getDoc(url);
             dateLine = dateDoc.getElementsByAttributeValue(dateData[0], dateData[1]).text();
-            date = getDateByLine(jobService, dateLine);
-        } else if (jobService instanceof RabotaUaService) {
+            date = getDateByLine(jobSite, dateLine);
+        } else if (jobSite instanceof RabotaUa) {
             date = getDateForRabotaUa(url);
         } else {
-            if (jobService instanceof WorkUaService) {
+            if (jobSite instanceof WorkUa) {
                 dateLine = titleBlock.attr("title");
             } else {
                 dateLine = job.getElementsByAttributeValue(dateData[0], dateData[1]).text();
             }
-            date = getDateByLine(jobService, dateLine);
+            date = getDateByLine(jobSite, dateLine);
         }
         return date;
     }
 
-    private LocalDateTime getDateByLine(JobService jobService, String dateLine) {
+    private LocalDateTime getDateByLine(JobSite jobSite, String dateLine) {
         String[] dateParts;
         int year;
         int month;
         int day;
-        String split = getSplit(jobService);
-        if (jobService instanceof JobsUaService) {
+        String split = getSplit(jobSite);
+        if (jobSite instanceof JobsUa) {
             dateLine = dateLine.substring(0, 10);
         }
-        if (jobService instanceof WorkUaService) {
+        if (jobSite instanceof WorkUa) {
             dateLine = dateLine.substring(dateLine.length() - 8);
         }
         dateParts = dateLine.split(split);
         MonthsTools.removeZero(dateParts);
         day = Integer.parseInt(dateParts[0]);
-        if (jobService instanceof HeadHunterService) {
+        if (jobSite instanceof HeadHunterUa) {
             year = LocalDate.now().getYear();
         } else year = Integer.parseInt(dateParts[2]);
-        if (jobService instanceof WorkUaService) {
+        if (jobSite instanceof WorkUa) {
             year = year + 2000;
         }
-        if (jobService instanceof DouService || jobService instanceof HeadHunterService) {
+        if (jobSite instanceof DouUa || jobSite instanceof HeadHunterUa) {
             month = MonthsTools.MONTHS.get(dateParts[1].toLowerCase());
         } else month = Integer.parseInt(dateParts[1]);
         return LocalDate.of(year, month, day).atTime(LocalTime.of(HOUR, 0, 0));
@@ -158,7 +159,7 @@ public class Parser {
     private LocalDateTime getDateForRabotaUa(String url) {
         /*
         * There are several problems here.
-        * First: there are two types of date tags, used on the site on different pages: "d-date" and "datePosted".
+        * First: there are two types of date tags, used on the jobSite on different pages: "d-date" and "datePosted".
         * Second: sometimes date format is dd.mm.yyyy and sometimes — yyyy-mm-dd.
         * Third: sometimes there is no date at all.
         */
@@ -199,9 +200,9 @@ public class Parser {
         return LocalDate.of(year, month, day).atTime(LocalTime.of(HOUR, 0, 0));
     }
 
-    private String getCompany(JobService jobService, Element job, String url, String[] companyData) {
+    private String getCompany(JobSite jobSite, Element job, String url, String[] companyData) {
         String company = "";
-        if (jobService instanceof JobsUaService || jobService instanceof WorkUaService) {
+        if (jobSite instanceof JobsUa || jobSite instanceof WorkUa) {
             Document jobDoc = getDoc(url);
             Elements companyBlock = jobDoc.getElementsByAttributeValue(companyData[0], companyData[1]);
             for (Element e : companyBlock) {
@@ -213,11 +214,11 @@ public class Parser {
         return company;
     }
 
-    private String getSplit(JobService jobService) {
+    private String getSplit(JobSite jobSite) {
         String split;
-        if (jobService instanceof HeadHunterService) {
+        if (jobSite instanceof HeadHunterUa) {
             split = "\u00a0";
-        } else if (jobService instanceof DouService) {
+        } else if (jobSite instanceof DouUa) {
             split = " ";
         } else split = "\\.";
         return split;

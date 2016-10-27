@@ -1,9 +1,9 @@
-package com.olegshan.service;
+package com.olegshan.sites;
 
 /**
  * Created by olegshan on 28.09.2016.
  */
-public interface JobService {
+public interface JobSite {
 
     void parse();
 }

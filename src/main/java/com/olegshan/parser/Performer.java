@@ -1,6 +1,6 @@
 package com.olegshan.parser;
 
-import com.olegshan.service.*;
+import com.olegshan.sites.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -12,22 +12,23 @@ import org.springframework.stereotype.Component;
 public class Performer {
 
     @Autowired
-    private DouService douService;
+    private DouUa douUa;
     @Autowired
-    private RabotaUaService rabotaUaService;
+    private RabotaUa rabotaUa;
     @Autowired
-    private JobsUaService jobsUaService;
+    private JobsUa jobsUa;
     @Autowired
-    private WorkUaService workUaService;
+    private WorkUa workUa;
     @Autowired
-    private HeadHunterService headHunterService;
+    private HeadHunterUa headHunterUa;
 
-    @Scheduled(cron = "0 0 7-23 * * *")
+    @Scheduled(cron = "0 0/1 * * * *")
+//    @Scheduled(cron = "0 0 7-23 * * *")
     public void perform() {
-        douService.parse();
-        headHunterService.parse();
-        jobsUaService.parse();
-        rabotaUaService.parse();
-        workUaService.parse();
+        douUa.parse();
+        headHunterUa.parse();
+        jobsUa.parse();
+        rabotaUa.parse();
+        workUa.parse();
     }
 }

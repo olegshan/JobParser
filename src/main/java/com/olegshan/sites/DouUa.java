@@ -1,4 +1,4 @@
-package com.olegshan.service;
+package com.olegshan.sites;
 
 import com.olegshan.parser.Parser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * Created by olegshan on 26.09.2016.
  */
 @Component
-public class DouService implements JobService {
+public class DouUa implements JobSite {
 
     @Autowired
     private Parser parser;
