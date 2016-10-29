@@ -52,7 +52,7 @@ public class MonthsTools {
 
     }
 
-    //if day or month start with '0'
+    //if day or month starts with '0'
     public static void removeZero(String[] dateParts) {
         for (int i = 0; i < dateParts.length; i++) {
             if (dateParts[i].startsWith("0")) {
