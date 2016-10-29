@@ -180,7 +180,7 @@ public class Parser {
             dateLine = dateDoc.getElementsByAttributeValue("itemprop", "datePosted").text();
             if (dateLine.length() == 0) {
                 //no date at all, sometimes it happens
-                LocalDateTime ldt = LocalDateTime.now(ZoneId.of("GMT+3"));
+                LocalDateTime ldt = LocalDateTime.now(ZoneId.of("Europe/Athens"));
                 LOGGER.info("There was no date on Rabota.ua, return {}", ldt);
                 return ldt;
             }
@@ -206,7 +206,7 @@ public class Parser {
     }
 
     private LocalTime getTime() {
-        return LocalTime.now(ZoneId.of("GMT+3"));
+        return LocalTime.now(ZoneId.of("Europe/Athens"));
     }
 
     private String getCompany(JobSite jobSite, Element job, String url, String[] companyData) {

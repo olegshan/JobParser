@@ -22,7 +22,7 @@ public class Performer {
     @Autowired
     private HeadHunterUa headHunterUa;
 
-    @Scheduled(cron = "0 0 7-23 * * *")
+    @Scheduled(cron = "0 0 7-23 * * *", zone = "Europe/Athens")
     public void perform() {
         douUa.parse();
         headHunterUa.parse();
