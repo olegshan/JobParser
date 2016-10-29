@@ -1,7 +1,7 @@
 package com.olegshan.parser;
 
 import com.olegshan.entity.Job;
-import com.olegshan.service.*;
+import com.olegshan.service.DbService;
 import com.olegshan.sites.*;
 import com.olegshan.tools.MonthsTools;
 import org.jsoup.Jsoup;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoField;
+import java.time.ZoneId;
 
 /**
  * Created by olegshan on 03.10.2016.
@@ -26,7 +26,6 @@ import java.time.temporal.ChronoField;
 public class Parser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Parser.class);
-    private static final int HOUR = LocalDateTime.now().get(ChronoField.HOUR_OF_DAY);
     @Autowired
     private DbService dbService;
 
@@ -153,7 +152,9 @@ public class Parser {
         if (jobSite instanceof DouUa || jobSite instanceof HeadHunterUa) {
             month = MonthsTools.MONTHS.get(dateParts[1].toLowerCase());
         } else month = Integer.parseInt(dateParts[1]);
-        return LocalDate.of(year, month, day).atTime(LocalTime.of(HOUR, 0, 0));
+        LocalDateTime ldt = LocalDate.of(year, month, day).atTime(getTime());
+        LOGGER.info("LocalDateTime: " + ldt);
+        return ldt;
     }
 
     private LocalDateTime getDateForRabotaUa(String url) {
@@ -179,7 +180,9 @@ public class Parser {
             dateLine = dateDoc.getElementsByAttributeValue("itemprop", "datePosted").text();
             if (dateLine.length() == 0) {
                 //no date at all, sometimes it happens
-                return LocalDateTime.now();
+                LocalDateTime ldt = LocalDateTime.now(ZoneId.of("GMT+3"));
+                LOGGER.info("There was no date on Rabota.ua, return {}", ldt);
+                return ldt;
             }
         }
         try {
@@ -197,7 +200,13 @@ public class Parser {
             month = Integer.parseInt(dateParts[1]);
             day = Integer.parseInt(dateParts[2]);
         }
-        return LocalDate.of(year, month, day).atTime(LocalTime.of(HOUR, 0, 0));
+        LocalDateTime ldt = LocalDate.of(year, month, day).atTime(getTime());
+        LOGGER.info("LocalDateTime: " + ldt);
+        return ldt;
+    }
+
+    private LocalTime getTime() {
+        return LocalTime.now(ZoneId.of("GMT+3"));
     }
 
     private String getCompany(JobSite jobSite, Element job, String url, String[] companyData) {
