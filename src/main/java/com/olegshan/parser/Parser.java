@@ -181,7 +181,7 @@ public class Parser {
             if (dateLine.length() == 0) {
                 //no date at all, sometimes it happens
                 LocalDateTime ldt = LocalDateTime.now(ZoneId.of("Europe/Athens"));
-                LOGGER.info("There was no date on Rabota.ua, return {}", ldt);
+                LOGGER.debug("There was no date on Rabota.ua, return {}", ldt);
                 return ldt;
             }
         }
@@ -201,7 +201,7 @@ public class Parser {
             day = Integer.parseInt(dateParts[2]);
         }
         LocalDateTime ldt = LocalDate.of(year, month, day).atTime(getTime());
-        LOGGER.info("LocalDateTime: " + ldt);
+        LOGGER.debug("LocalDateTime: " + ldt);
         return ldt;
     }
 
