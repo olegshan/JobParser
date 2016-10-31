@@ -29,54 +29,43 @@ public class Parser {
     @Autowired
     private DbService dbService;
 
-    public void parse(JobSite jobSite,
-                      String siteName,
-                      String siteToParse,
-                      String urlPrefix,
-                      String[] jobBox,
-                      String[] titleBox,
-                      String[] companyData,
-                      String[] descriptionData,
-                      String[] dateData) {
+    public void parse(JobSite jobSite) {
 
-        Document doc = getDoc(siteToParse);
-        Elements jobBlocks = getJobBlocks(jobSite, doc, jobBox);
+        Document doc = getDoc(jobSite.getSiteUrl());
+        Elements jobBlocks = getJobBlocks(jobSite, doc);
 
         for (Element job : jobBlocks) {
-            Elements titleBlock = getTitleBlock(jobSite, job, titleBox);
-            String url = urlPrefix + titleBlock.attr("href");
+            Elements titleBlock = getTitleBlock(jobSite, job);
+            String url = jobSite.getUrlPrefix() + titleBlock.attr("href");
             String title = getTitle(titleBlock);
-            String description = job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
-            String company = getCompany(jobSite, job, url, companyData);
-            LocalDateTime date = getDate(jobSite, url, dateData, titleBlock, job);
+            String description = getDescription(jobSite, job);
+            String company = getCompany(jobSite, job, url);
+            LocalDateTime date = getDate(jobSite, job, url, titleBlock);
 
-            Job parsedJob = new Job(title, description, company, siteName, url, date);
+            Job parsedJob = new Job(title, description, company, jobSite.getSiteName(), url, date);
             dbService.save(parsedJob);
         }
-        LOGGER.info("Parsing of {} completed", siteName);
+        LOGGER.info("Parsing of {} completed", jobSite.getSiteName());
     }
 
-    private Document getDoc(String siteToParse) {
-        Document doc;
+    private Document getDoc(String siteUrl) {
         try {
-            doc = Jsoup.connect(siteToParse).userAgent("Mozilla").timeout(0).get();
+            return Jsoup.connect(siteUrl).userAgent("Mozilla").timeout(0).get();
         } catch (IOException e) {
-            LOGGER.error("Connecting to {} failed", siteToParse);
-            throw new RuntimeException("Connection failed");
+            LOGGER.error("Connecting to {} failed", siteUrl);
+            throw new RuntimeException("Connection failed to " + siteUrl);
         }
-        return doc;
     }
 
-    private Elements getJobBlocks(JobSite jobSite, Document doc, String[] jobBox) {
-        Elements jobBlocks;
+    private Elements getJobBlocks(JobSite jobSite, Document doc) {
+        String[] jobBox = jobSite.getJobBox();
         if (jobSite instanceof WorkUa) {
-            jobBlocks = doc.getElementsByAttributeValueStarting(jobBox[0], jobBox[1]);
+            return doc.getElementsByAttributeValueStarting(jobBox[0], jobBox[1]);
         } else if (jobSite instanceof RabotaUa) {
-            jobBlocks = getJobBlocksForRabotaUa(doc, jobBox);
+            return getJobBlocksForRabotaUa(doc, jobBox);
         } else {
-            jobBlocks = doc.getElementsByAttributeValue(jobBox[0], jobBox[1]);
+            return doc.getElementsByAttributeValue(jobBox[0], jobBox[1]);
         }
-        return jobBlocks;
     }
 
     private Elements getJobBlocksForRabotaUa(Document doc, String[] jobBox) {
@@ -90,14 +79,13 @@ public class Parser {
         return jobBlocks;
     }
 
-    private Elements getTitleBlock(JobSite jobSite, Element job, String[] titleBox) {
-        Elements titleBlock;
+    private Elements getTitleBlock(JobSite jobSite, Element job) {
+        String[] titleBox = jobSite.getTitleBox();
         if (jobSite instanceof WorkUa) {
-            titleBlock = job.getElementsByTag("a");
+            return job.getElementsByTag("a");
         } else {
-            titleBlock = job.getElementsByAttributeValue(titleBox[0], titleBox[1]);
+            return job.getElementsByAttributeValue(titleBox[0], titleBox[1]);
         }
-        return titleBlock;
     }
 
     private String getTitle(Elements titleBlock) {
@@ -108,24 +96,28 @@ public class Parser {
         return title;
     }
 
-    private LocalDateTime getDate(JobSite jobSite, String url, String[] dateData, Elements titleBlock, Element job) {
-        LocalDateTime date;
+    private String getDescription(JobSite jobSite, Element job) {
+        String[] descriptionData = jobSite.getDescriptionData();
+        return job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
+    }
+
+    private LocalDateTime getDate(JobSite jobSite, Element job, String url, Elements titleBlock) {
+        String[] dateData = jobSite.getDateData();
         String dateLine;
         if (jobSite instanceof DouUa) {
             Document dateDoc = getDoc(url);
             dateLine = dateDoc.getElementsByAttributeValue(dateData[0], dateData[1]).text();
-            date = getDateByLine(jobSite, dateLine);
+            return getDateByLine(jobSite, dateLine);
         } else if (jobSite instanceof RabotaUa) {
-            date = getDateForRabotaUa(url);
+            return getDateForRabotaUa(url);
         } else {
             if (jobSite instanceof WorkUa) {
                 dateLine = titleBlock.attr("title");
             } else {
                 dateLine = job.getElementsByAttributeValue(dateData[0], dateData[1]).text();
             }
-            date = getDateByLine(jobSite, dateLine);
+            return getDateByLine(jobSite, dateLine);
         }
-        return date;
     }
 
     private LocalDateTime getDateByLine(JobSite jobSite, String dateLine) {
@@ -133,7 +125,7 @@ public class Parser {
         int year;
         int month;
         int day;
-        String split = getSplit(jobSite);
+        String split = jobSite.getSplit();
         if (jobSite instanceof JobsUa) {
             dateLine = dateLine.substring(0, 10);
         }
@@ -152,9 +144,7 @@ public class Parser {
         if (jobSite instanceof DouUa || jobSite instanceof HeadHunterUa) {
             month = MonthsTools.MONTHS.get(dateParts[1].toLowerCase());
         } else month = Integer.parseInt(dateParts[1]);
-        LocalDateTime ldt = LocalDate.of(year, month, day).atTime(getTime());
-        LOGGER.info("LocalDateTime: " + ldt);
-        return ldt;
+        return LocalDate.of(year, month, day).atTime(getTime());
     }
 
     private LocalDateTime getDateForRabotaUa(String url) {
@@ -200,36 +190,21 @@ public class Parser {
             month = Integer.parseInt(dateParts[1]);
             day = Integer.parseInt(dateParts[2]);
         }
-        LocalDateTime ldt = LocalDate.of(year, month, day).atTime(getTime());
-        LOGGER.debug("LocalDateTime: " + ldt);
-        return ldt;
+        return LocalDate.of(year, month, day).atTime(getTime());
     }
 
     private LocalTime getTime() {
         return LocalTime.now(ZoneId.of("Europe/Athens"));
     }
 
-    private String getCompany(JobSite jobSite, Element job, String url, String[] companyData) {
-        String company = "";
+    private String getCompany(JobSite jobSite, Element job, String url) {
+        String[] companyData = jobSite.getCompanyData();
         if (jobSite instanceof JobsUa || jobSite instanceof WorkUa) {
             Document jobDoc = getDoc(url);
             Elements companyBlock = jobDoc.getElementsByAttributeValue(companyData[0], companyData[1]);
-            for (Element e : companyBlock) {
-                company = e.getElementsByTag("a").first().text();
-            }
+            return companyBlock.get(0).getElementsByTag("a").first().text();
         } else {
-            company = job.getElementsByAttributeValue(companyData[0], companyData[1]).text();
+            return job.getElementsByAttributeValue(companyData[0], companyData[1]).text();
         }
-        return company;
-    }
-
-    private String getSplit(JobSite jobSite) {
-        String split;
-        if (jobSite instanceof HeadHunterUa) {
-            split = "\u00a0";
-        } else if (jobSite instanceof DouUa) {
-            split = " ";
-        } else split = "\\.";
-        return split;
     }
 }

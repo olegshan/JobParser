@@ -13,17 +13,53 @@ public class RabotaUa implements JobSite {
     @Autowired
     private Parser parser;
 
-    private static final String SITE = "Rabota.ua";
-    private static final String SITE_TO_PARSE = "http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2";
+    private static final String SITE_NAME = "Rabota.ua";
+    private static final String SITE_URL = "http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2";
     private static final String URL_PREFIX = "http://rabota.ua";
     private static final String[] JOB_BOX = {"class", "v f h", "v h", "v"};
     private static final String[] TITLE_BOX = {"class", "t"};
     private static final String[] COMPANY_DATA = {"class", "rua-p-c-default"};
     private static final String[] DESCRIPTION_DATA = {"class", "d"};
     private static final String[] DATE_DATA = {"", ""};
+    private static final String SPLIT = "";
 
     public void parse() {
-        parser.parse(this, SITE, SITE_TO_PARSE, URL_PREFIX, JOB_BOX, TITLE_BOX,
-                COMPANY_DATA, DESCRIPTION_DATA, DATE_DATA);
+        parser.parse(this);
+    }
+
+    public String getSiteName() {
+        return SITE_NAME;
+    }
+
+    public String getSiteUrl() {
+        return SITE_URL;
+    }
+
+    public String getUrlPrefix() {
+        return URL_PREFIX;
+    }
+
+    public String[] getJobBox() {
+        return JOB_BOX;
+    }
+
+    public String[] getTitleBox() {
+        return TITLE_BOX;
+    }
+
+    public String[] getCompanyData() {
+        return COMPANY_DATA;
+    }
+
+    public String[] getDescriptionData() {
+        return DESCRIPTION_DATA;
+    }
+
+    public String[] getDateData() {
+        return DATE_DATA;
+    }
+
+    public String getSplit() {
+        return SPLIT;
     }
 }

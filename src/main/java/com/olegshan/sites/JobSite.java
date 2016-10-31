@@ -6,4 +6,22 @@ package com.olegshan.sites;
 public interface JobSite {
 
     void parse();
+
+    String getSiteName();
+
+    String getSiteUrl();
+
+    String getUrlPrefix();
+
+    String[] getJobBox();
+
+    String[] getTitleBox();
+
+    String[] getCompanyData();
+
+    String[] getDescriptionData();
+
+    String[] getDateData();
+
+    String getSplit();
 }
