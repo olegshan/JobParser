@@ -136,7 +136,7 @@ public class Parser {
         MonthsTools.removeZero(dateParts);
         day = Integer.parseInt(dateParts[0]);
         if (jobSite instanceof HeadHunterUa) {
-            year = LocalDate.now().getYear();
+            year = LocalDate.now(ZoneId.of("Europe/Athens")).getYear();
         } else year = Integer.parseInt(dateParts[2]);
         if (jobSite instanceof WorkUa) {
             year = year + 2000;
@@ -150,12 +150,12 @@ public class Parser {
     private LocalDateTime getDateForRabotaUa(String url) {
         /*
         * There are several problems here.
-        * First: there are two types of date tags, used on the jobSite on different pages: "d-date" and "datePosted".
+        * First: there are two types of date tags, used on rabota.ua on different pages: "d-date" and "datePosted".
         * Second: sometimes date format is dd.mm.yyyy and sometimes — yyyy-mm-dd.
         * Third: sometimes there is no date at all.
         */
         Document dateDoc = getDoc(url);
-        String dateLine = "";
+        String dateLine;
         String[] dateParts;
         int year;
         int month;
@@ -163,9 +163,7 @@ public class Parser {
 
         Elements dateElements = dateDoc.getElementsByAttributeValue("id", "d-date");
         if (!dateElements.isEmpty()) {
-            for (Element e : dateElements) {
-                dateLine = e.getElementsByAttributeValue("class", "d-ph-value").text();
-            }
+            dateLine = dateElements.get(0).getElementsByAttributeValue("class", "d-ph-value").text();
         } else {
             dateLine = dateDoc.getElementsByAttributeValue("itemprop", "datePosted").text();
             if (dateLine.length() == 0) {
