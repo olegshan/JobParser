@@ -1,7 +1,7 @@
 package com.olegshan.parser;
 
 import com.olegshan.entity.Job;
-import com.olegshan.service.DbService;
+import com.olegshan.service.JobService;
 import com.olegshan.sites.*;
 import com.olegshan.tools.MonthsTools;
 import org.jsoup.Jsoup;
@@ -27,7 +27,7 @@ public class Parser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Parser.class);
     @Autowired
-    private DbService dbService;
+    private JobService jobService;
 
     public void parse(JobSite jobSite) {
 
@@ -43,7 +43,7 @@ public class Parser {
             LocalDateTime date = getDate(jobSite, job, url, titleBlock);
 
             Job parsedJob = new Job(title, description, company, jobSite.getSiteName(), url, date);
-            dbService.save(parsedJob);
+            jobService.save(parsedJob);
         }
         LOGGER.info("Parsing of {} completed", jobSite.getSiteName());
     }

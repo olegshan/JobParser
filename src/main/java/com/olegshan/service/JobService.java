@@ -13,9 +13,9 @@ import java.time.LocalDate;
  * Created by olegshan on 26.10.2016.
  */
 @Service
-public class DbService {
+public class JobService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DbService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobService.class);
     @Autowired
     private JobRepository jobRepository;
 
