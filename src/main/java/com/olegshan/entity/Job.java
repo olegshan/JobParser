@@ -84,7 +84,7 @@ public class Job {
     }
 
     public String getDateToDisplay() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM");
         return date.format(formatter);
     }
 }
