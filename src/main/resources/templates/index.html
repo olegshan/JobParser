@@ -21,15 +21,32 @@
         </tr>
         </tbody>
     </table>
-    <div th:if="${jobs.size()} &gt; 40">
-        <div class="col-md-12 text-center">
-            <ul class="pagination pagination-lg pager" id="myPager"></ul>
+    <div class="row">
+        <div th:if="${jobs.getTotalPages() > 1}" class="form-group col-md-11 pagination-centered">
+            <ul class="pagination">
+                <li th:class="${jobs.getNumber() == 0} ? disabled">
+                    <a class="pageLink" th:href="@{/(page=1)}">&laquo;</a>
+                </li>
+                <li th:class="${jobs.getNumber() == 0} ? disabled">
+                    <a class="pageLink" th:href="@{/(page=${jobs.getNumber()})}">&larr;</a>
+                </li>
+                <li th:class="${jobs.getNumber() == (page - 1)} ? 'active pointer-disabled'"
+                    th:each="page : ${#numbers.sequence(pageBox.getFirstPage(), pageBox.getLastPage())}">
+                    <a class="pageLink" th:href="@{/(page=${page})}" th:text="${page}"></a>
+                </li>
+                <li th:class="${jobs.getNumber() + 1 == jobs.getTotalPages()} ? disabled">
+                    <a class="pageLink" th:href="@{/(page=${jobs.getNumber() + 2})}">&rarr;</a>
+                </li>
+                <li th:class="${jobs.getNumber() + 1 == jobs.getTotalPages()} ? disabled">
+                    <a class="pageLink" th:href="@{/(page=${jobs.getTotalPages()})}">&raquo;</a>
+                </li>
+            </ul>
         </div>
     </div>
     <div class="footer">
         <p>&copy; <a href="https://github.com/olegshan" target="_blank">olegshan.</a>
             Have any ideas for improvement?
-            <a href="https://github.com/olegshan/JobParser" target="_blank">Fell free to join.</a>
+            <a href="https://github.com/olegshan/JobParser" target="_blank">Feel free to join.</a>
         </p>
         <p><a href="/about">About jParser</a></p>
     </div>

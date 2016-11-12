@@ -5,6 +5,8 @@ import com.olegshan.repository.JobRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,6 +18,7 @@ import java.time.LocalDate;
 public class JobService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobService.class);
+
     @Autowired
     private JobRepository jobRepository;
 
@@ -41,5 +44,9 @@ public class JobService {
             jobRepository.save(job);
             LOGGER.info("Job '{}', {} updated", job.getTitle(), job.getUrl());
         }
+    }
+
+    public Page<Job> getJobs(PageRequest request) {
+        return jobRepository.findAll(request);
     }
 }
