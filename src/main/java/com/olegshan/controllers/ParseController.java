@@ -34,7 +34,7 @@ public class ParseController {
         PageBox pageBox = new PageBox(jobs.getTotalPages(), jobs.getNumber());
 
         modelAndView.addObject("jobs", jobs);
-        modelAndView.addObject("pageBox", pageBox);
+        modelAndView.addObject("pageBox", pageBox.getPageBox());
 
         return modelAndView;
     }

@@ -13,11 +13,9 @@ public class PageBox {
 
         this.totalPages = totalPages;
         this.currentPage = currentPage;
-
-        getPageBox();
     }
 
-    private void getPageBox() {
+    public PageBox getPageBox() {
         int halfBoxSize = BUTTONS_TO_SHOW / 2;
 
         if (totalPages <= BUTTONS_TO_SHOW) {
@@ -40,6 +38,8 @@ public class PageBox {
             setFirstPage(currentPage - halfBoxSize);
             setLastPage(currentPage + halfBoxSize);
         }
+
+        return this;
     }
 
     public int getFirstPage() {
