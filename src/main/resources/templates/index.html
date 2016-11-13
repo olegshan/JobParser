@@ -2,47 +2,42 @@
       xmlns:th="http://www.w3.org/1999/xhtml">
 
 <div layout:fragment="content">
-    <table class="table">
-        <tbody id="tableBody">
-        <tr data-th-each="job : ${jobs}">
-            <td class="job">
-                <a th:href="${job.url}" target="_blank">
-                    <h2>
-                        <small data-th-text="${job.title}"></small>
-                    </h2>
-                </a>
-                <p data-th-text="${job.description}"></p>
-                <div class="under">
-                    <span data-th-text="${job.dateToDisplay}"></span>
-                    <mark data-th-text="${job.company}"></mark>
-                    <span data-th-text="${job.source}"></span>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div class="row">
-        <div th:if="${jobs.getTotalPages() > 1}" class="form-group col-md-11 pagination-centered">
-            <ul class="pagination">
-                <li th:class="${jobs.getNumber() == 0} ? disabled">
-                    <a class="pageLink" th:href="@{/(page=1)}">&laquo;</a>
-                </li>
-                <li th:class="${jobs.getNumber() == 0} ? disabled">
-                    <a class="pageLink" th:href="@{/(page=${jobs.getNumber()})}">&larr;</a>
-                </li>
-                <li th:class="${jobs.getNumber() == (page - 1)} ? 'active pointer-disabled'"
-                    th:each="page : ${#numbers.sequence(pageBox.getFirstPage(), pageBox.getLastPage())}">
-                    <a class="pageLink" th:href="@{/(page=${page})}" th:text="${page}"></a>
-                </li>
-                <li th:class="${jobs.getNumber() + 1 == jobs.getTotalPages()} ? disabled">
-                    <a class="pageLink" th:href="@{/(page=${jobs.getNumber() + 2})}">&rarr;</a>
-                </li>
-                <li th:class="${jobs.getNumber() + 1 == jobs.getTotalPages()} ? disabled">
-                    <a class="pageLink" th:href="@{/(page=${jobs.getTotalPages()})}">&raquo;</a>
-                </li>
-            </ul>
+
+    <div class="jobBlock" data-th-each="job : ${jobs}">
+        <a th:href="${job.url}" target="_blank">
+            <h2>
+                <small data-th-text="${job.title}"></small>
+            </h2>
+        </a>
+        <p data-th-text="${job.description}"></p>
+        <div class="under">
+            <span data-th-text="${job.dateToDisplay}"></span>
+            <mark data-th-text="${job.company}"></mark>
+            <span data-th-text="${job.source}"></span>
         </div>
     </div>
+
+    <div th:if="${jobs.getTotalPages() > 1}" class="text-center">
+        <ul class="pagination">
+            <li th:class="${jobs.getNumber() == 0} ? disabled">
+                <a class="pageLink" th:href="@{/(page=1)}">&laquo;</a>
+            </li>
+            <li th:class="${jobs.getNumber() == 0} ? disabled">
+                <a class="pageLink" th:href="@{/(page=${jobs.getNumber()})}">&larr;</a>
+            </li>
+            <li th:class="${jobs.getNumber() == (page - 1)} ? 'active pointer-disabled'"
+                th:each="page : ${#numbers.sequence(pageBox.getFirstPage(), pageBox.getLastPage())}">
+                <a class="pageLink" th:href="@{/(page=${page})}" th:text="${page}"></a>
+            </li>
+            <li th:class="${jobs.getNumber() + 1 == jobs.getTotalPages()} ? disabled">
+                <a class="pageLink" th:href="@{/(page=${jobs.getNumber() + 2})}">&rarr;</a>
+            </li>
+            <li th:class="${jobs.getNumber() + 1 == jobs.getTotalPages()} ? disabled">
+                <a class="pageLink" th:href="@{/(page=${jobs.getTotalPages()})}">&raquo;</a>
+            </li>
+        </ul>
+    </div>
+
     <div class="footer">
         <p>&copy; <a href="https://github.com/olegshan" target="_blank">olegshan.</a>
             Have any ideas for improvement?
@@ -50,5 +45,7 @@
         </p>
         <p><a href="/about">About jParser</a></p>
     </div>
+
 </div>
+
 </html>

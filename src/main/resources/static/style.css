@@ -1,17 +1,14 @@
+
 .logo {
-    margin: 20px 0 40px 10px;
+    margin: 30px 0 40px 0;
 }
 
 .logo h1, .logo span {
     display: inline-block;
 }
 
-.logo h1 {
-    margin-bottom: 0;
-}
-
 .logo h2 {
-    margin-top: 2px;
+    margin-top: -8px;
     font-size: 14px;
 }
 
@@ -31,14 +28,10 @@
     float: none
 }
 
+.jobBlock, .pagination {
+    margin-top: 35px;
+}
+
 .footer {
-    margin: 40px 0 40px 10px;
-}
-
-.table, .table td {
-    border: hidden;
-}
-
-.error, .about {
-    margin-left: 10px;
+    margin: 30px 0 30px 0;
 }
