@@ -19,21 +19,24 @@
 
     <div th:if="${jobs.getTotalPages() > 1}" class="text-center">
         <ul class="pagination">
-            <li th:class="${jobs.getNumber() == 0} ? disabled">
-                <a class="pageLink" th:href="@{/(page=1)}">&laquo;</a>
+            <li>
+                <a th:if="not ${jobs.getNumber() == 0}" class="pageLink" th:href="@{/(page=1)}">&laquo;</a>
             </li>
-            <li th:class="${jobs.getNumber() == 0} ? disabled">
-                <a class="pageLink" th:href="@{/(page=${jobs.getNumber()})}">&larr;</a>
+            <li>
+                <a th:if="not ${jobs.getNumber() == 0}" class="pageLink"
+                   th:href="@{/(page=${jobs.getNumber()})}">&larr;</a>
             </li>
             <li th:class="${jobs.getNumber() == (page - 1)} ? 'active pointer-disabled'"
                 th:each="page : ${#numbers.sequence(pageBox.getFirstPage(), pageBox.getLastPage())}">
                 <a class="pageLink" th:href="@{/(page=${page})}" th:text="${page}"></a>
             </li>
-            <li th:class="${jobs.getNumber() + 1 == jobs.getTotalPages()} ? disabled">
-                <a class="pageLink" th:href="@{/(page=${jobs.getNumber() + 2})}">&rarr;</a>
+            <li>
+                <a th:if="not ${jobs.getNumber() + 1 == jobs.getTotalPages()}" class="pageLink"
+                   th:href="@{/(page=${jobs.getNumber() + 2})}">&rarr;</a>
             </li>
-            <li th:class="${jobs.getNumber() + 1 == jobs.getTotalPages()} ? disabled">
-                <a class="pageLink" th:href="@{/(page=${jobs.getTotalPages()})}">&raquo;</a>
+            <li>
+                <a th:if="not ${jobs.getNumber() + 1 == jobs.getTotalPages()}" class="pageLink"
+                   th:href="@{/(page=${jobs.getTotalPages()})}">&raquo;</a>
             </li>
         </ul>
     </div>
