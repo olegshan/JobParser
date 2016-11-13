@@ -28,6 +28,10 @@
     float: none
 }
 
+.jobBlock {
+    word-wrap: break-word;
+}
+
 .jobBlock, .pagination {
     margin-top: 35px;
 }
