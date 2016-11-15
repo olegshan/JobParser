@@ -20,12 +20,9 @@ import org.springframework.web.servlet.ModelAndView;
 public class ParseController {
 
     private static final int PAGE_SIZE = 40;
-    private JobService jobService;
 
     @Autowired
-    public ParseController(JobService jobService) {
-        this.jobService = jobService;
-    }
+    JobService jobService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView showJobs(@RequestParam(value = "page", required = false) Integer page) {
