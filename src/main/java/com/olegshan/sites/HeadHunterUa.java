@@ -1,7 +1,7 @@
 package com.olegshan.sites;
 
-import com.olegshan.parser.Parser;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.olegshan.parser.job.HeadHunterUaJobParser;
+import com.olegshan.parser.job.JobParser;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,10 +9,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class HeadHunterUa implements JobSite {
-
-    @Autowired
-    private Parser parser;
-
     private static final String SITE_NAME = "HeadHunter.ua";
     private static final String SITE_URL = "https://hh.ua/search/vacancy?text=java&area=115";
     private static final String URL_PREFIX = "";
@@ -22,10 +18,6 @@ public class HeadHunterUa implements JobSite {
     private static final String[] DESCRIPTION_DATA = {"data-qa", "vacancy-serp__vacancy_snippet_requirement"};
     private static final String[] DATE_DATA = {"data-qa", "vacancy-serp__vacancy-date"};
     private static final String SPLIT = "\u00a0";
-
-    public void parse() {
-        parser.parse(this);
-    }
 
     public String getSiteName() {
         return SITE_NAME;
@@ -61,5 +53,10 @@ public class HeadHunterUa implements JobSite {
 
     public String getSplit() {
         return SPLIT;
+    }
+
+    @Override
+    public JobParser getParser() {
+        return new HeadHunterUaJobParser(this);
     }
 }
