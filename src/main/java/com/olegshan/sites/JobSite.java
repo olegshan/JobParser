@@ -1,11 +1,11 @@
 package com.olegshan.sites;
 
+import com.olegshan.parser.job.JobParser;
+
 /**
  * Created by olegshan on 28.09.2016.
  */
 public interface JobSite {
-
-    void parse();
 
     String getSiteName();
 
@@ -24,4 +24,8 @@ public interface JobSite {
     String[] getDateData();
 
     String getSplit();
+
+    default JobParser getParser() {
+        return new JobParser(this);
+    }
 }
