@@ -11,7 +11,7 @@ public class MonthsTools {
     public static final Map<String, Integer> MONTHS = new HashMap<>();
 
     static {
-        MONTHS.put("січня", 1); //TODO: Maybe read from property file
+        MONTHS.put("січня", 1);
         MONTHS.put("лютого", 2);
         MONTHS.put("березня", 3);
         MONTHS.put("квітня", 4);

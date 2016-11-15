@@ -1,7 +1,7 @@
 package com.olegshan.sites;
 
-import com.olegshan.parser.job.JobParser;
-import com.olegshan.parser.job.RabotaUaJobParser;
+import com.olegshan.parser.Parser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RabotaUa implements JobSite {
+
+    @Autowired
+    private Parser parser;
+
     private static final String SITE_NAME = "Rabota.ua";
     private static final String SITE_URL = "http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2";
     private static final String URL_PREFIX = "http://rabota.ua";
@@ -18,6 +22,10 @@ public class RabotaUa implements JobSite {
     private static final String[] DESCRIPTION_DATA = {"class", "d"};
     private static final String[] DATE_DATA = {"", ""};
     private static final String SPLIT = "";
+
+    public void parse() {
+        parser.parse(this);
+    }
 
     public String getSiteName() {
         return SITE_NAME;
@@ -53,10 +61,5 @@ public class RabotaUa implements JobSite {
 
     public String getSplit() {
         return SPLIT;
-    }
-
-    @Override
-    public JobParser getParser() {
-        return new RabotaUaJobParser(this);
     }
 }
