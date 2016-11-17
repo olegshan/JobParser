@@ -12,11 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
-/**
- * @author Taras Zubrei
- */
 @Service
 public class JobServiceImpl implements JobService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
     private JobRepository jobRepository;
 

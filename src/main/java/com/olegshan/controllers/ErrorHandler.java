@@ -4,9 +4,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-/**
- * Created by olegshan on 20.10.2016.
- */
 @ControllerAdvice
 public class ErrorHandler {
 

@@ -4,11 +4,10 @@ import com.olegshan.parser.job.DouUaJobParser;
 import com.olegshan.parser.job.JobParser;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by olegshan on 26.09.2016.
- */
+
 @Component
 public class DouUa implements JobSite {
+
     private static final String SITE_NAME = "Dou.ua";
     private static final String SITE_URL = "https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D1%97%D0%B2&category=Java";
     private static final String URL_PREFIX = "";

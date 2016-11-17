@@ -4,11 +4,9 @@ import com.olegshan.parser.job.HeadHunterUaJobParser;
 import com.olegshan.parser.job.JobParser;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by olegshan on 28.09.2016.
- */
 @Component
 public class HeadHunterUa implements JobSite {
+
     private static final String SITE_NAME = "HeadHunter.ua";
     private static final String SITE_URL = "https://hh.ua/search/vacancy?text=java&area=115";
     private static final String URL_PREFIX = "";

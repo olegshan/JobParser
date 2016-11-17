@@ -2,9 +2,6 @@ package com.olegshan.sites;
 
 import com.olegshan.parser.job.JobParser;
 
-/**
- * Created by olegshan on 28.09.2016.
- */
 public interface JobSite {
 
     String getSiteName();

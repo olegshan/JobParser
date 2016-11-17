@@ -4,11 +4,9 @@ import com.olegshan.parser.job.JobParser;
 import com.olegshan.parser.job.RabotaUaJobParser;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by olegshan on 26.09.2016.
- */
 @Component
 public class RabotaUa implements JobSite {
+
     private static final String SITE_NAME = "Rabota.ua";
     private static final String SITE_URL = "http://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2";
     private static final String URL_PREFIX = "http://rabota.ua";

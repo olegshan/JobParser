@@ -7,11 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * Created by olegshan on 06.10.2016.
- */
 @Component
 public class Performer {
+
     private List<JobSite> sites;
     private Parser parser;
 
