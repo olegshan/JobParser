@@ -1,7 +1,7 @@
 package com.olegshan.sites;
 
-import com.olegshan.parser.Parser;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.olegshan.parser.job.JobParser;
+import com.olegshan.parser.job.JobsUaJobParser;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,10 +9,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class JobsUa implements JobSite {
-
-    @Autowired
-    private Parser parser;
-
     private static final String SITE_NAME = "Jobs.ua";
     private static final String SITE_URL = "http://www.jobs.ua/vacancy/rabota-kiev-java/";
     private static final String URL_PREFIX = "http://www.jobs.ua";
@@ -22,10 +18,6 @@ public class JobsUa implements JobSite {
     private static final String[] DESCRIPTION_DATA = {"style", "padding-top:12px;"};
     private static final String[] DATE_DATA = {"style", "padding-top:10px"};
     private static final String SPLIT = "\\.";
-
-    public void parse() {
-        parser.parse(this);
-    }
 
     public String getSiteName() {
         return SITE_NAME;
@@ -61,5 +53,10 @@ public class JobsUa implements JobSite {
 
     public String getSplit() {
         return SPLIT;
+    }
+
+    @Override
+    public JobParser getParser() {
+        return new JobsUaJobParser(this);
     }
 }
