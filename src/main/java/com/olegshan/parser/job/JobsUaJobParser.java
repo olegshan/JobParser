@@ -11,10 +11,8 @@ import java.time.LocalDateTime;
 
 import static java.lang.Integer.parseInt;
 
-/**
- * @author Taras Zubrei
- */
 public class JobsUaJobParser extends JobParser {
+
     public JobsUaJobParser(JobSite jobSite) {
         super(jobSite);
     }
@@ -27,9 +25,10 @@ public class JobsUaJobParser extends JobParser {
     }
 
     @Override
-    public String getCompany(Element job, Document doc) {
+    public String getCompany(Element job, String url) {
         String[] companyData = jobSite.getCompanyData();
-        Elements companyBlock = doc.getElementsByAttributeValue(companyData[0], companyData[1]);
+        Document jobDoc = getDoc(url);
+        Elements companyBlock = jobDoc.getElementsByAttributeValue(companyData[0], companyData[1]);
         return companyBlock.get(0).getElementsByTag("a").first().text();
     }
 }

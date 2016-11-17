@@ -9,9 +9,6 @@ import java.time.LocalDateTime;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 
-/**
- * Created by olegshan on 24.09.2016.
- */
 @Entity
 @Data
 public class Job {
@@ -27,12 +24,15 @@ public class Job {
     private LocalDateTime date;
     private String dateToDisplay;
 
-    public Job(String url, String title, String description, String company, String source, LocalDateTime date) {
-        this.url = url;
+    public Job() {
+    }
+
+    public Job(String title, String description, String company, String source, String url, LocalDateTime date) {
         this.title = title;
         this.description = description;
         this.company = company;
         this.source = source;
+        this.url = url;
         this.date = date;
     }
 

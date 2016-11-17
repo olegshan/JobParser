@@ -12,10 +12,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-/**
- * @author Taras Zubrei
- */
 public class RabotaUaJobParser extends JobParser {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RabotaUaJobParser.class);
 
     public RabotaUaJobParser(JobSite jobSite) {
@@ -35,24 +33,34 @@ public class RabotaUaJobParser extends JobParser {
     }
 
     @Override
-    public LocalDateTime getDate(Element job, Document doc, Elements titleBlock) {
+    public String getTitle(Elements titleBlock) {
+        String title = titleBlock.text();
+        if (title.endsWith("Горячая")) {
+            title = title.substring(0, title.length() - "Горячая".length());
+        }
+        return title;
+    }
+
+    @Override
+    public LocalDateTime getDate(Element job, String url, Elements titleBlock) {
         /*
         * There are several problems here.
         * First: there are two types of date tags, used on rabota.ua on different pages: "d-date" and "datePosted".
         * Second: sometimes date format is dd.mm.yyyy and sometimes — yyyy-mm-dd.
         * Third: sometimes there is no date at all.
         */
+        Document dateDoc = getDoc(url);
         String dateLine;
         String[] dateParts;
         int year;
         int month;
         int day;
 
-        Elements dateElements = doc.getElementsByAttributeValue("id", "d-date");
+        Elements dateElements = dateDoc.getElementsByAttributeValue("id", "d-date");
         if (!dateElements.isEmpty()) {
             dateLine = dateElements.get(0).getElementsByAttributeValue("class", "d-ph-value").text();
         } else {
-            dateLine = doc.getElementsByAttributeValue("itemprop", "datePosted").text();
+            dateLine = dateDoc.getElementsByAttributeValue("itemprop", "datePosted").text();
             if (dateLine.length() == 0) {
                 //no date at all, sometimes it happens
                 LocalDateTime ldt = LocalDateTime.now(ZoneId.of("Europe/Athens"));
@@ -61,6 +69,7 @@ public class RabotaUaJobParser extends JobParser {
             }
         }
         try {
+            //for format dd.mm.yyyy
             dateParts = dateLine.split("\\.");
             MonthsTools.removeZero(dateParts);
             year = Integer.parseInt(dateParts[2]);
@@ -68,7 +77,7 @@ public class RabotaUaJobParser extends JobParser {
             day = Integer.parseInt(dateParts[0]);
 
         } catch (ArrayIndexOutOfBoundsException e) {
-
+            //for format yyyy-mm-dd
             dateParts = dateLine.split("-");
             MonthsTools.removeZero(dateParts);
             year = Integer.parseInt(dateParts[0]);
@@ -77,5 +86,4 @@ public class RabotaUaJobParser extends JobParser {
         }
         return LocalDate.of(year, month, day).atTime(getTime());
     }
-
 }

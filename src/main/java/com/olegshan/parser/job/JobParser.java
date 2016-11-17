@@ -1,26 +1,40 @@
 package com.olegshan.parser.job;
 
-import com.olegshan.sites.*;
+import com.olegshan.parser.Parser;
+import com.olegshan.sites.JobSite;
 import com.olegshan.tools.MonthsTools;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 
-import static java.lang.Integer.*;
+import static java.lang.Integer.parseInt;
 
-/**
- * @author Taras Zubrei
- */
 public class JobParser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Parser.class);
+
     protected JobSite jobSite;
 
     public JobParser(JobSite jobSite) {
         this.jobSite = jobSite;
+    }
+
+    public Document getDoc(String siteUrl) {
+        try {
+            return Jsoup.connect(siteUrl).userAgent("Mozilla").timeout(0).get();
+        } catch (IOException e) {
+            LOGGER.error("Connecting to {} failed", siteUrl);
+            throw new RuntimeException("Connection failed to " + siteUrl);
+        }
     }
 
     public Elements getJobBlocks(Document doc) {
@@ -31,15 +45,8 @@ public class JobParser {
         return job.getElementsByAttributeValue(jobSite.getTitleBox()[0], jobSite.getTitleBox()[1]);
     }
 
-    public String getCompany(Element job, Document doc) {
-        return job.getElementsByAttributeValue(jobSite.getCompanyData()[0], jobSite.getCompanyData()[1]).text();
-    }
     public String getTitle(Elements titleBlock) {
-        String title = titleBlock.text();
-        if (title.endsWith("Горячая")) {
-            title = title.substring(0, title.length() - "Горячая".length());
-        }
-        return title;
+        return titleBlock.text();
     }
 
     public String getDescription(Element job) {
@@ -47,7 +54,11 @@ public class JobParser {
         return job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
     }
 
-    public LocalDateTime getDate(Element job, Document doc, Elements titleBlock) {
+    public String getCompany(Element job, String url) {
+        return job.getElementsByAttributeValue(jobSite.getCompanyData()[0], jobSite.getCompanyData()[1]).text();
+    }
+
+    public LocalDateTime getDate(Element job, String url, Elements titleBlock) {
         return getDateByLine(job.getElementsByAttributeValue(jobSite.getDateData()[0], jobSite.getDateData()[1]).text());
     }
 
@@ -60,5 +71,4 @@ public class JobParser {
     protected LocalTime getTime() {
         return LocalTime.now(ZoneId.of("Europe/Athens"));
     }
-
 }

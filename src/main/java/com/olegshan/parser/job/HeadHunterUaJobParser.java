@@ -9,10 +9,8 @@ import java.time.ZoneId;
 
 import static java.lang.Integer.parseInt;
 
-/**
- * @author Taras Zubrei
- */
 public class HeadHunterUaJobParser extends JobParser {
+
     public HeadHunterUaJobParser(JobSite jobSite) {
         super(jobSite);
     }
@@ -21,8 +19,11 @@ public class HeadHunterUaJobParser extends JobParser {
     protected LocalDateTime getDateByLine(String dateLine) {
         String[] dateParts = dateLine.split(jobSite.getSplit());
         MonthsTools.removeZero(dateParts);
-        return LocalDate.of(LocalDate.now(ZoneId.of("Europe/Athens")).getYear(),
-                MonthsTools.MONTHS.get(dateParts[1].toLowerCase()),
-                parseInt(dateParts[0])).atTime(getTime());
+
+        int year = LocalDate.now(ZoneId.of("Europe/Athens")).getYear();
+        int month = MonthsTools.MONTHS.get(dateParts[1].toLowerCase());
+        int day = parseInt(dateParts[0]);
+
+        return LocalDate.of(year, month, day).atTime(getTime());
     }
 }

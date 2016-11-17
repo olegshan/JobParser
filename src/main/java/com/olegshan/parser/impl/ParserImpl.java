@@ -5,7 +5,6 @@ import com.olegshan.parser.Parser;
 import com.olegshan.parser.job.JobParser;
 import com.olegshan.service.JobService;
 import com.olegshan.sites.JobSite;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -14,16 +13,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
-/**
- * @author Taras Zubrei
- */
 @Component
 public class ParserImpl implements Parser {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Parser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParserImpl.class);
+
     private JobService jobService;
 
     @Autowired
@@ -34,7 +30,7 @@ public class ParserImpl implements Parser {
     public void parse(JobSite jobSite) {
 
         JobParser jobParser = jobSite.getParser();
-        Document doc = getDoc(jobSite.getSiteUrl());
+        Document doc = jobParser.getDoc(jobSite.getSiteUrl());
         Elements jobBlocks = jobParser.getJobBlocks(doc);
 
         for (Element job : jobBlocks) {
@@ -42,21 +38,12 @@ public class ParserImpl implements Parser {
             String url = jobSite.getUrlPrefix() + titleBlock.attr("href");
             String title = jobParser.getTitle(titleBlock);
             String description = jobParser.getDescription(job);
-            String company = jobParser.getCompany(job, doc);
-            LocalDateTime date = jobParser.getDate(job, doc, titleBlock);
+            String company = jobParser.getCompany(job, url);
+            LocalDateTime date = jobParser.getDate(job, url, titleBlock);
 
             Job parsedJob = new Job(title, description, company, jobSite.getSiteName(), url, date);
             jobService.save(parsedJob);
         }
         LOGGER.info("Parsing of {} completed", jobSite.getSiteName());
-    }
-
-    private Document getDoc(String siteUrl) {
-        try {
-            return Jsoup.connect(siteUrl).userAgent("Mozilla").timeout(0).get();
-        } catch (IOException e) {
-            LOGGER.error("Connecting to {} failed", siteUrl);
-            throw new RuntimeException("Connection failed to " + siteUrl);
-        }
     }
 }

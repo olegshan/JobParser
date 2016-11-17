@@ -10,10 +10,8 @@ import java.time.LocalDateTime;
 
 import static java.lang.Integer.parseInt;
 
-/**
- * @author Taras Zubrei
- */
 public class WorkUaJobParser extends JobParser {
+
     public WorkUaJobParser(JobSite jobSite) {
         super(jobSite);
     }
@@ -29,22 +27,22 @@ public class WorkUaJobParser extends JobParser {
     }
 
     @Override
-    public LocalDateTime getDate(Element job, Document doc, Elements titleBlock) {
+    public LocalDateTime getDate(Element job, String url, Elements titleBlock) {
         String dateLine = titleBlock.attr("title");
-        return getDateByLine(dateLine);
-    }
-
-    @Override
-    protected LocalDateTime getDateByLine(String dateLine) {
         String[] dateParts = dateLine.substring(dateLine.length() - 8).split(jobSite.getSplit());
-        return LocalDate.of(parseInt(dateParts[2]) + 2000, parseInt(dateParts[1]), parseInt(dateParts[0])).atTime(getTime());
+
+        int year = parseInt(dateParts[2] + 2000);
+        int month = parseInt(dateParts[1]);
+        int day = parseInt(dateParts[0]);
+
+        return LocalDate.of(year, month, day).atTime(getTime());
     }
 
     @Override
-    public String getCompany(Element job, Document doc) {
+    public String getCompany(Element job, String url) {
         String[] companyData = jobSite.getCompanyData();
-        Elements companyBlock = doc.getElementsByAttributeValue(companyData[0], companyData[1]);
-        return companyBlock.get(0).getElementsByTag("a").first().text();
-
+        Document jobDoc = getDoc(url);
+        Elements companyBlock = jobDoc.getElementsByAttributeValue(companyData[0], companyData[1]);
+        return companyBlock.get(0).getElementsByTag("a").text();
     }
 }
