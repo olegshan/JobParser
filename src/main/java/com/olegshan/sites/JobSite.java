@@ -1,6 +1,6 @@
 package com.olegshan.sites;
 
-import com.olegshan.parser.job.JobParser;
+import com.olegshan.parser.siteparsers.JobParser;
 
 public interface JobSite {
 

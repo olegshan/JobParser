@@ -1,4 +1,4 @@
-package com.olegshan.parser.job;
+package com.olegshan.parser.siteparsers;
 
 import com.olegshan.sites.JobSite;
 import org.jsoup.nodes.Document;
@@ -31,7 +31,7 @@ public class WorkUaJobParser extends JobParser {
         String dateLine = titleBlock.attr("title");
         String[] dateParts = dateLine.substring(dateLine.length() - 8).split(jobSite.getSplit());
 
-        int year = parseInt(dateParts[2] + 2000);
+        int year = parseInt(dateParts[2]) + 2000;
         int month = parseInt(dateParts[1]);
         int day = parseInt(dateParts[0]);
 

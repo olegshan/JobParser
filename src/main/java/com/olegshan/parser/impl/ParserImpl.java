@@ -2,7 +2,7 @@ package com.olegshan.parser.impl;
 
 import com.olegshan.entity.Job;
 import com.olegshan.parser.Parser;
-import com.olegshan.parser.job.JobParser;
+import com.olegshan.parser.siteparsers.JobParser;
 import com.olegshan.service.JobService;
 import com.olegshan.sites.JobSite;
 import org.jsoup.nodes.Document;

@@ -1,4 +1,4 @@
-package com.olegshan.parser.job;
+package com.olegshan.parser.siteparsers;
 
 import com.olegshan.parser.Parser;
 import com.olegshan.sites.JobSite;

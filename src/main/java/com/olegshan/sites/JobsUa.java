@@ -1,7 +1,7 @@
 package com.olegshan.sites;
 
-import com.olegshan.parser.job.JobParser;
-import com.olegshan.parser.job.JobsUaJobParser;
+import com.olegshan.parser.siteparsers.JobParser;
+import com.olegshan.parser.siteparsers.JobsUaJobParser;
 import org.springframework.stereotype.Component;
 
 @Component
