@@ -4,5 +4,7 @@ This app parses Java developer vacancies in Kyiv, Ukraine on four main Ukrainian
 
 Thanks to @Antrakos for help with implementation of Strategy pattern and common improvements.
 
+Please run it locally with following VM-option: -Dspring.profiles.active="dev"
+
 Live: http://www.jparser.info/
 
