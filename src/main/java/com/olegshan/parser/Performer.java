@@ -19,7 +19,7 @@ public class Performer {
         this.parser = parser;
     }
 
-    @Scheduled(cron = "0 0/1 7-23 * * *", zone = "Europe/Athens")
+    @Scheduled(cron = "0 1 7-23 * * *", zone = "Europe/Athens")
     public void perform() {
         for (JobSite jobSite : sites)
             parser.parse(jobSite);
