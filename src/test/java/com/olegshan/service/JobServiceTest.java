@@ -79,6 +79,7 @@ public class JobServiceTest extends AbstractTest {
     @Test
     public void jobsAreRetrievedFromDatabaseSortedByDateInDescendingOrder() throws Exception {
         Page<Job> jobs = jobService.getJobs(new PageRequest(CURRENT_PAGE, PAGE_SIZE, Sort.Direction.DESC, "date"));
+        assertEquals(PAGE_SIZE + " elements should be retrieved", PAGE_SIZE, jobs.getContent().size());
         assertTrue("The jobs should be sorted from new to old", isSorted(jobs));
     }
 
