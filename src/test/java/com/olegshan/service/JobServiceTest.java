@@ -80,17 +80,17 @@ public class JobServiceTest extends AbstractTest {
     public void jobsAreRetrievedFromDatabaseSortedByDateInDescendingOrder() throws Exception {
         Page<Job> jobs = jobService.getJobs(new PageRequest(CURRENT_PAGE, PAGE_SIZE, Sort.Direction.DESC, "date"));
         assertEquals(PAGE_SIZE + " elements should be retrieved", PAGE_SIZE, jobs.getContent().size());
-        assertTrue("The jobs should be sorted from new to old", isSorted(jobs));
+        assertTrue("The jobs should be sorted from new to old", isSortedDescending(jobs));
+    }
+
+    private boolean isSortedDescending(Page<Job> page) {
+        List<Job> list = page.getContent();
+        return IntStream.range(0, PAGE_SIZE - 1).allMatch(i -> list.get(i).getDate()
+                .compareTo(list.get(i + 1).getDate()) > 0);
     }
 
     @After
     public void tearDown() throws Exception {
         jobRepository.deleteAll();
-    }
-
-    private boolean isSorted(Page<Job> page) {
-        List<Job> list = page.getContent();
-        return IntStream.range(0, PAGE_SIZE - 1).allMatch(i -> list.get(i).getDate()
-                .compareTo(list.get(i + 1).getDate()) > 0);
     }
 }
