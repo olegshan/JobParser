@@ -3,6 +3,7 @@ package com.olegshan.service.impl;
 import com.olegshan.entity.Job;
 import com.olegshan.repository.JobRepository;
 import com.olegshan.service.JobService;
+import com.olegshan.social.JTwitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class JobServiceImpl implements JobService {
             update(job);
         } else {
             jobRepository.save(job);
+            JTwitter.tweet(job);
             LOGGER.info("New job '{}' on {} found", job.getTitle(), job.getSource());
         }
     }
@@ -42,6 +44,7 @@ public class JobServiceImpl implements JobService {
         LocalDate jobDate = job.getDate().toLocalDate();
         if (!jobFromDbDate.equals(jobDate)) {
             jobRepository.save(job);
+            JTwitter.tweet(job);
             LOGGER.info("Job '{}', {} updated", job.getTitle(), job.getUrl());
         }
     }
