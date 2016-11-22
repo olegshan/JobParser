@@ -6,5 +6,6 @@ Thanks to @Antrakos for help with implementation of Strategy pattern and common 
 
 Please run it locally with following VM-option: `-Dspring.profiles.active="dev"` and set Maven profile in your IDE to `dev`.
 
-Live: http://www.jparser.info/
+Live: http://www.jparser.info
 
+Twitter: https://twitter.com/jParser_info
