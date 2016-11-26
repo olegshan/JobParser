@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 
+import static java.lang.Integer.decode;
 import static java.lang.Integer.parseInt;
 
 public class JobParser {
@@ -29,12 +30,13 @@ public class JobParser {
     }
 
     public Document getDoc(String siteUrl) {
+        Document doc = null;
         try {
-            return Jsoup.connect(siteUrl).userAgent("Mozilla").timeout(0).get();
+            doc = Jsoup.connect(siteUrl).userAgent("Mozilla").timeout(0).get();
         } catch (IOException e) {
             LOGGER.error("Connecting to {} failed", siteUrl);
-            throw new RuntimeException("Connection failed to " + siteUrl);
         }
+        return doc;
     }
 
     public Elements getJobBlocks(Document doc) {

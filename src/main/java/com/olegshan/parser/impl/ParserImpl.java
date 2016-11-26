@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @Component
 public class ParserImpl implements Parser {
 
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ParserImpl.class);
 
     private JobService jobService;
@@ -31,19 +32,21 @@ public class ParserImpl implements Parser {
 
         JobParser jobParser = jobSite.getParser();
         Document doc = jobParser.getDoc(jobSite.getSiteUrl());
-        Elements jobBlocks = jobParser.getJobBlocks(doc);
 
-        for (Element job : jobBlocks) {
-            Elements titleBlock = jobParser.getTitleBlock(job);
-            String url = jobSite.getUrlPrefix() + titleBlock.attr("href");
-            String title = jobParser.getTitle(titleBlock);
-            String description = jobParser.getDescription(job);
-            String company = jobParser.getCompany(job, url);
-            LocalDateTime date = jobParser.getDate(job, url, titleBlock);
+        if (doc != null) {
+            Elements jobBlocks = jobParser.getJobBlocks(doc);
+            for (Element job : jobBlocks) {
+                Elements titleBlock = jobParser.getTitleBlock(job);
+                String url = jobSite.getUrlPrefix() + titleBlock.attr("href");
+                String title = jobParser.getTitle(titleBlock);
+                String description = jobParser.getDescription(job);
+                String company = jobParser.getCompany(job, url);
+                LocalDateTime date = jobParser.getDate(job, url, titleBlock);
 
-            Job parsedJob = new Job(title, description, company, jobSite.getSiteName(), url, date);
-            jobService.save(parsedJob);
+                Job parsedJob = new Job(title, description, company, jobSite.getSiteName(), url, date);
+                jobService.save(parsedJob);
+            }
+            LOGGER.info("Parsing of {} completed", jobSite.getSiteName());
         }
-        LOGGER.info("Parsing of {} completed", jobSite.getSiteName());
     }
 }
