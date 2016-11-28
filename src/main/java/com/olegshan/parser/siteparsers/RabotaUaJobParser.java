@@ -1,5 +1,6 @@
 package com.olegshan.parser.siteparsers;
 
+import com.olegshan.exception.ParserException;
 import com.olegshan.sites.JobSite;
 import com.olegshan.tools.MonthsTools;
 import org.jsoup.nodes.Document;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.regex.Pattern;
 
 public class RabotaUaJobParser extends JobParser {
 
@@ -21,7 +23,7 @@ public class RabotaUaJobParser extends JobParser {
     }
 
     @Override
-    public Elements getJobBlocks(Document doc) {
+    public Elements getJobBlocks(Document doc) throws ParserException {
         Elements jobBlocks = new Elements();
         for (int i = 1; i < jobSite.getJobBox().length; i++) {
             Elements jobElements = doc.getElementsByAttributeValue(jobSite.getJobBox()[0], jobSite.getJobBox()[i]);
@@ -29,6 +31,7 @@ public class RabotaUaJobParser extends JobParser {
                 jobBlocks.addAll(jobElements);
             }
         }
+        check(jobBlocks, "job blocks");
         return jobBlocks;
     }
 
@@ -42,7 +45,7 @@ public class RabotaUaJobParser extends JobParser {
     }
 
     @Override
-    public LocalDateTime getDate(Element job, String url, Elements titleBlock) {
+    public LocalDateTime getDate(Element job, String url, Elements titleBlock) throws ParserException {
         /*
         * There are several problems here.
         * First: there are two types of date tags, used on rabota.ua on different pages: "d-date" and "datePosted".
@@ -64,19 +67,19 @@ public class RabotaUaJobParser extends JobParser {
             if (dateLine.length() == 0) {
                 //no date at all, sometimes it happens
                 LocalDateTime ldt = LocalDateTime.now(ZoneId.of("Europe/Athens"));
-                LOGGER.debug("There was no date on Rabota.ua, return {}", ldt);
+                LOGGER.warn("There was no date on Rabota.ua, return {}", ldt);
                 return ldt;
             }
         }
-        try {
-            //for format dd.mm.yyyy
+
+        if (Pattern.matches("\\d{2}\\.\\d{2}\\.\\d{4}", dateLine)) {
             dateParts = dateLine.split("\\.");
             MonthsTools.removeZero(dateParts);
             year = Integer.parseInt(dateParts[2]);
             month = Integer.parseInt(dateParts[1]);
             day = Integer.parseInt(dateParts[0]);
 
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } else {
             //for format yyyy-mm-dd
             dateParts = dateLine.split("-");
             MonthsTools.removeZero(dateParts);

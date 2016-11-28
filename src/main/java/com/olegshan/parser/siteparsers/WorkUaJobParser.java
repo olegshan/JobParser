@@ -1,5 +1,6 @@
 package com.olegshan.parser.siteparsers;
 
+import com.olegshan.exception.ParserException;
 import com.olegshan.sites.JobSite;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,8 +18,10 @@ public class WorkUaJobParser extends JobParser {
     }
 
     @Override
-    public Elements getJobBlocks(Document doc) {
-        return doc.getElementsByAttributeValueStarting(jobSite.getJobBox()[0], jobSite.getJobBox()[1]);
+    public Elements getJobBlocks(Document doc) throws ParserException {
+        Elements jobBlocks = doc.getElementsByAttributeValueStarting(jobSite.getJobBox()[0], jobSite.getJobBox()[1]);
+        check(jobBlocks, "job blocks");
+        return jobBlocks;
     }
 
     @Override
@@ -27,9 +30,10 @@ public class WorkUaJobParser extends JobParser {
     }
 
     @Override
-    public LocalDateTime getDate(Element job, String url, Elements titleBlock) {
+    public LocalDateTime getDate(Element job, String url, Elements titleBlock) throws ParserException {
         String dateLine = titleBlock.attr("title");
         String[] dateParts = dateLine.substring(dateLine.length() - 8).split(jobSite.getSplit());
+        check(dateParts, "date parts");
 
         int year = parseInt(dateParts[2]) + 2000;
         int month = parseInt(dateParts[1]);
@@ -39,10 +43,11 @@ public class WorkUaJobParser extends JobParser {
     }
 
     @Override
-    public String getCompany(Element job, String url) {
+    public String getCompany(Element job, String url) throws ParserException {
         String[] companyData = jobSite.getCompanyData();
         Document jobDoc = getDoc(url);
         Elements companyBlock = jobDoc.getElementsByAttributeValue(companyData[0], companyData[1]);
+        check(companyBlock, "company block");
         return companyBlock.get(0).getElementsByTag("a").text();
     }
 }

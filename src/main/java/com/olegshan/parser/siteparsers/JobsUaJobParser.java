@@ -1,5 +1,6 @@
 package com.olegshan.parser.siteparsers;
 
+import com.olegshan.exception.ParserException;
 import com.olegshan.sites.JobSite;
 import com.olegshan.tools.MonthsTools;
 import org.jsoup.nodes.Document;
@@ -25,10 +26,13 @@ public class JobsUaJobParser extends JobParser {
     }
 
     @Override
-    public String getCompany(Element job, String url) {
+    public String getCompany(Element job, String url) throws ParserException {
         String[] companyData = jobSite.getCompanyData();
         Document jobDoc = getDoc(url);
         Elements companyBlock = jobDoc.getElementsByAttributeValue(companyData[0], companyData[1]);
-        return companyBlock.get(0).getElementsByTag("a").first().text();
+
+        String company = companyBlock.get(0).getElementsByTag("a").first().text();
+        check(company, "company");
+        return company;
     }
 }

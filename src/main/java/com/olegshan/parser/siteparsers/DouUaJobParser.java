@@ -1,5 +1,6 @@
 package com.olegshan.parser.siteparsers;
 
+import com.olegshan.exception.ParserException;
 import com.olegshan.sites.JobSite;
 import com.olegshan.tools.MonthsTools;
 import org.jsoup.nodes.Document;
@@ -18,12 +19,14 @@ public class DouUaJobParser extends JobParser {
     }
 
     @Override
-    public LocalDateTime getDate(Element job, String url, Elements titleBlock) {
+    public LocalDateTime getDate(Element job, String url, Elements titleBlock) throws ParserException {
 
         Document dateDoc = getDoc(url);
+
         String dateLine = dateDoc.getElementsByAttributeValue(
                 jobSite.getDateData()[0],
                 jobSite.getDateData()[1]).text();
+        check(dateLine, "date line");
         String[] dateParts = dateLine.split(jobSite.getSplit());
         MonthsTools.removeZero(dateParts);
 

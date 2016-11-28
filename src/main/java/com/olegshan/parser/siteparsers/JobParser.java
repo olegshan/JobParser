@@ -1,5 +1,6 @@
 package com.olegshan.parser.siteparsers;
 
+import com.olegshan.exception.ParserException;
 import com.olegshan.parser.Parser;
 import com.olegshan.sites.JobSite;
 import com.olegshan.tools.MonthsTools;
@@ -16,7 +17,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 
-import static java.lang.Integer.decode;
 import static java.lang.Integer.parseInt;
 
 public class JobParser {
@@ -29,22 +29,27 @@ public class JobParser {
         this.jobSite = jobSite;
     }
 
-    public Document getDoc(String siteUrl) {
-        Document doc = null;
+    public Document getDoc(String siteUrl) throws ParserException {
+        Document doc;
         try {
             doc = Jsoup.connect(siteUrl).userAgent("Mozilla").timeout(0).get();
         } catch (IOException e) {
             LOGGER.error("Connecting to {} failed", siteUrl);
+            throw new ParserException("Failed connecting to " + siteUrl);
         }
         return doc;
     }
 
-    public Elements getJobBlocks(Document doc) {
-        return doc.getElementsByAttributeValue(jobSite.getJobBox()[0], jobSite.getJobBox()[1]);
+    public Elements getJobBlocks(Document doc) throws ParserException {
+        Elements jobBlocks = doc.getElementsByAttributeValue(jobSite.getJobBox()[0], jobSite.getJobBox()[1]);
+        check(jobBlocks, "job blocks");
+        return jobBlocks;
     }
 
-    public Elements getTitleBlock(Element job) {
-        return job.getElementsByAttributeValue(jobSite.getTitleBox()[0], jobSite.getTitleBox()[1]);
+    public Elements getTitleBlock(Element job) throws ParserException {
+        Elements titleBlock = job.getElementsByAttributeValue(jobSite.getTitleBox()[0], jobSite.getTitleBox()[1]);
+        check(titleBlock, "title blocks");
+        return titleBlock;
     }
 
     public String getTitle(Elements titleBlock) {
@@ -53,15 +58,22 @@ public class JobParser {
 
     public String getDescription(Element job) {
         String[] descriptionData = jobSite.getDescriptionData();
-        return job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
+        String description = job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
+        return description;
     }
 
-    public String getCompany(Element job, String url) {
-        return job.getElementsByAttributeValue(jobSite.getCompanyData()[0], jobSite.getCompanyData()[1]).text();
+    public String getCompany(Element job, String url) throws ParserException {
+        String company = job.getElementsByAttributeValue(jobSite.getCompanyData()[0], jobSite.getCompanyData()[1]).text();
+        check(company, "company");
+        return company;
     }
 
-    public LocalDateTime getDate(Element job, String url, Elements titleBlock) {
-        return getDateByLine(job.getElementsByAttributeValue(jobSite.getDateData()[0], jobSite.getDateData()[1]).text());
+    public LocalDateTime getDate(Element job, String url, Elements titleBlock) throws ParserException {
+        String dateLine = job.getElementsByAttributeValue(jobSite.getDateData()[0],
+                jobSite.getDateData()[1]).text();
+        check(dateLine, "date");
+        return getDateByLine(job.getElementsByAttributeValue(jobSite.getDateData()[0],
+                jobSite.getDateData()[1]).text());
     }
 
     protected LocalDateTime getDateByLine(String dateLine) {
@@ -72,5 +84,12 @@ public class JobParser {
 
     protected LocalTime getTime() {
         return LocalTime.now(ZoneId.of("Europe/Athens"));
+    }
+
+    protected void check(Object o, String data) throws ParserException {
+        if (o == null || o.toString().length() == 0) {
+            LOGGER.error("Error getting {} from {}", data, jobSite.getSiteName());
+            throw new ParserException("Error getting " + data + " from " + jobSite.getSiteName());
+        }
     }
 }
