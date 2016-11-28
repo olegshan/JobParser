@@ -17,11 +17,14 @@ import java.time.LocalDate;
 public class JobServiceImpl implements JobService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
+
     private JobRepository jobRepository;
+    private JTwitter twitter;
 
     @Autowired
-    public JobServiceImpl(JobRepository jobRepository) {
+    public JobServiceImpl(JobRepository jobRepository, JTwitter twitter) {
         this.jobRepository = jobRepository;
+        this.twitter = twitter;
     }
 
     public void save(Job job) {
@@ -29,7 +32,7 @@ public class JobServiceImpl implements JobService {
             update(job);
         } else {
             jobRepository.save(job);
-            JTwitter.tweet(job);
+            twitter.tweet(job);
             LOGGER.info("New job '{}' on {} found", job.getTitle(), job.getSource());
         }
     }
@@ -44,7 +47,7 @@ public class JobServiceImpl implements JobService {
         LocalDate jobDate = job.getDate().toLocalDate();
         if (!jobFromDbDate.equals(jobDate)) {
             jobRepository.save(job);
-            JTwitter.tweet(job);
+            twitter.tweet(job);
             LOGGER.info("Job '{}', {} updated", job.getTitle(), job.getUrl());
         }
     }
