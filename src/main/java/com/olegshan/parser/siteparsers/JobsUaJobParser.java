@@ -32,7 +32,7 @@ public class JobsUaJobParser extends JobParser {
         Elements companyBlock = jobDoc.getElementsByAttributeValue(companyData[0], companyData[1]);
 
         String company = companyBlock.get(0).getElementsByTag("a").first().text();
-        check(company, "company");
+        check(company, "company", url);
         return company;
     }
 }

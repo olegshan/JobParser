@@ -26,7 +26,7 @@ public class DouUaJobParser extends JobParser {
         String dateLine = dateDoc.getElementsByAttributeValue(
                 jobSite.getDateData()[0],
                 jobSite.getDateData()[1]).text();
-        check(dateLine, "date line");
+        check(dateLine, "date line", url);
         String[] dateParts = dateLine.split(jobSite.getSplit());
         MonthsTools.removeZero(dateParts);
 

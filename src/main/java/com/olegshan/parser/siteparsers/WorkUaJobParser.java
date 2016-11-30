@@ -20,7 +20,7 @@ public class WorkUaJobParser extends JobParser {
     @Override
     public Elements getJobBlocks(Document doc) throws ParserException {
         Elements jobBlocks = doc.getElementsByAttributeValueStarting(jobSite.getJobBox()[0], jobSite.getJobBox()[1]);
-        check(jobBlocks, "job blocks");
+        check(jobBlocks, "job blocks", null);
         return jobBlocks;
     }
 
@@ -33,7 +33,7 @@ public class WorkUaJobParser extends JobParser {
     public LocalDateTime getDate(Element job, String url, Elements titleBlock) throws ParserException {
         String dateLine = titleBlock.attr("title");
         String[] dateParts = dateLine.substring(dateLine.length() - 8).split(jobSite.getSplit());
-        check(dateParts, "date parts");
+        check(dateParts, "date parts", url);
 
         int year = parseInt(dateParts[2]) + 2000;
         int month = parseInt(dateParts[1]);
@@ -47,7 +47,7 @@ public class WorkUaJobParser extends JobParser {
         String[] companyData = jobSite.getCompanyData();
         Document jobDoc = getDoc(url);
         Elements companyBlock = jobDoc.getElementsByAttributeValue(companyData[0], companyData[1]);
-        check(companyBlock, "company block");
+        check(companyBlock, "company block", url);
         return companyBlock.get(0).getElementsByTag("a").text();
     }
 }

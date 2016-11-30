@@ -31,7 +31,7 @@ public class RabotaUaJobParser extends JobParser {
                 jobBlocks.addAll(jobElements);
             }
         }
-        check(jobBlocks, "job blocks");
+        check(jobBlocks, "job blocks", null);
         return jobBlocks;
     }
 
@@ -42,6 +42,20 @@ public class RabotaUaJobParser extends JobParser {
             title = title.substring(0, title.length() - "Горячая".length());
         }
         return title;
+    }
+
+    @Override
+    public String getCompany(Element job, String url) throws ParserException {
+        String company = job.getElementsByAttributeValue(jobSite.getCompanyData()[0], jobSite.getCompanyData()[1]).text();
+        if (company.length() == 0) {
+            company = job.getElementsByAttributeValue("class", "s").text();
+            if (company.startsWith("Анонимный работодатель")) {
+                company = "Анонимный работодатель";
+            } else {
+                check(company, "company", url);
+            }
+        }
+        return company;
     }
 
     @Override
@@ -78,7 +92,6 @@ public class RabotaUaJobParser extends JobParser {
             year = Integer.parseInt(dateParts[2]);
             month = Integer.parseInt(dateParts[1]);
             day = Integer.parseInt(dateParts[0]);
-
         } else {
             //for format yyyy-mm-dd
             dateParts = dateLine.split("-");
