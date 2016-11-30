@@ -4,6 +4,7 @@ import com.olegshan.notifier.Notifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,8 @@ public class NotifierImpl implements Notifier {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NotifierImpl.class);
 
+    @Value("${spring.mail.username}")
+    private String recipient;
     private MailSender mailSender;
 
     @Autowired
@@ -23,7 +26,7 @@ public class NotifierImpl implements Notifier {
     public void notifyAdmin(String issue) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("***");
+        message.setTo(recipient);
         message.setSubject("jParser issue");
         message.setText(issue + "\n\nhttp://www.jparser.info");
 
