@@ -35,20 +35,20 @@ public class JobParser {
             doc = Jsoup.connect(siteUrl).userAgent("Mozilla").timeout(0).get();
         } catch (IOException e) {
             LOGGER.error("Connecting to {} failed", siteUrl);
-            throw new ParserException("Failed connecting to " + siteUrl);
+            throw new ParserException("Failed connecting to " + siteUrl + "\n" + e.getMessage());
         }
         return doc;
     }
 
     public Elements getJobBlocks(Document doc) throws ParserException {
         Elements jobBlocks = doc.getElementsByAttributeValue(jobSite.getJobBox()[0], jobSite.getJobBox()[1]);
-        check(jobBlocks, "job blocks");
+        check(jobBlocks, "job blocks", null);
         return jobBlocks;
     }
 
     public Elements getTitleBlock(Element job) throws ParserException {
         Elements titleBlock = job.getElementsByAttributeValue(jobSite.getTitleBox()[0], jobSite.getTitleBox()[1]);
-        check(titleBlock, "title blocks");
+        check(titleBlock, "title blocks", null);
         return titleBlock;
     }
 
@@ -64,14 +64,14 @@ public class JobParser {
 
     public String getCompany(Element job, String url) throws ParserException {
         String company = job.getElementsByAttributeValue(jobSite.getCompanyData()[0], jobSite.getCompanyData()[1]).text();
-        check(company, "company");
+        check(company, "company", url);
         return company;
     }
 
     public LocalDateTime getDate(Element job, String url, Elements titleBlock) throws ParserException {
         String dateLine = job.getElementsByAttributeValue(jobSite.getDateData()[0],
                 jobSite.getDateData()[1]).text();
-        check(dateLine, "date");
+        check(dateLine, "date", url);
         return getDateByLine(job.getElementsByAttributeValue(jobSite.getDateData()[0],
                 jobSite.getDateData()[1]).text());
     }
@@ -86,10 +86,11 @@ public class JobParser {
         return LocalTime.now(ZoneId.of("Europe/Athens"));
     }
 
-    protected void check(Object o, String data) throws ParserException {
+    protected void check(Object o, String data, String url) throws ParserException {
+        String jobUrl = url == null ? "" : url;
         if (o == null || o.toString().length() == 0) {
-            LOGGER.error("Error getting {} from {}", data, jobSite.getSiteName());
-            throw new ParserException("Error getting " + data + " from " + jobSite.getSiteName());
+            LOGGER.error("Error getting {} from {}, {}", data, jobSite.getSiteName(), jobUrl);
+            throw new ParserException("Error getting " + data + " from " + jobSite.getSiteName() + "\n" + jobUrl);
         }
     }
 }
