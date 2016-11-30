@@ -23,7 +23,7 @@ public class NotifierImpl implements Notifier {
     public void notifyAdmin(String issue) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("olegshan@gmail.com");
+        message.setTo("***");
         message.setSubject("jParser issue");
         message.setText(issue + "\n\nhttp://www.jparser.info");
 
