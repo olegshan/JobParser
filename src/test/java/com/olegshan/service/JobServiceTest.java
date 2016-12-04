@@ -3,9 +3,15 @@ package com.olegshan.service;
 import com.olegshan.AbstractTest;
 import com.olegshan.entity.Job;
 import com.olegshan.repository.JobRepository;
+import com.olegshan.social.JTwitter;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,8 +23,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import static java.time.LocalDateTime.now;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 public class JobServiceTest extends AbstractTest {
 
@@ -26,6 +35,10 @@ public class JobServiceTest extends AbstractTest {
     private static final int CURRENT_PAGE = 1;
     private static final int PAGE_SIZE = 5;
 
+    @Mock
+    private JTwitter mockTwitter;
+
+    @InjectMocks
     @Autowired
     private JobService jobService;
     @Autowired
@@ -34,11 +47,11 @@ public class JobServiceTest extends AbstractTest {
     @Before
     public void setUp() throws Exception {
         Job job;
-        Random random = new Random(20);
+        Random random = new Random();
         for (int i = 0; i < 10; i++) {
             //jobs are saved into database with random dates
             job = new Job("Title" + i, "Description" + i, "Company" + i, "Site" + i, JOB_URL + i,
-                    LocalDateTime.now(ZoneId.of("Europe/Athens")).minusDays(random.nextInt()));
+                    now(ZoneId.of("Europe/Athens")).minusDays(random.nextInt(20)));
             jobService.save(job);
         }
     }
@@ -56,6 +69,7 @@ public class JobServiceTest extends AbstractTest {
         job.setDate(newDate);
         job.setTitle("New title");
         jobService.save(job);
+        verify(mockTwitter).tweet(job);
 
         job = jobRepository.findOne(JOB_URL + 5);
         assertEquals("New title", job.getTitle());
@@ -70,6 +84,7 @@ public class JobServiceTest extends AbstractTest {
         assertEquals("Title7", job.getTitle());
         job.setTitle("New title");
         jobService.save(job);
+        verify(mockTwitter, never()).tweet(job);
 
         job = jobRepository.findOne(JOB_URL + 7);
         assertEquals("Title7", job.getTitle());
