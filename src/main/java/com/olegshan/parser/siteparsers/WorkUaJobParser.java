@@ -30,8 +30,8 @@ public class WorkUaJobParser extends JobParser {
     }
 
     @Override
-    public LocalDateTime getDate(Element job, String url, Elements titleBlock) throws ParserException {
-        String dateLine = titleBlock.attr("title");
+    public LocalDateTime getDate(Element job, String url) throws ParserException {
+        String dateLine = getTitleBlock(job).attr("title");
         String[] dateParts = dateLine.substring(dateLine.length() - 8).split(jobSite.getSplit());
         check(dateParts, "date parts", url);
 

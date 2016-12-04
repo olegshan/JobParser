@@ -46,7 +46,7 @@ public class ParserImpl implements Parser {
                 String title = jobParser.getTitle(titleBlock);
                 String description = jobParser.getDescription(job);
                 String company = jobParser.getCompany(job, url);
-                LocalDateTime date = jobParser.getDate(job, url, titleBlock);
+                LocalDateTime date = jobParser.getDate(job, url);
 
                 Job parsedJob = new Job(title, description, company, jobSite.getSiteName(), url, date);
                 jobService.save(parsedJob);
@@ -56,6 +56,4 @@ public class ParserImpl implements Parser {
             notifier.notifyAdmin(e.getMessage());
         }
     }
-
-
 }

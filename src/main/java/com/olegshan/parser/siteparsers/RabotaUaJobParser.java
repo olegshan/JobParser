@@ -59,7 +59,7 @@ public class RabotaUaJobParser extends JobParser {
     }
 
     @Override
-    public LocalDateTime getDate(Element job, String url, Elements titleBlock) throws ParserException {
+    public LocalDateTime getDate(Element job, String url) throws ParserException {
         /*
         * There are several problems here.
         * First: there are two types of date tags, used on rabota.ua on different pages: "d-date" and "datePosted".

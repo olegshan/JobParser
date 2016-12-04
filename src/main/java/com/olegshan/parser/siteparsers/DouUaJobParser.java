@@ -19,7 +19,7 @@ public class DouUaJobParser extends JobParser {
     }
 
     @Override
-    public LocalDateTime getDate(Element job, String url, Elements titleBlock) throws ParserException {
+    public LocalDateTime getDate(Element job, String url) throws ParserException {
 
         Document dateDoc = getDoc(url);
 
