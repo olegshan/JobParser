@@ -37,6 +37,6 @@ public class Job {
     }
 
     public String getDateToDisplay() {
-        return date.format(ofPattern("dd MMMM"));
+        return date.format(ofPattern("d MMMM"));
     }
 }
