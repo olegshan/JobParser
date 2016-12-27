@@ -42,7 +42,7 @@ public class ParserImpl implements Parser {
             for (Element job : jobBlocks) {
 
                 Elements titleBlock = jobParser.getTitleBlock(job);
-                String url = jobSite.getUrlPrefix() + titleBlock.attr("href");
+                String url = jobParser.getUrl(titleBlock);
                 String title = jobParser.getTitle(titleBlock);
                 String description = jobParser.getDescription(job);
                 String company = jobParser.getCompany(job, url);

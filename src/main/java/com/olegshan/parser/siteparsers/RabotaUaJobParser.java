@@ -23,46 +23,38 @@ public class RabotaUaJobParser extends JobParser {
     }
 
     @Override
-    public Elements getJobBlocks(Document doc) throws ParserException {
-        Elements jobBlocks = new Elements();
-        for (int i = 1; i < jobSite.getJobBox().length; i++) {
-            Elements jobElements = doc.getElementsByAttributeValue(jobSite.getJobBox()[0], jobSite.getJobBox()[i]);
-            if (jobElements != null && !jobElements.isEmpty()) {
-                jobBlocks.addAll(jobElements);
-            }
-        }
-        check(jobBlocks, "job blocks", null);
-        return jobBlocks;
+    public String getUrl(Elements titleBlock) {
+        return jobSite.getUrlPrefix() + titleBlock
+                .get(0)
+                .getElementsByTag("a")
+                .attr("href");
     }
 
-    @Override
-    public String getTitle(Elements titleBlock) {
-        String title = titleBlock.text();
-        if (title.endsWith("Горячая")) {
-            title = title.substring(0, title.length() - "Горячая".length());
-        }
-        return title;
+    public Elements getTitleBlock(Element job) throws ParserException {
+        Elements titleBlock = job.getElementsByAttributeValueStarting(jobSite.getTitleBox()[0], jobSite.getTitleBox()[1]);
+        check(titleBlock, "title blocks", null);
+        return titleBlock;
     }
 
     @Override
     public String getCompany(Element job, String url) throws ParserException {
-        String company = job.getElementsByAttributeValue(jobSite.getCompanyData()[0], jobSite.getCompanyData()[1]).text();
+        String company = job.getElementsByAttributeValueStarting(jobSite.getCompanyData()[0], jobSite.getCompanyData()[1]).text();
         if (company.length() == 0) {
-            company = job.getElementsByAttributeValue("class", "s").text();
-            if (company.startsWith("Анонимный работодатель")) {
-                company = "Анонимный работодатель";
-            } else {
-                check(company, "company", url);
-            }
+            company = "Анонимный работодатель";
         }
         return company;
+    }
+
+    public String getDescription(Element job) {
+        String[] descriptionData = jobSite.getDescriptionData();
+        return job.getElementsByAttributeValueStarting(descriptionData[0], descriptionData[1]).text();
     }
 
     @Override
     public LocalDateTime getDate(Element job, String url) throws ParserException {
         /*
         * There are several problems here.
-        * First: there are two types of date tags, used on rabota.ua on different pages: "d-date" and "datePosted".
+        * First: there are different types of date tags, used on rabota.ua on different pages
         * Second: sometimes date format is dd.mm.yyyy and sometimes — yyyy-mm-dd.
         * Third: sometimes there is no date at all.
         */
@@ -78,6 +70,9 @@ public class RabotaUaJobParser extends JobParser {
             dateLine = dateElements.get(0).getElementsByAttributeValue("class", "d-ph-value").text();
         } else {
             dateLine = dateDoc.getElementsByAttributeValue("itemprop", "datePosted").text();
+            if (dateLine.length() == 0) {
+                dateLine = dateDoc.getElementsByAttributeValueStarting("class", "f-date-holder").text();
+            }
             if (dateLine.length() == 0) {
                 //no date at all, sometimes it happens
                 LocalDateTime ldt = LocalDateTime.now(ZoneId.of("Europe/Athens"));

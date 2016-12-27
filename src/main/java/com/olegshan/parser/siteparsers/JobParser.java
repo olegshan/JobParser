@@ -40,6 +40,10 @@ public class JobParser {
         return doc;
     }
 
+    public String getUrl(Elements titleBlock) {
+        return jobSite.getUrlPrefix() + titleBlock.attr("href");
+    }
+
     public Elements getJobBlocks(Document doc) throws ParserException {
         Elements jobBlocks = doc.getElementsByAttributeValue(jobSite.getJobBox()[0], jobSite.getJobBox()[1]);
         check(jobBlocks, "job blocks", null);
@@ -58,8 +62,7 @@ public class JobParser {
 
     public String getDescription(Element job) {
         String[] descriptionData = jobSite.getDescriptionData();
-        String description = job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
-        return description;
+        return job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
     }
 
     public String getCompany(Element job, String url) throws ParserException {
