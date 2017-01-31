@@ -37,6 +37,12 @@ public class RabotaUaJobParser extends JobParser {
     }
 
     @Override
+    public String getDescription(Element job, String url) throws ParserException {
+        String[] descriptionData = jobSite.getDescriptionData();
+        return job.getElementsByAttributeValueStarting(descriptionData[0], descriptionData[1]).text();
+    }
+
+    @Override
     public String getCompany(Element job, String url) throws ParserException {
         String company = job.getElementsByAttributeValueStarting(jobSite.getCompanyData()[0], jobSite.getCompanyData()[1]).text();
         if (company.length() == 0) {
