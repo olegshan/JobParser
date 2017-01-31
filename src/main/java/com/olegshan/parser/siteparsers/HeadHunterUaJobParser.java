@@ -26,15 +26,4 @@ public class HeadHunterUaJobParser extends JobParser {
 
         return LocalDate.of(year, month, day).atTime(getTime());
     }
-
-    //in case we parse in January jobs of last December
-    private int getYear(int month) {
-        int year;
-        if (month > LocalDate.now(ZoneId.of("Europe/Athens")).getMonthValue()) {
-            year = LocalDate.now().getYear() - 1;
-        } else {
-            year = LocalDate.now(ZoneId.of("Europe/Athens")).getYear();
-        }
-        return year;
-    }
 }

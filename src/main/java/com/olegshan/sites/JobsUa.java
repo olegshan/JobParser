@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 public class JobsUa implements JobSite {
 
     private static final String SITE_NAME = "Jobs.ua";
-    private static final String SITE_URL = "http://www.jobs.ua/vacancy/rabota-kiev-java/";
-    private static final String URL_PREFIX = "http://www.jobs.ua";
-    private static final String[] JOB_BOX = {"class", "div_vac_list"};
-    private static final String[] TITLE_BOX = {"class", "jvac_view"};
-    private static final String[] COMPANY_DATA = {"class", "viewcontcenter"};
-    private static final String[] DESCRIPTION_DATA = {"style", "padding-top:12px;"};
-    private static final String[] DATE_DATA = {"style", "padding-top:10px"};
-    private static final String SPLIT = "\\.";
+    private static final String SITE_URL = "https://jobs.ua/vacancy/kiev/rabota-java";
+    private static final String URL_PREFIX = "";
+    private static final String[] JOB_BOX = {"class", "b-vacancy__item js-item_list"};
+    private static final String[] TITLE_BOX = {"class", "b-vacancy__top__title js-item_title"};
+    private static final String[] COMPANY_DATA = {"class", "b-vacancy__tech__item"};
+    private static final String[] DESCRIPTION_DATA = {"class", "b-vacancy-full__block b-text"};
+    private static final String[] DATE_DATA = {"class", "b-vacancy__tech__item b-vacancy__tech__item-top"};
+    private static final String SPLIT = " ";
 
     public String getSiteName() {
         return SITE_NAME;

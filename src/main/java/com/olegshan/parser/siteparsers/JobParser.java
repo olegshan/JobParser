@@ -60,7 +60,7 @@ public class JobParser {
         return titleBlock.text();
     }
 
-    public String getDescription(Element job) {
+    public String getDescription(Element job, String url) throws ParserException {
         String[] descriptionData = jobSite.getDescriptionData();
         return job.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
     }
@@ -87,6 +87,17 @@ public class JobParser {
 
     protected LocalTime getTime() {
         return LocalTime.now(ZoneId.of("Europe/Athens"));
+    }
+
+    //in case we parse in January jobs of last December. Needed for jobs.ua and hh.ua
+    protected int getYear(int month) {
+        int year;
+        if (month > LocalDate.now(ZoneId.of("Europe/Athens")).getMonthValue()) {
+            year = LocalDate.now().getYear() - 1;
+        } else {
+            year = LocalDate.now(ZoneId.of("Europe/Athens")).getYear();
+        }
+        return year;
     }
 
     protected void check(Object o, String data, String url) throws ParserException {

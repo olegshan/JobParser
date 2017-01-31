@@ -18,20 +18,44 @@ public class JobsUaJobParser extends JobParser {
         super(jobSite);
     }
 
-    @Override
-    protected LocalDateTime getDateByLine(String dateLine) {
-        String[] dateParts = dateLine.substring(0, 10).split(jobSite.getSplit());
-        MonthsTools.removeZero(dateParts);
-        return LocalDate.of(parseInt(dateParts[2]), parseInt(dateParts[1]), parseInt(dateParts[0])).atTime(getTime());
+    public Elements getJobBlocks(Document doc) throws ParserException {
+        Elements jobBlocks = doc.getElementsByAttributeValue(jobSite.getJobBox()[0], jobSite.getJobBox()[1]);
+        check(jobBlocks, "job blocks", null);
+
+        // ad block on jobs.ua has the same tags as the job blocks, so it should be removed
+        for (int i = 0; i < jobBlocks.size(); i++) {
+            if (jobBlocks.get(i).getElementsByAttributeValue("class", "b-city__title b-city__companies-title")
+                    .text().contains("VIP компании в Украине:")) {
+                jobBlocks.remove(i);
+            }
+        }
+        return jobBlocks;
     }
 
     @Override
-    public String getCompany(Element job, String url) throws ParserException {
-        String[] companyData = jobSite.getCompanyData();
-        Document jobDoc = getDoc(url);
-        Elements companyBlock = jobDoc.getElementsByAttributeValue(companyData[0], companyData[1]);
+    public String getDescription(Element job, String url) throws ParserException {
+        String[] descriptionData = jobSite.getDescriptionData();
+        Document descDoc = getDoc(url);
+        String description = descDoc.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
+        return description.length() > 250 ? description.substring(0, 250) + ("...") : description;
+    }
 
-        String company = companyBlock.get(0).getElementsByTag("a").first().text();
+    @Override
+    protected LocalDateTime getDateByLine(String dateLine) {
+        dateLine = dateLine.replaceAll("\u00a0", "").trim();
+        String[] dateParts = dateLine.trim().split(jobSite.getSplit());
+        MonthsTools.removeZero(dateParts);
+
+        int day = parseInt(dateParts[0]);
+        int month = MonthsTools.MONTHS.get(dateParts[1].toLowerCase());
+        int year = getYear(month);
+
+        return LocalDate.of(year, month, day).atTime(getTime());
+    }
+
+    public String getCompany(Element job, String url) throws ParserException {
+        String company = job.getElementsByAttributeValue(jobSite.getCompanyData()[0], jobSite.getCompanyData()[1])
+                .first().text();
         check(company, "company", url);
         return company;
     }

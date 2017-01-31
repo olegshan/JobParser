@@ -44,7 +44,7 @@ public class ParserImpl implements Parser {
                 Elements titleBlock = jobParser.getTitleBlock(job);
                 String url = jobParser.getUrl(titleBlock);
                 String title = jobParser.getTitle(titleBlock);
-                String description = jobParser.getDescription(job);
+                String description = jobParser.getDescription(job, url);
                 String company = jobParser.getCompany(job, url);
                 LocalDateTime date = jobParser.getDate(job, url);
 

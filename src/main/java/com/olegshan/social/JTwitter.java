@@ -8,10 +8,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class JTwitter {
 
+    private static final String CONSUMER_KEY = "1";
+    private static final String CONSUMER_SECRET = "1";
+    private static final String ACCESS_TOKEN = "1";
+    private static final String ACCESS_TOKEN_SECRET = "1";
+
+/*
     private static final String CONSUMER_KEY = System.getProperty("CKjP");
     private static final String CONSUMER_SECRET = System.getProperty("CSjP");
     private static final String ACCESS_TOKEN = System.getProperty("ATjP");
     private static final String ACCESS_TOKEN_SECRET = System.getProperty("ATSjP");
+*/
 
     private Twitter twitter;
 
