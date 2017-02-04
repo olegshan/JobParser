@@ -18,6 +18,7 @@ public class JobsUaJobParser extends JobParser {
         super(jobSite);
     }
 
+    @Override
     public Elements getJobBlocks(Document doc) throws ParserException {
         Elements jobBlocks = doc.getElementsByAttributeValue(jobSite.getJobBox()[0], jobSite.getJobBox()[1]);
         check(jobBlocks, "job blocks", null);
@@ -53,6 +54,7 @@ public class JobsUaJobParser extends JobParser {
         return LocalDate.of(year, month, day).atTime(getTime());
     }
 
+    @Override
     public String getCompany(Element job, String url) throws ParserException {
         String company = job.getElementsByAttributeValue(jobSite.getCompanyData()[0], jobSite.getCompanyData()[1])
                 .first().text();
