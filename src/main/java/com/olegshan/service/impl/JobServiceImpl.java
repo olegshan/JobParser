@@ -35,7 +35,7 @@ public class JobServiceImpl implements JobService {
             update(job);
         } else {
             saveJob(job);
-//            twitter.tweet(job);
+            twitter.tweet(job);
             LOGGER.info("New job '{}' on {} found", job.getTitle(), job.getSource());
         }
     }
@@ -50,7 +50,7 @@ public class JobServiceImpl implements JobService {
         LocalDate jobDate = job.getDate().toLocalDate();
         if (!jobFromDbDate.equals(jobDate)) {
             saveJob(job);
-//            twitter.tweet(job);
+            twitter.tweet(job);
             LOGGER.info("Job '{}', {}, was updated", job.getTitle(), job.getUrl());
         }
     }
