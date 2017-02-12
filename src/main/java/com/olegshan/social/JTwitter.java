@@ -20,7 +20,11 @@ public class JTwitter {
     }
 
     public void tweet(Job job) {
-        twitter.timelineOperations().updateStatus(job.getTitle() + " " + job.getUrl()
-                + " More jobs here: http://jparser.info");
+        try {
+            twitter.timelineOperations().updateStatus(job.getTitle() + " " + job.getUrl()
+                    + " More jobs here: http://jparser.info");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
