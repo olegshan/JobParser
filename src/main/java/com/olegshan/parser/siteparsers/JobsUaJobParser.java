@@ -38,6 +38,9 @@ public class JobsUaJobParser extends JobParser {
         String[] descriptionData = jobSite.getDescriptionData();
         Document descDoc = getDoc(url);
         String description = descDoc.getElementsByAttributeValue(descriptionData[0], descriptionData[1]).text();
+        if (description.startsWith("Описание вакансии ")) {
+            description = description.substring("Описание вакансии ".length());
+        }
         return description.length() > 250 ? description.substring(0, 250) + ("...") : description;
     }
 

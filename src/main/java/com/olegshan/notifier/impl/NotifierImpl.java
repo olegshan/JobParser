@@ -14,7 +14,7 @@ public class NotifierImpl implements Notifier {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NotifierImpl.class);
 
-    @Value("${spring.mail.username}")
+    @Value("${mail.recipient}")
     private String recipient;
     private MailSender mailSender;
 
