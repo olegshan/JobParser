@@ -25,7 +25,7 @@ public class JobsUaJobParser extends JobParser {
 
         // ad block on jobs.ua has the same tags as the job blocks, so it should be removed
         for (int i = 0; i < jobBlocks.size(); i++) {
-            if (jobBlocks.get(i).getElementsByAttributeValue("class", "b-city__title b-city__companies-title")
+            if (jobBlocks.get(i).getElementsByAttributeValueStarting("class", "b-city__title b-city__companies-title")
                     .text().contains("VIP компании в Украине:")) {
                 jobBlocks.remove(i);
             }
