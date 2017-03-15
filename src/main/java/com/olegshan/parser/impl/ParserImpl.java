@@ -1,7 +1,6 @@
 package com.olegshan.parser.impl;
 
 import com.olegshan.entity.Job;
-import com.olegshan.exception.ParserException;
 import com.olegshan.notifier.Notifier;
 import com.olegshan.parser.Parser;
 import com.olegshan.parser.siteparsers.JobParser;
@@ -52,7 +51,7 @@ public class ParserImpl implements Parser {
                 jobService.save(parsedJob);
             }
             LOGGER.info("Parsing of {} completed\n", jobSite.getSiteName());
-        } catch (ParserException e) {
+        } catch (Exception e) {
             notifier.notifyAdmin(e.getMessage());
         }
     }
