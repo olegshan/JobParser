@@ -23,7 +23,7 @@ public class JobParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Parser.class);
 
-    protected JobSite jobSite;
+    JobSite jobSite;
 
     public JobParser(JobSite jobSite) {
         this.jobSite = jobSite;
@@ -90,7 +90,7 @@ public class JobParser {
     }
 
     //in case we parse in January jobs of last December. Needed for jobs.ua and hh.ua
-    protected int getYear(int month) {
+    int getYear(int month) {
         int year;
         if (month > LocalDate.now(ZoneId.of("Europe/Athens")).getMonthValue()) {
             year = LocalDate.now().getYear() - 1;
@@ -100,7 +100,7 @@ public class JobParser {
         return year;
     }
 
-    protected void check(Object o, String data, String url) throws ParserException {
+    void check(Object o, String data, String url) throws ParserException {
         String jobUrl = url == null ? "" : url;
         if (o == null || o.toString().length() == 0) {
             LOGGER.error("Error getting {} from {}, {}", data, jobSite.getSiteName(), jobUrl);
