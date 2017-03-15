@@ -5,7 +5,7 @@
 
     <div class="jobBlock" data-th-each="job : ${jobs}">
         <a th:href="${job.url}" target="_blank">
-            <h2>
+            <h2 class="title">
                 <small data-th-text="${job.title}"></small>
             </h2>
         </a>
@@ -42,11 +42,10 @@
     </div>
 
     <div class="footer">
-        <p>&copy; <a href="https://github.com/olegshan" target="_blank">olegshan.</a>
-            Have any ideas for improvement?
-            <a href="https://github.com/olegshan/JobParser" target="_blank">Feel free to join.</a>
+        <p>
+            &copy; 2016 <a href="https://github.com/olegshan/JobParser" target="_blank">olegshan</a>.
+            <a href="/about">About jParser</a>
         </p>
-        <p><a href="/about">About jParser</a></p>
     </div>
 
 </div>
