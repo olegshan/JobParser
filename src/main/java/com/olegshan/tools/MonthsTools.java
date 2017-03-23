@@ -35,6 +35,19 @@ public class MonthsTools {
         MONTHS.put("ноября", 11);
         MONTHS.put("декабря", 12);
 
+        MONTHS.put("янв", 1);
+        MONTHS.put("фев", 2);
+        MONTHS.put("мар", 3);
+        MONTHS.put("апр", 4);
+        MONTHS.put("май", 5);
+        MONTHS.put("июн", 6);
+        MONTHS.put("июл", 7);
+        MONTHS.put("авг", 8);
+        MONTHS.put("сен", 9);
+        MONTHS.put("окт", 10);
+        MONTHS.put("ноя", 11);
+        MONTHS.put("дек", 12);
+
         MONTHS.put("january", 1);
         MONTHS.put("february", 2);
         MONTHS.put("march", 3);

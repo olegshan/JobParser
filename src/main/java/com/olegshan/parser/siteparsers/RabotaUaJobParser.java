@@ -61,7 +61,7 @@ public class RabotaUaJobParser extends JobParser {
         /*
         * There are several problems here.
         * First: there are different types of date tags, used on rabota.ua on different pages
-        * Second: sometimes date format is dd.mm.yyyy and sometimes — yyyy-mm-dd.
+        * Second: sometimes date format is dd.mm.yyyy, sometimes — yyyy-mm-dd and sometimes — dd mmm yyyy.
         * Third: sometimes there is no date at all.
         */
         Document dateDoc = getDoc(url);
@@ -76,31 +76,44 @@ public class RabotaUaJobParser extends JobParser {
             dateLine = dateElements.get(0).getElementsByAttributeValue("class", "d-ph-value").text();
         } else {
             dateLine = dateDoc.getElementsByAttributeValue("itemprop", "datePosted").text();
-            if (dateLine.length() == 0) {
-                dateLine = dateDoc.getElementsByAttributeValueStarting("class", "f-date-holder").text();
-            }
-            if (dateLine.length() == 0) {
-                //no date at all, sometimes it happens
-                LocalDateTime ldt = LocalDateTime.now(ZoneId.of("Europe/Athens"));
-                LOGGER.warn("There was no date on Rabota.ua, return {}", ldt);
-                return ldt;
+            if (dateLine == null || dateLine.length() == 0) {
+                try {
+                    dateLine = dateDoc.getElementsByAttributeValueStarting("class", "f-date-holder").first().text();
+                } catch (Exception e) {
+                    //no date at all, sometimes it happens
+                    LocalDateTime ldt = LocalDateTime.now(ZoneId.of("Europe/Athens"));
+                    LOGGER.warn("There was no date on Rabota.ua, return {}", ldt);
+                    return ldt;
+                }
             }
         }
 
         if (Pattern.matches("\\d{2}\\.\\d{2}\\.\\d{4}", dateLine)) {
+
             dateParts = dateLine.split("\\.");
             MonthsTools.removeZero(dateParts);
             year = Integer.parseInt(dateParts[2]);
             month = Integer.parseInt(dateParts[1]);
             day = Integer.parseInt(dateParts[0]);
-        } else {
-            //for format yyyy-mm-dd
+
+        } else if (Pattern.matches("\\d{4}\\.\\d{2}\\.\\d{2}", dateLine)) {
+
             dateParts = dateLine.split("-");
             MonthsTools.removeZero(dateParts);
             year = Integer.parseInt(dateParts[0]);
             month = Integer.parseInt(dateParts[1]);
             day = Integer.parseInt(dateParts[2]);
-        }
+
+        } else if (Pattern.matches("\\d{2} [а-я]{3} \\d{4}", dateLine)) {
+
+            dateParts = dateLine.split(" ");
+            MonthsTools.removeZero(dateParts);
+            day = Integer.parseInt(dateParts[0]);
+            month = MonthsTools.MONTHS.get(dateParts[1]);
+            year = Integer.parseInt(dateParts[2]);
+
+        } else throw new ParserException("Cannot parse date of following job: " + url + "\ndateLine is: " + dateLine);
+
         return LocalDate.of(year, month, day).atTime(getTime());
     }
 }
