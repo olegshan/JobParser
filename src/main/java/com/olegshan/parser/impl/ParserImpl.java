@@ -33,6 +33,7 @@ public class ParserImpl implements Parser {
     public void parse(JobSite jobSite) {
 
         JobParser jobParser = jobSite.getParser();
+        String url = "";
 
         try {
             Document doc = jobParser.getDoc(jobSite.getSiteUrl());
@@ -41,7 +42,7 @@ public class ParserImpl implements Parser {
             for (Element job : jobBlocks) {
 
                 Elements titleBlock = jobParser.getTitleBlock(job);
-                String url = jobParser.getUrl(titleBlock);
+                url = jobParser.getUrl(titleBlock);
                 String title = jobParser.getTitle(titleBlock);
                 String description = jobParser.getDescription(job, url);
                 String company = jobParser.getCompany(job, url);
@@ -52,7 +53,7 @@ public class ParserImpl implements Parser {
             }
             LOGGER.info("Parsing of {} completed\n", jobSite.getSiteName());
         } catch (Exception e) {
-            notifier.notifyAdmin(e.getMessage());
+            notifier.notifyAdmin("Error while parsing " + url + "\nError message is: " + e.getMessage());
         }
     }
 }
