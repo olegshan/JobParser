@@ -5,63 +5,60 @@ import java.util.Map;
 
 public class MonthsTools {
 
-    public static final Map<String, Integer> MONTHS = new HashMap<>();
+    public static final Map<String, Integer> MONTHS = new HashMap<String, Integer>() {{
 
-    static {
+        put("січня", 1);
+        put("лютого", 2);
+        put("березня", 3);
+        put("квітня", 4);
+        put("травня", 5);
+        put("червня", 6);
+        put("липня", 7);
+        put("серпня", 8);
+        put("вересня", 9);
+        put("жовтня", 10);
+        put("листопада", 11);
+        put("грудня", 12);
 
-        MONTHS.put("січня", 1);
-        MONTHS.put("лютого", 2);
-        MONTHS.put("березня", 3);
-        MONTHS.put("квітня", 4);
-        MONTHS.put("травня", 5);
-        MONTHS.put("червня", 6);
-        MONTHS.put("липня", 7);
-        MONTHS.put("серпня", 8);
-        MONTHS.put("вересня", 9);
-        MONTHS.put("жовтня", 10);
-        MONTHS.put("листопада", 11);
-        MONTHS.put("грудня", 12);
+        put("января", 1);
+        put("февраля", 2);
+        put("марта", 3);
+        put("апреля", 4);
+        put("мая", 5);
+        put("июня", 6);
+        put("июля", 7);
+        put("августа", 8);
+        put("сентября", 9);
+        put("октября", 10);
+        put("ноября", 11);
+        put("декабря", 12);
 
-        MONTHS.put("января", 1);
-        MONTHS.put("февраля", 2);
-        MONTHS.put("марта", 3);
-        MONTHS.put("апреля", 4);
-        MONTHS.put("мая", 5);
-        MONTHS.put("июня", 6);
-        MONTHS.put("июля", 7);
-        MONTHS.put("августа", 8);
-        MONTHS.put("сентября", 9);
-        MONTHS.put("октября", 10);
-        MONTHS.put("ноября", 11);
-        MONTHS.put("декабря", 12);
+        put("янв", 1);
+        put("фев", 2);
+        put("мар", 3);
+        put("апр", 4);
+        put("май", 5);
+        put("июн", 6);
+        put("июл", 7);
+        put("авг", 8);
+        put("сен", 9);
+        put("окт", 10);
+        put("ноя", 11);
+        put("дек", 12);
 
-        MONTHS.put("янв", 1);
-        MONTHS.put("фев", 2);
-        MONTHS.put("мар", 3);
-        MONTHS.put("апр", 4);
-        MONTHS.put("май", 5);
-        MONTHS.put("июн", 6);
-        MONTHS.put("июл", 7);
-        MONTHS.put("авг", 8);
-        MONTHS.put("сен", 9);
-        MONTHS.put("окт", 10);
-        MONTHS.put("ноя", 11);
-        MONTHS.put("дек", 12);
-
-        MONTHS.put("january", 1);
-        MONTHS.put("february", 2);
-        MONTHS.put("march", 3);
-        MONTHS.put("april", 4);
-        MONTHS.put("may", 5);
-        MONTHS.put("june", 6);
-        MONTHS.put("july", 7);
-        MONTHS.put("august", 8);
-        MONTHS.put("september", 9);
-        MONTHS.put("october", 10);
-        MONTHS.put("november", 11);
-        MONTHS.put("december", 12);
-
-    }
+        put("january", 1);
+        put("february", 2);
+        put("march", 3);
+        put("april", 4);
+        put("may", 5);
+        put("june", 6);
+        put("july", 7);
+        put("august", 8);
+        put("september", 9);
+        put("october", 10);
+        put("november", 11);
+        put("december", 12);
+    }};
 
     //if day or month starts with '0'
     public static void removeZero(String[] dateParts) {

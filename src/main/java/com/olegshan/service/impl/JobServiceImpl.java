@@ -17,8 +17,6 @@ import java.time.LocalDate;
 @Service
 public class JobServiceImpl implements JobService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
-
     private JobRepository jobRepository;
     private JTwitter twitter;
     private Notifier notifier;
@@ -36,7 +34,7 @@ public class JobServiceImpl implements JobService {
         } else {
             saveJob(job);
             twitter.tweet(job);
-            LOGGER.info("New job '{}' on {} found", job.getTitle(), job.getSource());
+            log.info("New job '{}' on {} found", job.getTitle(), job.getSource());
         }
     }
 
@@ -51,7 +49,7 @@ public class JobServiceImpl implements JobService {
         if (!jobFromDbDate.equals(jobDate)) {
             saveJob(job);
             twitter.tweet(job);
-            LOGGER.info("Job '{}', {}, was updated", job.getTitle(), job.getUrl());
+            log.info("Job '{}', {}, was updated", job.getTitle(), job.getUrl());
         }
     }
 
@@ -63,9 +61,11 @@ public class JobServiceImpl implements JobService {
         try {
             jobRepository.save(job);
         } catch (Exception e) {
-            LOGGER.error("Error while saving job '{}', {} into database", job.getTitle(), job.getUrl());
+            log.error("Error while saving job '{}', {} into database", job.getTitle(), job.getUrl());
             notifier.notifyAdmin("Error while saving following job into database: '" +
                     job.getTitle() + "', " + job.getUrl() + "\n\n" + e.getMessage());
         }
     }
+
+    private static final Logger log = LoggerFactory.getLogger(JobServiceImpl.class);
 }

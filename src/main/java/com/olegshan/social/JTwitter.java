@@ -1,30 +1,49 @@
 package com.olegshan.social;
 
 import com.olegshan.entity.Job;
+import com.olegshan.notifier.Notifier;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.social.twitter.api.Twitter;
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 @Component
 public class JTwitter {
 
-    private static final String CONSUMER_KEY = System.getProperty("CKjP");
-    private static final String CONSUMER_SECRET = System.getProperty("CSjP");
-    private static final String ACCESS_TOKEN = System.getProperty("ATjP");
-    private static final String ACCESS_TOKEN_SECRET = System.getProperty("ATSjP");
-
     private Twitter twitter;
+    private Environment environment;
+    private Notifier notifier;
 
-    public JTwitter() {
-        twitter = new TwitterTemplate(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET);
+    @Autowired
+    public JTwitter(Environment environment, Notifier notifier) {
+        this.environment = environment;
+        this.notifier = notifier;
+
+        String consumerKey = dev() ? "dummy" : System.getProperty("CKjP");
+        String consumerSecret = dev() ? "dummy" : System.getProperty("CSjP");
+        String accessToken = dev() ? "dummy" : System.getProperty("ATjP");
+        String accessTokenSecret = dev() ? "dummy" : System.getProperty("ATSjP");
+
+        twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
     }
 
     public void tweet(Job job) {
-        try {
-            twitter.timelineOperations().updateStatus(job.getTitle() + " " + job.getUrl()
-                    + " More jobs here: http://jparser.info");
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        if (!dev()) {
+            String tweet = String.format("%s %s More jobs here: http://jparser.info", job.getTitle(), job.getUrl());
+            try {
+                twitter.timelineOperations().updateStatus(tweet);
+            } catch (Exception e) {
+                notifier.notifyAdmin("Error while twitting following tweet:\n " + tweet);
+            }
         }
+    }
+
+    private boolean dev() {
+        return Arrays.stream(environment.getActiveProfiles())
+                .anyMatch(env -> env.equalsIgnoreCase("dev"));
     }
 }

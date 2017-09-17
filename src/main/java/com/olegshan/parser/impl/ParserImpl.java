@@ -19,8 +19,6 @@ import java.time.LocalDateTime;
 @Component
 public class ParserImpl implements Parser {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ParserImpl.class);
-
     private JobService jobService;
     private Notifier notifier;
 
@@ -51,9 +49,11 @@ public class ParserImpl implements Parser {
                 Job parsedJob = new Job(title, description, company, jobSite.getSiteName(), url, date);
                 jobService.save(parsedJob);
             }
-            LOGGER.info("Parsing of {} completed\n", jobSite.getSiteName());
+            log.info("Parsing of {} completed\n", jobSite.getSiteName());
         } catch (Exception e) {
             notifier.notifyAdmin("Error while parsing " + url + "\nError message is: " + e.getMessage());
         }
     }
+
+    private static final Logger log = LoggerFactory.getLogger(ParserImpl.class);
 }

@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotifierImpl implements Notifier {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NotifierImpl.class);
-
     @Value("${mail.recipient}")
     private String recipient;
     private MailSender mailSender;
@@ -31,6 +29,8 @@ public class NotifierImpl implements Notifier {
         message.setText(issue + "\n\nhttp://www.jparser.info");
 
         mailSender.send(message);
-        LOGGER.info("Admin was notified about following issue: " + issue + "\n");
+        log.info("Admin was notified about following issue: " + issue + "\n");
     }
+
+    private static final Logger log = LoggerFactory.getLogger(NotifierImpl.class);
 }

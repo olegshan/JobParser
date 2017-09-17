@@ -21,8 +21,6 @@ import static java.lang.Integer.parseInt;
 
 public class JobParser {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Parser.class);
-
     JobSite jobSite;
 
     public JobParser(JobSite jobSite) {
@@ -34,7 +32,7 @@ public class JobParser {
         try {
             doc = Jsoup.connect(siteUrl).userAgent("Mozilla").timeout(0).get();
         } catch (IOException e) {
-            LOGGER.error("Connecting to {} failed", siteUrl);
+            log.error("Connecting to {} failed", siteUrl);
             throw new ParserException("Failed connecting to " + siteUrl + "\n" + e.getMessage());
         }
         return doc;
@@ -103,8 +101,10 @@ public class JobParser {
     void check(Object o, String data, String url) throws ParserException {
         String jobUrl = url == null ? "" : url;
         if (o == null || o.toString().length() == 0) {
-            LOGGER.error("Error getting {} from {}, {}", data, jobSite.getSiteName(), jobUrl);
+            log.error("Error getting {} from {}, {}", data, jobSite.getSiteName(), jobUrl);
             throw new ParserException("Error getting " + data + " from " + jobSite.getSiteName() + "\n" + jobUrl);
         }
     }
+
+    private static final Logger log = LoggerFactory.getLogger(Parser.class);
 }

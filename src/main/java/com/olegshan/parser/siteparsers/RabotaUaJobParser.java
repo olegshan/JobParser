@@ -16,8 +16,6 @@ import java.util.regex.Pattern;
 
 public class RabotaUaJobParser extends JobParser {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RabotaUaJobParser.class);
-
     public RabotaUaJobParser(JobSite jobSite) {
         super(jobSite);
     }
@@ -82,7 +80,7 @@ public class RabotaUaJobParser extends JobParser {
                 } catch (Exception e) {
                     //no date at all, sometimes it happens
                     LocalDateTime ldt = LocalDateTime.now(ZoneId.of("Europe/Athens"));
-                    LOGGER.warn("There was no date on Rabota.ua, return {}", ldt);
+                    log.warn("There was no date on Rabota.ua, return {}", ldt);
                     return ldt;
                 }
             }
@@ -116,4 +114,6 @@ public class RabotaUaJobParser extends JobParser {
 
         return LocalDate.of(year, month, day).atTime(getTime());
     }
+
+    private static final Logger log = LoggerFactory.getLogger(RabotaUaJobParser.class);
 }

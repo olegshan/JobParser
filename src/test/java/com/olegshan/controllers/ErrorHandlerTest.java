@@ -16,8 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ErrorHandlerTest {
 
     @Mock
-    ParseController parseController;
-
+    private ParseController parseController;
     private MockMvc mockMvc;
 
     @Before
