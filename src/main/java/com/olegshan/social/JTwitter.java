@@ -13,7 +13,6 @@ import java.util.Arrays;
 @Component
 public class JTwitter {
 
-    private Twitter twitter;
     private Environment environment;
     private Notifier notifier;
 
@@ -21,24 +20,25 @@ public class JTwitter {
     public JTwitter(Environment environment, Notifier notifier) {
         this.environment = environment;
         this.notifier = notifier;
-
-        String consumerKey = dev() ? "dummy" : System.getProperty("CKjP");
-        String consumerSecret = dev() ? "dummy" : System.getProperty("CSjP");
-        String accessToken = dev() ? "dummy" : System.getProperty("ATjP");
-        String accessTokenSecret = dev() ? "dummy" : System.getProperty("ATSjP");
-
-        twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
     }
 
     public void tweet(Job job) {
 
-        if (!dev()) {
-            String tweet = String.format("%s %s More jobs here: http://jparser.info", job.getTitle(), job.getUrl());
-            try {
-                twitter.timelineOperations().updateStatus(tweet);
-            } catch (Exception e) {
-                notifier.notifyAdmin("Error while twitting following tweet:\n " + tweet);
-            }
+        if (dev()) return;
+
+        String consumerKey = System.getProperty("CKjP");
+        String consumerSecret = System.getProperty("CSjP");
+        String accessToken = System.getProperty("ATjP");
+        String accessTokenSecret = System.getProperty("ATSjP");
+
+        Twitter twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
+
+        String tweet = String.format("%s %s More jobs here: http://jparser.info", job.getTitle(), job.getUrl());
+        try {
+            twitter.timelineOperations().updateStatus(tweet);
+        } catch (Exception e) {
+            notifier.notifyAdmin("Error while twitting following tweet:\n " + tweet +
+                    "\nException was:\n" + e);
         }
     }
 
