@@ -41,10 +41,13 @@ public class ParserImpl implements Parser {
 
                 Elements titleBlock = jobParser.getTitleBlock(job);
                 url = jobParser.getUrl(titleBlock);
+                LocalDateTime date = jobParser.getDate(job, url);
+
+                if (LocalDateTime.now().minusMonths(2).isAfter(date)) continue; // skip too old jobs
+
                 String title = jobParser.getTitle(titleBlock);
                 String description = jobParser.getDescription(job, url);
                 String company = jobParser.getCompany(job, url);
-                LocalDateTime date = jobParser.getDate(job, url);
 
                 Job parsedJob = new Job(title, description, company, jobSite.getSiteName(), url, date);
                 jobService.save(parsedJob);
