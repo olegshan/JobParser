@@ -36,7 +36,7 @@ public class JTwitter {
 
         if (twitter == null) return;
 
-        String tweet = job.getTitle() + " " + job.getUrl() + "More jobs here: http://jparser.info";
+        String tweet = job.getTitle() + " " + job.getUrl() + " More jobs here: http://jparser.info";
         try {
             twitter.timelineOperations().updateStatus(tweet);
         } catch (Exception e) {
