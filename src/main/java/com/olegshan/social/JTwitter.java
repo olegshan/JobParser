@@ -36,12 +36,24 @@ public class JTwitter {
 
         if (twitter == null) return;
 
-        String tweet = job.getTitle() + " " + job.getUrl() + " More jobs here: http://jparser.info";
+        String tweet;
+        String jobTitle = job.getTitle();
+        String jobUrl = job.getUrl();
+        String moreJobs = " More jobs here: ";
+        String jParserUrl = "http://jparser.info";
+        int twitterUrlLength = 23;
+        int tweetLength = jobTitle.length() + 1 + twitterUrlLength * 2 + moreJobs.length();
+
+        if (tweetLength <= 140)
+            tweet = jobTitle + " " + jobUrl + moreJobs + jParserUrl;
+        else tweet = jobTitle + " " + jobUrl;
+
         try {
             twitter.timelineOperations().updateStatus(tweet);
         } catch (Exception e) {
-            notifier.notifyAdmin("Error while twitting following tweet:\n " + tweet +
-                    "\nException was:\n" + e.getMessage()
+            notifier.notifyAdmin(
+                    "Error while twitting following tweet:\n " + tweet +
+                            "\nException was:\n" + e.getMessage()
             );
         }
     }
