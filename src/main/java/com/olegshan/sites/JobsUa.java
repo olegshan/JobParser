@@ -14,7 +14,7 @@ public class JobsUa implements JobSite {
     private static final String[] TITLE_BOX = {"class", "b-vacancy__top__title js-item_title"};
     private static final String[] COMPANY_DATA = {"class", "b-vacancy__tech__item"};
     private static final String[] DESCRIPTION_DATA = {"class", "b-vacancy-full__block b-text"};
-    private static final String[] DATE_DATA = {"class", "b-vacancy__tech__item b-vacancy__tech__item-top"};
+    private static final String[] DATE_DATA = {"class", "b-vacancy-full__tech__item"};
     private static final String SPLIT = " ";
 
     public String getSiteName() {

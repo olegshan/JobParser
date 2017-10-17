@@ -45,9 +45,22 @@ public class JobsUaJobParser extends JobParser {
     }
 
     @Override
+    public LocalDateTime getDate(Element job, String url) throws ParserException {
+
+        Document dateDoc = getDoc(url);
+        String dateLine = dateDoc.getElementsByAttributeValue(
+                jobSite.getDateData()[0],
+                jobSite.getDateData()[1]
+        ).text();
+
+        check(dateLine, "date line", url);
+        return getDateByLine(dateLine);
+    }
+
+    @Override
     protected LocalDateTime getDateByLine(String dateLine) {
         dateLine = dateLine.replaceAll("\u00a0", "").trim();
-        String[] dateParts = dateLine.trim().split(jobSite.getSplit());
+        String[] dateParts = dateLine.split(jobSite.getSplit());
         MonthsTools.removeZero(dateParts);
 
         int day = parseInt(dateParts[0]);
