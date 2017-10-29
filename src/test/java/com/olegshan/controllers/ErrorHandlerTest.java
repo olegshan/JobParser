@@ -15,25 +15,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(MockitoJUnitRunner.class)
 public class ErrorHandlerTest {
 
-    @Mock
-    private ParseController parseController;
-    private MockMvc mockMvc;
+	@Mock
+	private ParseController parseController;
+	private MockMvc         mockMvc;
 
-    @Before
-    public void setUp() throws Exception {
-        mockMvc = MockMvcBuilders.standaloneSetup(parseController)
-                .setControllerAdvice(new ErrorHandler())
-                .build();
-    }
+	@Before
+	public void setUp() throws Exception {
+		mockMvc = MockMvcBuilders.standaloneSetup(parseController)
+				.setControllerAdvice(new ErrorHandler())
+				.build();
+	}
 
-    @Test
-    public void unexpectedExceptionsAreCaught() throws Exception {
+	@Test
+	public void unexpectedExceptionsAreCaught() throws Exception {
 
-        when(parseController.about()).thenThrow(new RuntimeException("Unexpected exception"));
+		when(parseController.about()).thenThrow(new RuntimeException("Unexpected exception"));
 
-        mockMvc.perform(get("/about"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("exception"))
-                .andExpect(model().attribute("errorMessage", "Unexpected exception"));
-    }
+		mockMvc.perform(get("/about"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("exception"))
+				.andExpect(model().attribute("errorMessage", "Unexpected exception"));
+	}
 }

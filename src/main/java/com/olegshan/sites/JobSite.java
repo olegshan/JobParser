@@ -4,25 +4,38 @@ import com.olegshan.parser.siteparsers.JobParser;
 
 public interface JobSite {
 
-    String getSiteName();
+	String name();
 
-    String getSiteUrl();
+	String url();
 
-    String getUrlPrefix();
+	String urlPrefix();
 
-    String[] getJobBox();
+	String split();
 
-    String[] getTitleBox();
+	Holder jobBox();
 
-    String[] getCompanyData();
+	Holder titleBox();
 
-    String[] getDescriptionData();
+	Holder company();
 
-    String[] getDateData();
+	Holder description();
 
-    String getSplit();
+	Holder date();
 
-    default JobParser getParser() {
-        return new JobParser(this);
-    }
+	default JobParser getParser() {
+		return new JobParser(this);
+	}
+
+	class Holder {
+		public String key;
+		public String value;
+
+		public static Holder of(String key, String value) {
+			Holder holder = new Holder();
+			holder.key = key;
+			holder.value = value;
+
+			return holder;
+		}
+	}
 }

@@ -7,54 +7,64 @@ import org.springframework.stereotype.Component;
 @Component
 public class HeadHunterUa implements JobSite {
 
-    private static final String SITE_NAME = "HeadHunter.ua";
-    private static final String SITE_URL = "https://hh.ua/search/vacancy?text=java&area=115";
-    private static final String URL_PREFIX = "";
-    private static final String[] JOB_BOX = {"class", "search-result-description"};
-    private static final String[] TITLE_BOX = {"data-qa", "vacancy-serp__vacancy-title"};
-    private static final String[] COMPANY_DATA = {"data-qa", "vacancy-serp__vacancy-employer"};
-    private static final String[] DESCRIPTION_DATA = {"data-qa", "vacancy-serp__vacancy_snippet_requirement"};
-    private static final String[] DATE_DATA = {"data-qa", "vacancy-serp__vacancy-date"};
-    private static final String SPLIT = "\u00a0";
+	private static final String SITE_NAME        = "HeadHunter.ua";
+	private static final String SITE_URL         = "https://hh.ua/search/vacancy?text=java&area=115";
+	private static final String URL_PREFIX       = "";
+	private static final String SPLIT            = "\u00a0";
+	private static final Holder JOB_BOX          = Holder.of("class", "search-result-description");
+	private static final Holder TITLE_BOX        = Holder.of("data-qa", "vacancy-serp__vacancy-title");
+	private static final Holder COMPANY_DATA     = Holder.of("data-qa", "vacancy-serp__vacancy-employer");
+	private static final Holder DESCRIPTION_DATA = Holder.of("data-qa", "vacancy-serp__vacancy_snippet_requirement");
+	private static final Holder DATE_DATA        = Holder.of("data-qa", "vacancy-serp__vacancy-date");
 
-    public String getSiteName() {
-        return SITE_NAME;
-    }
 
-    public String getSiteUrl() {
-        return SITE_URL;
-    }
+	@Override
+	public String name() {
+		return SITE_NAME;
+	}
 
-    public String getUrlPrefix() {
-        return URL_PREFIX;
-    }
+	@Override
+	public String url() {
+		return SITE_URL;
+	}
 
-    public String[] getJobBox() {
-        return JOB_BOX;
-    }
+	@Override
+	public String urlPrefix() {
+		return URL_PREFIX;
+	}
 
-    public String[] getTitleBox() {
-        return TITLE_BOX;
-    }
+	@Override
+	public String split() {
+		return SPLIT;
+	}
 
-    public String[] getCompanyData() {
-        return COMPANY_DATA;
-    }
+	@Override
+	public Holder jobBox() {
+		return JOB_BOX;
+	}
 
-    public String[] getDescriptionData() {
-        return DESCRIPTION_DATA;
-    }
+	@Override
+	public Holder titleBox() {
+		return TITLE_BOX;
+	}
 
-    public String[] getDateData() {
-        return DATE_DATA;
-    }
+	@Override
+	public Holder company() {
+		return COMPANY_DATA;
+	}
 
-    public String getSplit() {
-        return SPLIT;
-    }
+	@Override
+	public Holder description() {
+		return DESCRIPTION_DATA;
+	}
 
-    @Override
-    public JobParser getParser() {
-        return new HeadHunterUaJobParser(this);
-    }
+	@Override
+	public Holder date() {
+		return DATE_DATA;
+	}
+
+	@Override
+	public JobParser getParser() {
+		return new HeadHunterUaJobParser(this);
+	}
 }

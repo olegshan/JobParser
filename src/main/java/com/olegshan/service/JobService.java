@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 
 public interface JobService {
 
-    void save(Job job);
+	void save(Job job);
 
-    Page<Job> getJobs(PageRequest request);
+	Page<Job> getJobs(PageRequest request);
 }

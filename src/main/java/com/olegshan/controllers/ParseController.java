@@ -16,31 +16,31 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ParseController {
 
-    private static final int PAGE_SIZE = 40;
-    private JobService jobService;
+	private static final int PAGE_SIZE = 40;
+	private JobService jobService;
 
-    @Autowired
-    public ParseController(JobService jobService) {
-        this.jobService = jobService;
-    }
+	@Autowired
+	public ParseController(JobService jobService) {
+		this.jobService = jobService;
+	}
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView showJobs(@RequestParam(value = "page", required = false) Integer page) {
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public ModelAndView showJobs(@RequestParam(value = "page", required = false) Integer page) {
 
-        ModelAndView modelAndView = new ModelAndView("index");
-        int currentPageNumber = (page == null || page < 1) ? 0 : page - 1;
+		ModelAndView modelAndView = new ModelAndView("index");
+		int currentPageNumber = (page == null || page < 1) ? 0 : page - 1;
 
-        Page<Job> jobs = jobService.getJobs(new PageRequest(currentPageNumber, PAGE_SIZE, Sort.Direction.DESC, "date"));
-        PageBox pageBox = new PageBox(jobs.getTotalPages(), jobs.getNumber());
+		Page<Job> jobs = jobService.getJobs(new PageRequest(currentPageNumber, PAGE_SIZE, Sort.Direction.DESC, "date"));
+		PageBox pageBox = new PageBox(jobs.getTotalPages(), jobs.getNumber());
 
-        modelAndView.addObject("jobs", jobs);
-        modelAndView.addObject("pageBox", pageBox.getPageBox());
+		modelAndView.addObject("jobs", jobs);
+		modelAndView.addObject("pageBox", pageBox.getPageBox());
 
-        return modelAndView;
-    }
+		return modelAndView;
+	}
 
-    @RequestMapping("/about")
-    public String about() {
-        return "about";
-    }
+	@RequestMapping("/about")
+	public String about() {
+		return "about";
+	}
 }

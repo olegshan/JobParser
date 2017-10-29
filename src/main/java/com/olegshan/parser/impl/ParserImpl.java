@@ -19,44 +19,48 @@ import java.time.LocalDateTime;
 @Component
 public class ParserImpl implements Parser {
 
-    private JobService jobService;
-    private Notifier notifier;
+	private JobService jobService;
+	private Notifier   notifier;
 
-    @Autowired
-    public ParserImpl(JobService jobService, Notifier notifier) {
-        this.jobService = jobService;
-        this.notifier = notifier;
-    }
+	@Autowired
+	public ParserImpl(JobService jobService, Notifier notifier) {
+		this.jobService = jobService;
+		this.notifier = notifier;
+	}
 
-    public void parse(JobSite jobSite) {
+	public void parse(JobSite jobSite) {
 
-        JobParser jobParser = jobSite.getParser();
-        String url = "";
+		JobParser jobParser = jobSite.getParser();
+		String url = "";
 
-        try {
-            Document doc = jobParser.getDoc(jobSite.getSiteUrl());
-            Elements jobBlocks = jobParser.getJobBlocks(doc);
+		try {
+			Document doc = jobParser.getDoc(jobSite.url());
+			Elements jobBlocks = jobParser.getJobBlocks(doc);
 
-            for (Element job : jobBlocks) {
+			for (Element job : jobBlocks) {
 
-                Elements titleBlock = jobParser.getTitleBlock(job);
-                url = jobParser.getUrl(titleBlock);
-                LocalDateTime date = jobParser.getDate(job, url);
+				Elements titleBlock = jobParser.getTitleBlock(job);
+				url = jobParser.getUrl(titleBlock);
+				LocalDateTime date = jobParser.getDate(job, url);
 
-                if (LocalDateTime.now().minusMonths(2).isAfter(date)) continue; // skip too old jobs
+				if (isJobTooOld(date)) continue;
 
-                String title = jobParser.getTitle(titleBlock);
-                String description = jobParser.getDescription(job, url);
-                String company = jobParser.getCompany(job, url);
+				String title = jobParser.getTitle(titleBlock);
+				String description = jobParser.getDescription(job, url);
+				String company = jobParser.getCompany(job, url);
 
-                Job parsedJob = new Job(title, description, company, jobSite.getSiteName(), url, date);
-                jobService.save(parsedJob);
-            }
-            log.info("Parsing of {} completed\n", jobSite.getSiteName());
-        } catch (Exception e) {
-            notifier.notifyAdmin("Error while parsing " + url + "\nError message is: " + e.getMessage());
-        }
-    }
+				Job parsedJob = new Job(title, description, company, jobSite.name(), url, date);
+				jobService.save(parsedJob);
+			}
+			log.info("Parsing of {} completed\n", jobSite.name());
+		} catch (Exception e) {
+			notifier.notifyAdmin("Error while parsing " + url + "\nError message is: " + e.getMessage());
+		}
+	}
 
-    private static final Logger log = LoggerFactory.getLogger(ParserImpl.class);
+	private boolean isJobTooOld(LocalDateTime date) {
+		return LocalDateTime.now().minusMonths(2).isAfter(date);
+	}
+
+	private static final Logger log = LoggerFactory.getLogger(ParserImpl.class);
 }

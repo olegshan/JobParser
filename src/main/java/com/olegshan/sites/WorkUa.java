@@ -7,54 +7,63 @@ import org.springframework.stereotype.Component;
 @Component
 public class WorkUa implements JobSite {
 
-    private static final String SITE_NAME = "Work.ua";
-    private static final String SITE_URL = "https://www.work.ua/jobs-kyiv-java/";
-    private static final String URL_PREFIX = "https://work.ua";
-    private static final String[] JOB_BOX = {"class", "card card-hover card-visited job-link"};
-    private static final String[] TITLE_BOX = {"", ""};
-    private static final String[] COMPANY_DATA = {"class", "dl-horizontal"};
-    private static final String[] DESCRIPTION_DATA = {"class", "text-muted overflow"};
-    private static final String[] DATE_DATA = {"", ""};
-    private static final String SPLIT = "\\.";
+	private static final String SITE_NAME        = "Work.ua";
+	private static final String SITE_URL         = "https://www.work.ua/jobs-kyiv-java/";
+	private static final String URL_PREFIX       = "https://work.ua";
+	private static final String SPLIT            = "\\.";
+	private static final Holder JOB_BOX          = Holder.of("class", "card card-hover card-visited job-link");
+	private static final Holder TITLE_BOX        = Holder.of("", "");
+	private static final Holder COMPANY_DATA     = Holder.of("class", "dl-horizontal");
+	private static final Holder DESCRIPTION_DATA = Holder.of("class", "text-muted overflow");
+	private static final Holder DATE_DATA        = Holder.of("", "");
 
-    public String getSiteName() {
-        return SITE_NAME;
-    }
+	@Override
+	public String name() {
+		return SITE_NAME;
+	}
 
-    public String getSiteUrl() {
-        return SITE_URL;
-    }
+	@Override
+	public String url() {
+		return SITE_URL;
+	}
 
-    public String getUrlPrefix() {
-        return URL_PREFIX;
-    }
+	@Override
+	public String urlPrefix() {
+		return URL_PREFIX;
+	}
 
-    public String[] getJobBox() {
-        return JOB_BOX;
-    }
+	@Override
+	public String split() {
+		return SPLIT;
+	}
 
-    public String[] getTitleBox() {
-        return TITLE_BOX;
-    }
+	@Override
+	public Holder jobBox() {
+		return JOB_BOX;
+	}
 
-    public String[] getCompanyData() {
-        return COMPANY_DATA;
-    }
+	@Override
+	public Holder titleBox() {
+		return TITLE_BOX;
+	}
 
-    public String[] getDescriptionData() {
-        return DESCRIPTION_DATA;
-    }
+	@Override
+	public Holder company() {
+		return COMPANY_DATA;
+	}
 
-    public String[] getDateData() {
-        return DATE_DATA;
-    }
+	@Override
+	public Holder description() {
+		return DESCRIPTION_DATA;
+	}
 
-    public String getSplit() {
-        return SPLIT;
-    }
+	@Override
+	public Holder date() {
+		return DATE_DATA;
+	}
 
-    @Override
-    public JobParser getParser() {
-        return new WorkUaJobParser(this);
-    }
+	@Override
+	public JobParser getParser() {
+		return new WorkUaJobParser(this);
+	}
 }

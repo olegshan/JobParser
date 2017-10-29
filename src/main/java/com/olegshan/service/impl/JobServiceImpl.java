@@ -13,59 +13,63 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class JobServiceImpl implements JobService {
 
-    private JobRepository jobRepository;
-    private JTwitter twitter;
-    private Notifier notifier;
+	private JobRepository jobRepository;
+	private JTwitter      twitter;
+	private Notifier      notifier;
 
-    @Autowired
-    public JobServiceImpl(JobRepository jobRepository, JTwitter twitter, Notifier notifier) {
-        this.jobRepository = jobRepository;
-        this.twitter = twitter;
-        this.notifier = notifier;
-    }
+	private List<Job> jobsInDb;
 
-    public void save(Job job) {
-        if (jobExists(job)) {
-            update(job);
-        } else {
-            saveJob(job);
-            twitter.tweet(job);
-            log.info("New job '{}' on {} found", job.getTitle(), job.getSource());
-        }
-    }
+	@Autowired
+	public JobServiceImpl(JobRepository jobRepository, JTwitter twitter, Notifier notifier) {
+		this.jobRepository = jobRepository;
+		this.twitter = twitter;
+		this.notifier = notifier;
+		jobsInDb = jobRepository.findAll();
+	}
 
-    private boolean jobExists(Job job) {
-        return jobRepository.findOne(job.getUrl()) != null;
-    }
+	public void save(Job job) {
+		if (jobExists(job)) {
+			update(job);
+		} else {
+			saveJob(job);
+			twitter.tweet(job);
+			log.info("New job '{}' on {} found", job.getTitle(), job.getSource());
+		}
+	}
 
-    private void update(Job job) {
-        Job jobFromDb = jobRepository.findOne(job.getUrl());
-        LocalDate jobFromDbDate = jobFromDb.getDate().toLocalDate();
-        LocalDate jobDate = job.getDate().toLocalDate();
-        if (!jobFromDbDate.equals(jobDate)) {
-            saveJob(job);
-            twitter.tweet(job);
-            log.info("Job '{}', {}, was updated", job.getTitle(), job.getUrl());
-        }
-    }
+	private boolean jobExists(Job job) {
+		return jobsInDb.contains(job);
+	}
 
-    public Page<Job> getJobs(PageRequest request) {
-        return jobRepository.findAll(request);
-    }
+	private void update(Job job) {
+		Job jobFromDb = jobRepository.findOne(job.getUrl());
+		LocalDate jobFromDbDate = jobFromDb.getDate().toLocalDate();
+		LocalDate jobDate = job.getDate().toLocalDate();
+		if (!jobFromDbDate.equals(jobDate)) {
+			saveJob(job);
+			twitter.tweet(job);
+			log.info("Job '{}', {}, was updated", job.getTitle(), job.getUrl());
+		}
+	}
 
-    private void saveJob(Job job) {
-        try {
-            jobRepository.save(job);
-        } catch (Exception e) {
-            log.error("Error while saving job '{}', {} into database", job.getTitle(), job.getUrl());
-            notifier.notifyAdmin("Error while saving following job into database: '" +
-                    job.getTitle() + "', " + job.getUrl() + "\n\n" + e.getMessage());
-        }
-    }
+	public Page<Job> getJobs(PageRequest request) {
+		return jobRepository.findAll(request);
+	}
 
-    private static final Logger log = LoggerFactory.getLogger(JobServiceImpl.class);
+	private void saveJob(Job job) {
+		try {
+			jobRepository.save(job);
+		} catch (Exception e) {
+			log.error("Error while saving job '{}', {} into database", job.getTitle(), job.getUrl());
+			notifier.notifyAdmin("Error while saving following job into database: '" +
+					job.getTitle() + "', " + job.getUrl() + "\n\n" + e.getMessage());
+		}
+	}
+
+	private static final Logger log = LoggerFactory.getLogger(JobServiceImpl.class);
 }

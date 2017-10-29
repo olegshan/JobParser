@@ -5,7 +5,6 @@ import com.olegshan.tools.MonthsTools;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import static java.lang.Integer.parseInt;
 
@@ -17,7 +16,7 @@ public class HeadHunterUaJobParser extends JobParser {
 
     @Override
     protected LocalDateTime getDateByLine(String dateLine) {
-        String[] dateParts = dateLine.split(jobSite.getSplit());
+        String[] dateParts = dateLine.split(jobSite.split());
         MonthsTools.removeZero(dateParts);
 
         int day = parseInt(dateParts[0]);

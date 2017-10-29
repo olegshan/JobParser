@@ -4,58 +4,67 @@ import com.olegshan.parser.siteparsers.DouUaJobParser;
 import com.olegshan.parser.siteparsers.JobParser;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class DouUa implements JobSite {
 
-    private static final String SITE_NAME = "Dou.ua";
-    private static final String SITE_URL = "https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D1%97%D0%B2&category=Java";
-    private static final String URL_PREFIX = "";
-    private static final String[] JOB_BOX = {"class", "vacancy"};
-    private static final String[] TITLE_BOX = {"class", "vt"};
-    private static final String[] COMPANY_DATA = {"class", "company"};
-    private static final String[] DESCRIPTION_DATA = {"class", "sh-info"};
-    private static final String[] DATE_DATA = {"class", "date"};
-    private static final String SPLIT = " ";
+	private static final String SITE_NAME        = "Dou.ua";
+	private static final String SITE_URL         = "https://jobs.dou.ua/vacancies/?city=%D0%9A%D0%B8%D1%97%D0%B2&category=Java";
+	private static final String URL_PREFIX       = "";
+	private static final String SPLIT            = " ";
+	private static final Holder JOB_BOX          = Holder.of("class", "vacancy");
+	private static final Holder TITLE_BOX        = Holder.of("class", "vt");
+	private static final Holder COMPANY_DATA     = Holder.of("class", "company");
+	private static final Holder DESCRIPTION_DATA = Holder.of("class", "sh-info");
+	private static final Holder DATE_DATA        = Holder.of("class", "date");
 
-    public String getSiteName() {
-        return SITE_NAME;
-    }
 
-    public String getSiteUrl() {
-        return SITE_URL;
-    }
+	@Override
+	public String name() {
+		return SITE_NAME;
+	}
 
-    public String getUrlPrefix() {
-        return URL_PREFIX;
-    }
+	@Override
+	public String url() {
+		return SITE_URL;
+	}
 
-    public String[] getJobBox() {
-        return JOB_BOX;
-    }
+	@Override
+	public String urlPrefix() {
+		return URL_PREFIX;
+	}
 
-    public String[] getTitleBox() {
-        return TITLE_BOX;
-    }
+	@Override
+	public String split() {
+		return SPLIT;
+	}
 
-    public String[] getCompanyData() {
-        return COMPANY_DATA;
-    }
+	@Override
+	public Holder jobBox() {
+		return JOB_BOX;
+	}
 
-    public String[] getDescriptionData() {
-        return DESCRIPTION_DATA;
-    }
+	@Override
+	public Holder titleBox() {
+		return TITLE_BOX;
+	}
 
-    public String[] getDateData() {
-        return DATE_DATA;
-    }
+	@Override
+	public Holder company() {
+		return COMPANY_DATA;
+	}
 
-    public String getSplit() {
-        return SPLIT;
-    }
+	@Override
+	public Holder description() {
+		return DESCRIPTION_DATA;
+	}
 
-    @Override
-    public JobParser getParser() {
-        return new DouUaJobParser(this);
-    }
+	@Override
+	public Holder date() {
+		return DATE_DATA;
+	}
+
+	@Override
+	public JobParser getParser() {
+		return new DouUaJobParser(this);
+	}
 }
