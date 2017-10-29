@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class JobServiceImpl implements JobService {
@@ -22,14 +21,11 @@ public class JobServiceImpl implements JobService {
 	private JTwitter      twitter;
 	private Notifier      notifier;
 
-	private List<Job> jobsInDb;
-
 	@Autowired
 	public JobServiceImpl(JobRepository jobRepository, JTwitter twitter, Notifier notifier) {
 		this.jobRepository = jobRepository;
 		this.twitter = twitter;
 		this.notifier = notifier;
-		jobsInDb = jobRepository.findAll();
 	}
 
 	public void save(Job job) {
@@ -43,7 +39,7 @@ public class JobServiceImpl implements JobService {
 	}
 
 	private boolean jobExists(Job job) {
-		return jobsInDb.contains(job);
+		return jobRepository.findOne(job.getUrl()) != null;
 	}
 
 	private void update(Job job) {
