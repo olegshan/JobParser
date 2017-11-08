@@ -44,7 +44,7 @@ public class JTwitter {
 		int twitterUrlLength = 23;
 		int tweetLength = jobTitle.length() + 1 + twitterUrlLength * 2 + moreJobs.length();
 
-		if (tweetLength <= 140)
+		if (tweetLength <= 280)
 			tweet = jobTitle + " " + jobUrl + moreJobs + jParserUrl;
 		else tweet = jobTitle + " " + jobUrl;
 
