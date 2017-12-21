@@ -29,17 +29,12 @@ public class JobServiceImpl implements JobService {
 	}
 
 	public void save(Job job) {
-		if (jobExists(job)) {
+		if (jobRepository.exists(job.getUrl())) {
 			update(job);
 		} else {
-			saveJob(job);
-			twitter.tweet(job);
+			saveAndTweet(job);
 			log.info("New job '{}' on {} found", job.getTitle(), job.getSource());
 		}
-	}
-
-	private boolean jobExists(Job job) {
-		return jobRepository.findOne(job.getUrl()) != null;
 	}
 
 	private void update(Job job) {
@@ -47,10 +42,14 @@ public class JobServiceImpl implements JobService {
 		LocalDate jobFromDbDate = jobFromDb.getDate().toLocalDate();
 		LocalDate jobDate = job.getDate().toLocalDate();
 		if (!jobFromDbDate.equals(jobDate)) {
-			saveJob(job);
-			twitter.tweet(job);
+			saveAndTweet(job);
 			log.info("Job '{}', {}, was updated", job.getTitle(), job.getUrl());
 		}
+	}
+
+	private void saveAndTweet(Job job) {
+		saveJob(job);
+		twitter.tweet(job);
 	}
 
 	public Page<Job> getJobs(PageRequest request) {
