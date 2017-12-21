@@ -11,7 +11,7 @@ public class WorkUa implements JobSite {
 	private static final String SITE_URL         = "https://www.work.ua/jobs-kyiv-java/";
 	private static final String URL_PREFIX       = "https://work.ua";
 	private static final String SPLIT            = "\\.";
-	private static final Holder JOB_BOX          = Holder.of("class", "card card-hover card-visited job-link");
+	private static final Holder JOB_BOX          = Holder.of("class", "card card-hover card-visited wordwrap job-link card-logotype");
 	private static final Holder TITLE_BOX        = Holder.of("", "");
 	private static final Holder COMPANY_DATA     = Holder.of("class", "dl-horizontal");
 	private static final Holder DESCRIPTION_DATA = Holder.of("class", "text-muted overflow");

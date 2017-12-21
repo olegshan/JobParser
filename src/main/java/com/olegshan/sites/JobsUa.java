@@ -15,7 +15,7 @@ public class JobsUa implements JobSite {
 	private static final Holder TITLE_BOX        = Holder.of("class", "b-vacancy__top__title js-item_title");
 	private static final Holder COMPANY_DATA     = Holder.of("class", "b-vacancy__tech__item");
 	private static final Holder DESCRIPTION_DATA = Holder.of("class", "b-vacancy-full__block b-text");
-	private static final Holder DATE_DATA        = Holder.of("class", "b-vacancy-full__tech__item");
+	private static final Holder DATE_DATA        = Holder.of("class", "b-vacancy-full__tech__item m-r-1");
 
 	@Override
 	public String name() {
