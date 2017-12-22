@@ -51,10 +51,11 @@ public class JTwitter {
 		try {
 			twitter.timelineOperations().updateStatus(tweet);
 		} catch (Exception e) {
-			notifier.notifyAdmin(
-					"Error while twitting following tweet:\n " + tweet +
-							"\nException was:\n" + e.getMessage()
-			);
+			if (!"Status is a duplicate".equals(e.getMessage()))
+				notifier.notifyAdmin(
+						"Error while twitting following tweet:\n " + tweet +
+								"\nException was:\n" + e.getMessage()
+				);
 		}
 	}
 
