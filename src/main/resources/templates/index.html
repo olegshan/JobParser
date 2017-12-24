@@ -12,31 +12,33 @@
         <p data-th-text="${job.description}"></p>
         <div class="under">
             <span data-th-text="${job.dateToDisplay}"></span>
-            <a th:href="@{?company=__${job.company}__}"><mark data-th-text="${job.company}"></mark></a>
+            <a th:href="@{?company=__${job.company}__}">
+                <mark data-th-text="${job.company}"></mark>
+            </a>
             <span data-th-text="${job.source}"></span>
         </div>
     </div>
 
-    <div th:if="${jobs.getTotalPages() > 1}" class="text-center">
+    <div th:with="employer=${company} ? 'company=${company}' : ''" th:if="${jobs.getTotalPages() > 1}" class="text-center">
         <ul class="pagination">
             <li>
-                <a th:if="not ${jobs.getNumber() == 0}" class="pageLink" th:href="@{/(page=1)}">&laquo;</a>
+                <a th:if="not ${jobs.getNumber() == 0}" class="pageLink" th:href="@{/(page=1, __${employer}__)}">&laquo;</a>
             </li>
             <li>
                 <a th:if="not ${jobs.getNumber() == 0}" class="pageLink"
-                   th:href="@{/(page=${jobs.getNumber()})}">&larr;</a>
+                   th:href="@{/(page=${jobs.getNumber()}, __${employer}__)}">&larr;</a>
             </li>
             <li th:class="${jobs.getNumber() == (page - 1)} ? 'active pointer-disabled'"
                 th:each="page : ${#numbers.sequence(pageBox.getFirstPage(), pageBox.getLastPage())}">
-                <a class="pageLink" th:href="@{/(page=${page})}" th:text="${page}"></a>
+                <a class="pageLink" th:href="@{/(page=${page}, __${employer}__)}" th:text="${page}"></a>
             </li>
             <li>
                 <a th:if="not ${jobs.getNumber() + 1 == jobs.getTotalPages()}" class="pageLink"
-                   th:href="@{/(page=${jobs.getNumber() + 2})}">&rarr;</a>
+                   th:href="@{/(page=${jobs.getNumber() + 2}, __${employer}__)}">&rarr;</a>
             </li>
             <li>
                 <a th:if="not ${jobs.getNumber() + 1 == jobs.getTotalPages()}" class="pageLink"
-                   th:href="@{/(page=${jobs.getTotalPages()})}">&raquo;</a>
+                   th:href="@{/(page=${jobs.getTotalPages()}, __${employer}__)}">&raquo;</a>
             </li>
         </ul>
     </div>

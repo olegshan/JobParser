@@ -35,14 +35,18 @@ public class ParseController {
 		int currentPageNumber = (page == null || page < 1) ? 0 : page - 1;
 
 		Pageable request = new PageRequest(currentPageNumber, PAGE_SIZE, Sort.Direction.DESC, "date");
+
 		Page<Job> jobs;
+
 		if (company != null && !company.trim().isEmpty())
 			jobs = jobService.getJobsByCompany(company, request);
 		else
 			jobs = jobService.getJobs(request);
+
 		PageBox pageBox = new PageBox(jobs.getTotalPages(), jobs.getNumber());
 
 		modelAndView.addObject("jobs", jobs);
+		modelAndView.addObject("company", company);
 		modelAndView.addObject("pageBox", pageBox.getPageBox());
 
 		return modelAndView;
