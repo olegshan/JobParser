@@ -23,27 +23,37 @@ public class JobsUaJobParser extends JobParser {
 	public Elements getJobBlocks(Document doc) throws ParserException {
 		Elements jobBlocks = getElements(doc, jobSite.jobBox());
 		check(jobBlocks, "job blocks");
+		removeAd(jobBlocks);
+
+		return jobBlocks;
+	}
+
+	private void removeAd(Elements jobBlocks) {
 
 		// ad block on jobs.ua has the same tags as the job blocks, so it should be removed
 		for (int i = 0; i < jobBlocks.size(); i++) {
-			if (getElements(jobBlocks.get(i), Holder.of("class", "b-city__title b-city__companies-title"), true)
-					.text()
-					.contains("VIP компании в Украине:")
-					) {
+
+			String jobBlock = getElements(
+					jobBlocks.get(i),
+					Holder.of("class", "b-city__title b-city__companies-title"),
+					true
+			)
+					.text();
+
+			if (jobBlock.contains("VIP компании в Украине:"))
 				jobBlocks.remove(i);
-			}
 		}
-		return jobBlocks;
 	}
 
 	@Override
 	public String getDescription(Element job, String url) throws ParserException {
 		Document descDoc = getDoc(url);
 		String description = getElements(descDoc, jobSite.description()).text();
-		if (description.startsWith("Описание вакансии ")) {
+
+		if (description.startsWith("Описание вакансии "))
 			description = description.substring("Описание вакансии ".length());
-		}
-		return description.length() > 250 ? description.substring(0, 250) + ("...") : description;
+
+		return description.length() > 250 ? description.substring(0, 250) + "..." : description;
 	}
 
 	@Override

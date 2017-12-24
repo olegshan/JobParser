@@ -31,7 +31,6 @@ public class JobParser {
 		try {
 			return Jsoup.connect(siteUrl).userAgent("Mozilla").timeout(0).get();
 		} catch (IOException e) {
-			log.error("Connecting to {} failed", siteUrl);
 			throw new ParserException("Failed connecting to " + siteUrl + "\n" + e.getMessage());
 		}
 	}
@@ -84,13 +83,9 @@ public class JobParser {
 
 	//in case we parse in January jobs of last December. Needed for jobs.ua and hh.ua
 	int getYear(int month) {
-		int year;
-		if (month > LocalDate.now(ZoneId.of("Europe/Athens")).getMonthValue()) {
-			year = LocalDate.now().getYear() - 1;
-		} else {
-			year = LocalDate.now(ZoneId.of("Europe/Athens")).getYear();
-		}
-		return year;
+		if (month > LocalDate.now(ZoneId.of("Europe/Athens")).getMonthValue())
+			return LocalDate.now().getYear() - 1;
+		return LocalDate.now(ZoneId.of("Europe/Athens")).getYear();
 	}
 
 	Elements getElements(Element element, JobSite.Holder holder) {

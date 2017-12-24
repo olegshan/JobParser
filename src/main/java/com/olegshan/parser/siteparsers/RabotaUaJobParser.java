@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
 public class RabotaUaJobParser extends JobParser {
 
 	public RabotaUaJobParser(JobSite jobSite) {
@@ -29,6 +31,7 @@ public class RabotaUaJobParser extends JobParser {
 				.attr("href");
 	}
 
+	@Override
 	public Elements getTitleBlock(Element job) throws ParserException {
 		Elements titleBlock = getElements(job, jobSite.titleBox(), true);
 		check(titleBlock, "title blocks");
@@ -43,30 +46,28 @@ public class RabotaUaJobParser extends JobParser {
 	@Override
 	public String getCompany(Element job, String url) throws ParserException {
 		String company = getElements(job, jobSite.company(), true).text();
-		if (company.length() == 0) {
+		if (company.length() == 0)
 			company = "Anonymous employer";
-		}
 		return company;
 	}
 
+	/**
+	 * There are several problems here.
+	 * First: there are different types of date tags, used on rabota.ua on different pages
+	 * Second: sometimes date format is dd.mm.yyyy, sometimes — yyyy-mm-dd and sometimes — dd mmm yyyy.
+	 * Third: sometimes there is no date at all.
+	 */
 	@Override
 	public LocalDateTime getDate(Element job, String url) throws ParserException {
-
-		/*
-		* There are several problems here.
-        * First: there are different types of date tags, used on rabota.ua on different pages
-        * Second: sometimes date format is dd.mm.yyyy, sometimes — yyyy-mm-dd and sometimes — dd mmm yyyy.
-        * Third: sometimes there is no date at all.
-        */
 
 		Document dateDoc = getDoc(url);
 		String dateLine;
 
 		Elements dateElements = getElements(dateDoc, Holder.of("id", "d-date"));
 
-		if (!dateElements.isEmpty()) {
+		if (!dateElements.isEmpty())
 			dateLine = getElements(dateElements.get(0), Holder.of("class", "d-ph-value")).text();
-		} else {
+		else {
 			dateLine = getElements(dateDoc, Holder.of("itemprop", "datePosted")).text();
 			if (dateLine == null || dateLine.trim().length() == 0) {
 				try {
@@ -79,37 +80,39 @@ public class RabotaUaJobParser extends JobParser {
 				}
 			}
 		}
+		return getDateByLine(dateLine, url);
+	}
 
+	private LocalDateTime getDateByLine(String dateLine, String url) throws ParserException {
 		String[] dateParts;
-		int year;
-		int month;
-		int day;
+		int year, month, day;
 
 		if (Pattern.matches("\\d{2}\\.\\d{2}\\.\\d{4}", dateLine)) {
 
 			dateParts = dateLine.split("\\.");
 			MonthsTools.removeZero(dateParts);
-			year = Integer.parseInt(dateParts[2]);
-			month = Integer.parseInt(dateParts[1]);
-			day = Integer.parseInt(dateParts[0]);
+			year = parseInt(dateParts[2]);
+			month = parseInt(dateParts[1]);
+			day = parseInt(dateParts[0]);
 
-		} else if (Pattern.matches("\\d{4}\\.\\d{2}\\.\\d{2}", dateLine)) {
+		} else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}", dateLine)) {
 
 			dateParts = dateLine.split("-");
 			MonthsTools.removeZero(dateParts);
-			year = Integer.parseInt(dateParts[0]);
-			month = Integer.parseInt(dateParts[1]);
-			day = Integer.parseInt(dateParts[2]);
+			year = parseInt(dateParts[0]);
+			month = parseInt(dateParts[1]);
+			day = parseInt(dateParts[2]);
 
 		} else if (Pattern.matches("\\d{2} [а-я]{3} \\d{4}", dateLine)) {
 
 			dateParts = dateLine.split(" ");
 			MonthsTools.removeZero(dateParts);
-			day = Integer.parseInt(dateParts[0]);
+			day = parseInt(dateParts[0]);
 			month = MonthsTools.MONTHS.get(dateParts[1]);
-			year = Integer.parseInt(dateParts[2]);
+			year = parseInt(dateParts[2]);
 
-		} else throw new ParserException("Cannot parse date of following job: " + url + "\ndateLine is: " + dateLine);
+		} else
+			throw new ParserException("Cannot parse date of following job: " + url + "\ndateLine is: " + dateLine);
 
 		return LocalDate.of(year, month, day).atTime(getTime());
 	}
