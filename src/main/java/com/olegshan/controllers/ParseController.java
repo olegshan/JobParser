@@ -6,6 +6,7 @@ import com.olegshan.tools.PageBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,12 +26,20 @@ public class ParseController {
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView showJobs(@RequestParam(value = "page", required = false) Integer page) {
+	public ModelAndView showJobs(
+			@RequestParam(value = "company", required = false) String company,
+			@RequestParam(value = "page", required = false) Integer page
+	) {
 
 		ModelAndView modelAndView = new ModelAndView("index");
 		int currentPageNumber = (page == null || page < 1) ? 0 : page - 1;
 
-		Page<Job> jobs = jobService.getJobs(new PageRequest(currentPageNumber, PAGE_SIZE, Sort.Direction.DESC, "date"));
+		Pageable request = new PageRequest(currentPageNumber, PAGE_SIZE, Sort.Direction.DESC, "date");
+		Page<Job> jobs;
+		if (company != null && !company.trim().isEmpty())
+			jobs = jobService.getJobsByCompany(company, request);
+		else
+			jobs = jobService.getJobs(request);
 		PageBox pageBox = new PageBox(jobs.getTotalPages(), jobs.getNumber());
 
 		modelAndView.addObject("jobs", jobs);

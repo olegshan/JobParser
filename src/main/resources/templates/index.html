@@ -12,7 +12,7 @@
         <p data-th-text="${job.description}"></p>
         <div class="under">
             <span data-th-text="${job.dateToDisplay}"></span>
-            <mark data-th-text="${job.company}"></mark>
+            <a th:href="@{?company=__${job.company}__}"><mark data-th-text="${job.company}"></mark></a>
             <span data-th-text="${job.source}"></span>
         </div>
     </div>

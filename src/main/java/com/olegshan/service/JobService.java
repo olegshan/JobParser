@@ -2,11 +2,13 @@ package com.olegshan.service;
 
 import com.olegshan.entity.Job;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 public interface JobService {
 
 	void save(Job job);
 
-	Page<Job> getJobs(PageRequest request);
+	Page<Job> getJobs(Pageable request);
+
+	Page<Job> getJobsByCompany(String company, Pageable request);
 }

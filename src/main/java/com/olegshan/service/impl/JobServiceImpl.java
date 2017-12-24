@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -52,8 +52,13 @@ public class JobServiceImpl implements JobService {
 		twitter.tweet(job);
 	}
 
-	public Page<Job> getJobs(PageRequest request) {
+	public Page<Job> getJobs(Pageable request) {
 		return jobRepository.findAll(request);
+	}
+
+	@Override
+	public Page<Job> getJobsByCompany(String company, Pageable request) {
+		return jobRepository.findAllByCompanyIgnoreCase(company, request);
 	}
 
 	private void saveJob(Job job) {
