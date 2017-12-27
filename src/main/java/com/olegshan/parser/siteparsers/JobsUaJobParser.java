@@ -81,7 +81,7 @@ public class JobsUaJobParser extends JobParser {
 
 	@Override
 	public String getCompany(Element job, String url) throws ParserException {
-		String company = getElements(job, jobSite.company()).first().text();
+		String company = getElements(job, jobSite.company()).first().text().replaceAll("\u00a0", "");
 		check(company, "company", url);
 		return company;
 	}
