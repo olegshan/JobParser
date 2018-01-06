@@ -4,13 +4,15 @@ import com.olegshan.parser.siteparsers.HeadHunterUaJobParser;
 import com.olegshan.parser.siteparsers.JobParser;
 import org.springframework.stereotype.Component;
 
+import static com.olegshan.parser.siteparsers.JobParser.NBSP;
+
 @Component
 public class HeadHunterUa implements JobSite {
 
 	private static final String SITE_NAME        = "HeadHunter.ua";
 	private static final String SITE_URL         = "https://hh.ua/search/vacancy?text=java&area=115";
 	private static final String URL_PREFIX       = "";
-	private static final String SPLIT            = "\u00a0";
+	private static final String SPLIT            = NBSP;
 	private static final Holder JOB_BOX          = Holder.of("class", "search-result-description");
 	private static final Holder TITLE_BOX        = Holder.of("data-qa", "vacancy-serp__vacancy-title");
 	private static final Holder COMPANY_DATA     = Holder.of("data-qa", "vacancy-serp__vacancy-employer");

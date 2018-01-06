@@ -39,13 +39,13 @@ public class RabotaUaJobParser extends JobParser {
 	}
 
 	@Override
-	public String getDescription(Element job, String url) throws ParserException {
+	public String getDescription(Element job, String url) {
 		return getElements(job, jobSite.description(), true).text();
 	}
 
 	@Override
-	public String getCompany(Element job, String url) throws ParserException {
-		String company = getElements(job, jobSite.company(), true).text().replaceAll("\u00a0", "");
+	public String getCompany(Element job, String url) {
+		String company = removeNbsp(getElements(job, jobSite.company(), true).text());
 		if (company.length() == 0)
 			company = "Anonymous employer";
 		return company;

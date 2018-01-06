@@ -58,7 +58,6 @@ public class JobsUaJobParser extends JobParser {
 
 	@Override
 	public LocalDateTime getDate(Element job, String url) throws ParserException {
-
 		Document dateDoc = getDoc(url);
 		String dateLine = getElements(dateDoc, jobSite.date()).text();
 
@@ -68,20 +67,20 @@ public class JobsUaJobParser extends JobParser {
 
 	@Override
 	protected LocalDateTime getDateByLine(String dateLine) {
-		dateLine = dateLine.replaceAll("\u00a0", "").trim();
+		dateLine = dateLine.substring(dateLine.indexOf(NBSP) + 1, dateLine.lastIndexOf(NBSP)).trim();
 		String[] dateParts = dateLine.split(jobSite.split());
 		MonthsTools.removeZero(dateParts);
 
 		int day = parseInt(dateParts[0]);
 		int month = MonthsTools.MONTHS.get(dateParts[1].toLowerCase());
-		int year = getYear(month);
+		int year = dateParts.length > 2 ? Integer.parseInt(dateParts[2]) : getYear(month);
 
 		return LocalDate.of(year, month, day).atTime(getTime());
 	}
 
 	@Override
 	public String getCompany(Element job, String url) throws ParserException {
-		String company = getElements(job, jobSite.company()).first().text().replaceAll("\u00a0", "");
+		String company = removeNbsp(getElements(job, jobSite.company()).first().text());
 		check(company, "company", url);
 		return company;
 	}

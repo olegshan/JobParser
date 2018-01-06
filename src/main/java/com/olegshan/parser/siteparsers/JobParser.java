@@ -21,6 +21,8 @@ import static java.lang.Integer.parseInt;
 
 public class JobParser {
 
+	public static final String NBSP = "\u00a0";
+
 	JobSite jobSite;
 
 	public JobParser(JobSite jobSite) {
@@ -60,7 +62,7 @@ public class JobParser {
 	}
 
 	public String getCompany(Element job, String url) throws ParserException {
-		String company = getElements(job, jobSite.company()).text().replaceAll("\u00a0", "");
+		String company = removeNbsp(getElements(job, jobSite.company()).text());
 		check(company, "company", url);
 		return company;
 	}
@@ -96,6 +98,10 @@ public class JobParser {
 		if (starting)
 			return element.getElementsByAttributeValueStarting(holder.key, holder.value);
 		return element.getElementsByAttributeValue(holder.key, holder.value);
+	}
+
+	String removeNbsp(String text) {
+		return text.replaceAll(NBSP, "");
 	}
 
 	void check(Object o, String data) throws ParserException {
