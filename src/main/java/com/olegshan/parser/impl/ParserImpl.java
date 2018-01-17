@@ -54,6 +54,7 @@ public class ParserImpl implements Parser {
 			}
 			log.info("Parsing of {} completed\n", jobSite.name());
 		} catch (Exception e) {
+			log.error("Error while parsing", e);
 			notifier.notifyAdmin("Error while parsing " + url + "\nError message is: " + e.getMessage());
 		}
 	}
