@@ -17,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ParseController {
 
-	private static final int PAGE_SIZE = 4;
+	private static final int PAGE_SIZE = 40;
 	private JobService jobService;
 
 	@Autowired
