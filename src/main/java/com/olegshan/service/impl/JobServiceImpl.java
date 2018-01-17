@@ -56,11 +56,6 @@ public class JobServiceImpl implements JobService {
 		return jobRepository.findAll(request);
 	}
 
-	@Override
-	public Page<Job> getJobsByCompany(String company, Pageable request) {
-		return jobRepository.findAllByCompanyIgnoreCase(company, request);
-	}
-
 	private void saveJob(Job job) {
 		try {
 			jobRepository.save(job);

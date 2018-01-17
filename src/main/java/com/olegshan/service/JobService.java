@@ -9,6 +9,4 @@ public interface JobService {
 	void save(Job job);
 
 	Page<Job> getJobs(Pageable request);
-
-	Page<Job> getJobsByCompany(String company, Pageable request);
 }
