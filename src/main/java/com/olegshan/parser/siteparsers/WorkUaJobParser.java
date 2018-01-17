@@ -2,6 +2,7 @@ package com.olegshan.parser.siteparsers;
 
 import com.olegshan.exception.ParserException;
 import com.olegshan.sites.JobSite;
+import com.olegshan.tools.MonthsTools;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -31,12 +32,12 @@ public class WorkUaJobParser extends JobParser {
 
 	@Override
 	public LocalDateTime getDate(Element job, String url) throws ParserException {
-		String dateLine = getTitleBlock(job).attr("title");
-		String[] dateParts = dateLine.substring(dateLine.length() - 8).split(jobSite.split());
+		String title = getTitleBlock(job).attr("title");
+		String[] dateParts = title.substring(title.indexOf("вакансия от ") + "вакансия от ".length()).split(jobSite.split());
 		check(dateParts, "date parts", url);
 
 		int year = parseInt(dateParts[2]) + 2000;
-		int month = parseInt(dateParts[1]);
+		int month = MonthsTools.MONTHS.get(dateParts[1]);
 		int day = parseInt(dateParts[0]);
 
 		return LocalDate.of(year, month, day).atTime(getTime());
