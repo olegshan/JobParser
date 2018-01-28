@@ -26,9 +26,7 @@ public class ParseController {
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView showJobs(
-			@RequestParam(value = "page", required = false) Integer page
-	) {
+	public ModelAndView showJobs(@RequestParam(value = "page", required = false) Integer page) {
 
 		ModelAndView modelAndView = new ModelAndView("index");
 		int currentPageNumber = (page == null || page < 1) ? 0 : page - 1;
