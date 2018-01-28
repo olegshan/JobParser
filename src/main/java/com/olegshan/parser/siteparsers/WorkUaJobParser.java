@@ -36,7 +36,7 @@ public class WorkUaJobParser extends JobParser {
 		String[] dateParts = title.substring(title.indexOf("вакансия от ") + "вакансия от ".length()).split(jobSite.split());
 		check(dateParts, "date parts", url);
 
-		int year = parseInt(dateParts[2]) + 2000;
+		int year = parseInt(dateParts[2]);
 		int month = MonthsTools.MONTHS.get(dateParts[1]);
 		int day = parseInt(dateParts[0]);
 
