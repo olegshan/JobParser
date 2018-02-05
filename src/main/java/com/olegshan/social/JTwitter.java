@@ -21,33 +21,13 @@ public class JTwitter {
 	public JTwitter(Environment environment, Notifier notifier) {
 		this.environment = environment;
 		this.notifier = notifier;
-
-		if (!dev()) {
-			String consumerKey = System.getProperty("CKjP");
-			String consumerSecret = System.getProperty("CSjP");
-			String accessToken = System.getProperty("ATjP");
-			String accessTokenSecret = System.getProperty("ATSjP");
-
-			twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
-		}
+		initTwitter();
 	}
 
 	public void tweet(Job job) {
-
 		if (twitter == null) return;
 
-		String tweet;
-		String jobTitle = job.getTitle();
-		String jobUrl = job.getUrl();
-		String moreJobs = " More jobs here: ";
-		String jParserUrl = "http://jparser.info";
-		int twitterUrlLength = 23;
-		int tweetLength = jobTitle.length() + 1 + twitterUrlLength * 2 + moreJobs.length();
-
-		if (tweetLength <= 280)
-			tweet = jobTitle + " " + jobUrl + moreJobs + jParserUrl;
-		else tweet = jobTitle + " " + jobUrl;
-
+		String tweet = String.format("%s %s More jobs here: http://jparser.info", job.getTitle(), job.getUrl());
 		try {
 			twitter.timelineOperations().updateStatus(tweet);
 		} catch (Exception e) {
@@ -59,7 +39,18 @@ public class JTwitter {
 		}
 	}
 
-	private boolean dev() {
+	private void initTwitter() {
+		if (isDevEnv()) return;
+
+		String consumerKey = System.getProperty("CKjP");
+		String consumerSecret = System.getProperty("CSjP");
+		String accessToken = System.getProperty("ATjP");
+		String accessTokenSecret = System.getProperty("ATSjP");
+
+		twitter = new TwitterTemplate(consumerKey, consumerSecret, accessToken, accessTokenSecret);
+	}
+
+	private boolean isDevEnv() {
 		return Arrays.stream(environment.getActiveProfiles())
 				.anyMatch(env -> env.equalsIgnoreCase("dev"));
 	}
