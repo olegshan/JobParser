@@ -98,7 +98,7 @@ public class JobServiceTest extends AbstractTest {
 	private boolean isSortedDescending(Page<Job> page) {
 		List<Job> list = page.getContent();
 		return IntStream.range(0, PAGE_SIZE - 1).allMatch(i -> list.get(i).getDate()
-				.compareTo(list.get(i + 1).getDate()) > 0);
+				.compareTo(list.get(i + 1).getDate()) >= 0);
 	}
 
 	@After
