@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+import static java.time.temporal.ChronoUnit.MINUTES;
+
 @Component
 public class ParserImpl implements Parser {
 
@@ -41,8 +43,7 @@ public class ParserImpl implements Parser {
 
 				Elements titleBlock = jobParser.getTitleBlock(job);
 				url = jobParser.getUrl(titleBlock);
-				LocalDateTime date = jobParser.getDate(job, url);
-
+				LocalDateTime date = jobParser.getDate(job, url).truncatedTo(MINUTES);
 				if (isJobTooOld(date)) continue;
 
 				String title = jobParser.getTitle(titleBlock);
