@@ -24,6 +24,8 @@ public class ParserImpl implements Parser {
 	private JobService jobService;
 	private Notifier   notifier;
 
+	public static boolean isSiteParsingEnded;
+
 	@Autowired
 	public ParserImpl(JobService jobService, Notifier notifier) {
 		this.jobService = jobService;
@@ -34,6 +36,7 @@ public class ParserImpl implements Parser {
 
 		JobParser jobParser = jobSite.getParser();
 		String url = "";
+		isSiteParsingEnded = false;
 
 		try {
 			Document doc = jobParser.getDoc(jobSite.url());
@@ -51,9 +54,13 @@ public class ParserImpl implements Parser {
 				String company = jobParser.getCompany(job, url);
 
 				Job parsedJob = new Job(title, description, company, jobSite.name(), url, date);
+				log.error("\n\n**** PARSER: Job to save: {}, {}\n\n", parsedJob.getTitle(), parsedJob.getSource());
 				jobService.save(parsedJob);
 			}
-			log.info("Parsing of {} completed\n", jobSite.name());
+
+			jobService.saveStatistics(jobSite.name());
+			log.error("\n\n**** PARSER: Save statistics of {}\n\n", jobSite.name());
+			log.info("\n\n+++++++++ Parsing of {} completed ++++++++\n\n\n", jobSite.name());
 		} catch (Exception e) {
 			log.error("Error while parsing", e);
 			notifier.notifyAdmin("Error while parsing " + url + "\nError message is: " + e.getMessage());

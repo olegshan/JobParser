@@ -1,0 +1,17 @@
+<html layout:decorator="layout" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<div layout:fragment="content">
+
+    <body>
+    <div data-th-each="stat : ${statistics}">
+        <div class="statistics">
+            <p data-th-text="${stat.getSiteName()}"></p>
+            <p data-th-text="'Time of run: ' + ${stat.getRun()}"></p>
+            <p data-th-text="'New jobs count: ' + ${stat.getNewJobsFoundByRun()}"></p>
+            <p data-th-text="'Updated jobs count: ' + ${stat.getUpdatedJobsByRun()}"></p>
+        </div>
+        <br/>
+    </div>
+    </body>
+</div>
+</html>

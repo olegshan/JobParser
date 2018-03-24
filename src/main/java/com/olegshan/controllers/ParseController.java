@@ -1,7 +1,9 @@
 package com.olegshan.controllers;
 
 import com.olegshan.entity.Job;
+import com.olegshan.repository.StatisticsRepository;
 import com.olegshan.service.JobService;
+import com.olegshan.statistics.Statistics;
 import com.olegshan.tools.PageBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,15 +16,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @Controller
 public class ParseController {
 
 	private static final int PAGE_SIZE = 40;
-	private JobService jobService;
+	private JobService           jobService;
+	private StatisticsRepository statisticsRepository;
 
 	@Autowired
-	public ParseController(JobService jobService) {
+	public ParseController(JobService jobService, StatisticsRepository statisticsRepository) {
 		this.jobService = jobService;
+		this.statisticsRepository = statisticsRepository;
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
@@ -38,6 +44,15 @@ public class ParseController {
 		modelAndView.addObject("jobs", jobs);
 		modelAndView.addObject("pageBox", pageBox.getPageBox());
 
+		return modelAndView;
+	}
+
+	@RequestMapping(value = "/statistics", method = RequestMethod.GET)
+	public ModelAndView showStatistics() {
+
+		ModelAndView modelAndView = new ModelAndView("statistics");
+		List<Statistics> stats = statisticsRepository.findAll();
+		modelAndView.addObject("statistics", stats);
 		return modelAndView;
 	}
 
