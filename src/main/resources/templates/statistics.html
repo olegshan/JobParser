@@ -2,16 +2,15 @@
 
 <div layout:fragment="content">
 
-    <body>
     <div data-th-each="stat : ${statistics}">
         <div class="statistics">
-            <p data-th-text="${stat.getSiteName()}"></p>
-            <p data-th-text="'Time of run: ' + ${stat.getRun()}"></p>
-            <p data-th-text="'New jobs count: ' + ${stat.getNewJobsFoundByRun()}"></p>
-            <p data-th-text="'Updated jobs count: ' + ${stat.getUpdatedJobsByRun()}"></p>
+            <span data-th-text="${stat.getSiteName()} + ' __ '"></span>
+            <!--<p data-th-text="'Id: ' + ${stat.getId()}"></p>-->
+            <span data-th-text="${stat.getRun()} + ' __ '"></span>
+            <span data-th-text="'New: ' + ${stat.getNewJobsFoundByRun()} + ' __ '"></span>
+            <span data-th-text="'Updated: ' + ${stat.getUpdatedJobsByRun() }"></span>
         </div>
         <br/>
     </div>
-    </body>
 </div>
 </html>

@@ -1,10 +1,12 @@
 package com.olegshan.controllers;
 
 import com.olegshan.entity.Job;
+import com.olegshan.entity.Statistics;
 import com.olegshan.repository.StatisticsRepository;
 import com.olegshan.service.JobService;
-import com.olegshan.statistics.Statistics;
 import com.olegshan.tools.PageBox;
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.exporter.common.TextFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -52,6 +57,7 @@ public class ParseController {
 
 		ModelAndView modelAndView = new ModelAndView("statistics");
 		List<Statistics> stats = statisticsRepository.findAll();
+		Collections.reverse(stats);
 		modelAndView.addObject("statistics", stats);
 		return modelAndView;
 	}
@@ -59,5 +65,11 @@ public class ParseController {
 	@RequestMapping("/about")
 	public String about() {
 		return "about";
+	}
+
+	@RequestMapping(path = "/metrics")
+	public void metrics(Writer responseWriter) throws IOException {
+		TextFormat.write004(responseWriter, CollectorRegistry.defaultRegistry.metricFamilySamples());
+		responseWriter.close();
 	}
 }

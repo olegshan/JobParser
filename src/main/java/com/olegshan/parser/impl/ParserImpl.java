@@ -24,8 +24,6 @@ public class ParserImpl implements Parser {
 	private JobService jobService;
 	private Notifier   notifier;
 
-	public static boolean isSiteParsingEnded;
-
 	@Autowired
 	public ParserImpl(JobService jobService, Notifier notifier) {
 		this.jobService = jobService;
@@ -36,7 +34,6 @@ public class ParserImpl implements Parser {
 
 		JobParser jobParser = jobSite.getParser();
 		String url = "";
-		isSiteParsingEnded = false;
 
 		try {
 			Document doc = jobParser.getDoc(jobSite.url());

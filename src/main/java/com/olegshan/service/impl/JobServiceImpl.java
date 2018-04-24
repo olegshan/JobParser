@@ -1,12 +1,12 @@
 package com.olegshan.service.impl;
 
 import com.olegshan.entity.Job;
+import com.olegshan.entity.Statistics;
 import com.olegshan.notifier.Notifier;
 import com.olegshan.repository.JobRepository;
-import com.olegshan.repository.StatisticsRepository;
 import com.olegshan.service.JobService;
+import com.olegshan.service.StatisticsService;
 import com.olegshan.social.JTwitter;
-import com.olegshan.statistics.Statistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,29 +15,26 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import static java.time.temporal.ChronoUnit.MINUTES;
 
 @Service
 public class JobServiceImpl implements JobService {
 
-	private JobRepository        jobRepository;
-	private StatisticsRepository statisticsRepository;
-	private JTwitter             twitter;
-	private Notifier             notifier;
+	private JobRepository     jobRepository;
+	private StatisticsService statisticsService;
+	private JTwitter          twitter;
+	private Notifier          notifier;
 
 	private Statistics statistics;
 
 	@Autowired
 	public JobServiceImpl(
 			JobRepository jobRepository,
-			StatisticsRepository statisticsRepository,
+			StatisticsService statisticsService,
 			JTwitter twitter,
 			Notifier notifier
 	) {
 		this.jobRepository = jobRepository;
-		this.statisticsRepository = statisticsRepository;
+		this.statisticsService = statisticsService;
 		this.twitter = twitter;
 		this.notifier = notifier;
 		statistics = new Statistics();
@@ -45,7 +42,6 @@ public class JobServiceImpl implements JobService {
 
 	public void save(Job job) {
 		if (jobRepository.exists(job.getUrl())) {
-			log.error("\n\n------- SERVICE: Job exists, will try to update {}, {}\n\n", job.getTitle(), job.getSource());
 			update(job);
 		} else {
 			saveAndTweet(job, true);
@@ -61,35 +57,22 @@ public class JobServiceImpl implements JobService {
 			saveAndTweet(job, false);
 			log.info("Job '{}', {}, was updated", job.getTitle(), job.getUrl());
 		} else
-			log.error("\n\n////////////// SERVICE: will not update job {}, {}", job.getTitle(), job.getSource());
+			log.error("\n\n////////////// SERVICE: will not update job {}, {}\n\n", job.getTitle(), job.getSource());
 	}
 
 	private void saveAndTweet(Job job, boolean isNew) {
 		saveJob(job);
-		updateStatistics(job.getTitle(), isNew);
+		updateStatistics(job, isNew);
 		twitter.tweet(job);
 	}
 
-	private void updateStatistics(String jobTitle, boolean isNew) {
-		if (isNew) {
-			log.error("\n\n**** SERVICE: incrementNewJobsCount by job {}\n\n", jobTitle);
-			statistics.incrementNewJobsCount();
-		} else {
-			log.error("\n\n**** SERVICE: incrementUpdatedJobsCount {}\n\n", jobTitle);
-			statistics.incrementUpdatedJobsCount();
-		}
+	private void updateStatistics(Job job, boolean isNew) {
+		statisticsService.updateStatistics(statistics, job, isNew);
 	}
 
 	@Override
 	public void saveStatistics(String siteName) {
-		statistics.setRun(LocalDateTime.now().truncatedTo(MINUTES));
-		statistics.setId(siteName);
-		statistics.setSiteName(siteName);
-		if (!statisticsRepository.exists(statistics.getId())) {
-			log.error("\n\n^^^^^^^^^^^^^^^^^ SERVICE: saveStatistics of {} with {} new jobs and {} updated jobs\n\n",
-					siteName, statistics.getNewJobsFoundByRun(), statistics.getUpdatedJobsByRun());
-			statisticsRepository.save(statistics);
-		}
+		statisticsService.saveStatistics(statistics, siteName);
 		statistics = new Statistics();
 	}
 
