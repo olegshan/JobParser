@@ -84,7 +84,7 @@ public class JobServiceImpl implements JobService {
 		try {
 			jobRepository.save(job);
 		} catch (Exception e) {
-			log.error("Error while saving job '{}', {} into database", job.getTitle(), job.getUrl());
+			log.error("Error while saving job '{}', {} into database", job.getTitle(), job.getUrl(), e);
 			notifier.notifyAdmin("Error while saving following job into database: '" +
 					job.getTitle() + "', " + job.getUrl() + "\n\n" + e.getMessage());
 		}
