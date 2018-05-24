@@ -46,17 +46,6 @@ public class JobsUaJobParser extends JobParser {
 	}
 
 	@Override
-	public String getDescription(Element job, String url) throws ParserException {
-		Document descDoc = getDoc(url);
-		String description = getElements(descDoc, jobSite.description()).text();
-
-		if (description.startsWith("Описание вакансии "))
-			description = description.substring("Описание вакансии ".length());
-
-		return description.length() > 250 ? description.substring(0, 250) + "..." : description;
-	}
-
-	@Override
 	public LocalDateTime getDate(Element job, String url) throws ParserException {
 		Document dateDoc = getDoc(url);
 		String dateLine = getElements(dateDoc, jobSite.date()).text();

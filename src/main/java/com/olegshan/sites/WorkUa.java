@@ -14,7 +14,7 @@ public class WorkUa implements JobSite {
 	private static final Holder JOB_BOX          = Holder.of("class", "card card-hover card-visited wordwrap job-link");
 	private static final Holder TITLE_BOX        = Holder.of("", "");
 	private static final Holder COMPANY_DATA     = Holder.of("class", "dl-horizontal");
-	private static final Holder DESCRIPTION_DATA = Holder.of("class", "text-muted overflow");
+	private static final Holder DESCRIPTION_DATA = Holder.of("class", "overflow");
 	private static final Holder DATE_DATA        = Holder.of("", "");
 
 	@Override

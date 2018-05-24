@@ -18,7 +18,7 @@ public class ParseControllerTest extends AbstractTest {
 	private WebApplicationContext webApplicationContext;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 	}
 
