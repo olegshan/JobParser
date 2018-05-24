@@ -1,7 +1,6 @@
 package com.olegshan.service.impl;
 
 import com.olegshan.entity.Job;
-import com.olegshan.entity.Statistics;
 import com.olegshan.notifier.Notifier;
 import com.olegshan.repository.JobRepository;
 import com.olegshan.service.JobService;
@@ -24,8 +23,6 @@ public class JobServiceImpl implements JobService {
 	private JTwitter          twitter;
 	private Notifier          notifier;
 
-	private Statistics statistics;
-
 	@Autowired
 	public JobServiceImpl(
 			JobRepository jobRepository,
@@ -37,43 +34,35 @@ public class JobServiceImpl implements JobService {
 		this.statisticsService = statisticsService;
 		this.twitter = twitter;
 		this.notifier = notifier;
-		statistics = new Statistics();
 	}
 
 	public void save(Job job) {
 		if (jobRepository.exists(job.getUrl())) {
-			update(job);
+			updateIfNeeded(job);
 		} else {
-			saveAndTweet(job, true);
+			saveAndTweet(job);
+			updateStatistics(job, true);
 			log.info("New job '{}' on {} found", job.getTitle(), job.getSource());
 		}
 	}
 
-	private void update(Job job) {
+	private void updateIfNeeded(Job job) {
 		Job jobFromDb = jobRepository.findOne(job.getUrl());
 		LocalDate jobFromDbDate = jobFromDb.getDate().toLocalDate();
 		LocalDate jobDate = job.getDate().toLocalDate();
 		if (!jobFromDbDate.equals(jobDate)) {
-			saveAndTweet(job, false);
-			log.info("Job '{}', {}, was updated", job.getTitle(), job.getUrl());
-		} else
-			log.error("\n\n////////////// SERVICE: will not update job {}, {}\n\n", job.getTitle(), job.getSource());
+			saveAndTweet(job);
+			updateStatistics(job, false);
+		}
 	}
 
-	private void saveAndTweet(Job job, boolean isNew) {
+	private void saveAndTweet(Job job) {
 		saveJob(job);
-		updateStatistics(job, isNew);
 		twitter.tweet(job);
 	}
 
 	private void updateStatistics(Job job, boolean isNew) {
-		statisticsService.updateStatistics(statistics, job, isNew);
-	}
-
-	@Override
-	public void saveStatistics(String siteName) {
-		statisticsService.saveStatistics(statistics, siteName);
-		statistics = new Statistics();
+		statisticsService.updateStatistics(job, isNew);
 	}
 
 	public Page<Job> getJobs(Pageable request) {

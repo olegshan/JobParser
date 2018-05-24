@@ -1,7 +1,7 @@
 package com.olegshan.parser.siteparsers;
 
 import com.olegshan.sites.JobSite;
-import com.olegshan.tools.MonthsTools;
+import com.olegshan.util.TimeUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,10 +17,10 @@ public class HeadHunterUaJobParser extends JobParser {
     @Override
     protected LocalDateTime getDateByLine(String dateLine) {
         String[] dateParts = dateLine.split(jobSite.split());
-        MonthsTools.removeZero(dateParts);
+        TimeUtil.removeZero(dateParts);
 
         int day = parseInt(dateParts[0]);
-        int month = MonthsTools.MONTHS.get(dateParts[1].toLowerCase());
+        int month = TimeUtil.MONTHS.get(dateParts[1].toLowerCase());
         int year = getYear(month);
 
         return LocalDate.of(year, month, day).atTime(getTime());

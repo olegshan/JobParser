@@ -5,6 +5,7 @@ import com.olegshan.notifier.Notifier;
 import com.olegshan.parser.Parser;
 import com.olegshan.parser.siteparsers.JobParser;
 import com.olegshan.service.JobService;
+import com.olegshan.service.StatisticsService;
 import com.olegshan.sites.JobSite;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -21,13 +22,15 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 @Component
 public class ParserImpl implements Parser {
 
-	private JobService jobService;
-	private Notifier   notifier;
+	private JobService        jobService;
+	private Notifier          notifier;
+	private StatisticsService statisticsService;
 
 	@Autowired
-	public ParserImpl(JobService jobService, Notifier notifier) {
+	public ParserImpl(JobService jobService, Notifier notifier, StatisticsService statisticsService) {
 		this.jobService = jobService;
 		this.notifier = notifier;
+		this.statisticsService = statisticsService;
 	}
 
 	public void parse(JobSite jobSite) {
@@ -51,13 +54,10 @@ public class ParserImpl implements Parser {
 				String company = jobParser.getCompany(job, url);
 
 				Job parsedJob = new Job(title, description, company, jobSite.name(), url, date);
-				log.error("\n\n**** PARSER: Job to save: {}, {}\n\n", parsedJob.getTitle(), parsedJob.getSource());
 				jobService.save(parsedJob);
 			}
 
-			jobService.saveStatistics(jobSite.name());
-			log.error("\n\n**** PARSER: Save statistics of {}\n\n", jobSite.name());
-			log.info("\n\n+++++++++ Parsing of {} completed ++++++++\n\n\n", jobSite.name());
+			statisticsService.saveStatistics(jobSite.name());
 		} catch (Exception e) {
 			log.error("Error while parsing", e);
 			notifier.notifyAdmin("Error while parsing " + url + "\nError message is: " + e.getMessage());

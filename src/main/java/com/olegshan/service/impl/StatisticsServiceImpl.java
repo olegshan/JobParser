@@ -1,70 +1,61 @@
 package com.olegshan.service.impl;
 
 import com.olegshan.entity.Job;
-import com.olegshan.entity.Statistics;
-import com.olegshan.repository.StatisticsRepository;
 import com.olegshan.service.StatisticsService;
 import io.prometheus.client.Counter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.prometheus.client.Gauge;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
-import static java.time.temporal.ChronoUnit.SECONDS;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class StatisticsServiceImpl implements StatisticsService {
 
-	private StatisticsRepository statisticsRepository;
+	private final AtomicInteger newJobs     = new AtomicInteger();
+	private final AtomicInteger updatedJobs = new AtomicInteger();
 
-	private final Counter newJobsCounter = Counter.build()
-			.name("new_jobs_counter")
-			.help("New jobs counter.")
+	private static final Gauge newJobsFoundPerRun = Gauge.build()
+			.name("new_jobs_per_run")
+			.help("New jobs per run.")
 			.labelNames("site_name")
 			.register();
 
-	private final Counter updatedJobsCounter = Counter.build()
-			.name("updated_jobs_counter")
-			.help("Updated jobs counter.")
+	private static final Gauge updatedJobsFoundPerRun = Gauge.build()
+			.name("updated_jobs_per_run")
+			.help("Updated jobs per run.")
 			.labelNames("site_name")
 			.register();
 
-	@Autowired
-	public StatisticsServiceImpl(StatisticsRepository statisticsRepository) {
-		this.statisticsRepository = statisticsRepository;
-	}
+	private static final Counter totalJobsCount = Counter.build()
+			.name("total_jobs_count")
+			.help("Total jobs count.")
+			.labelNames("site_name")
+			.register();
 
 	@Override
-	public void updateStatistics(Statistics statistics, Job job, boolean isNew) {
+	public void updateStatistics(Job job, boolean isNew) {
 		if (isNew) {
-			log.error("\n\n**** SERVICE: incrementNewJobsCount by job {}\n\n", job.getTitle());
-			statistics.incrementNewJobsCount();
-			newJobsCounter
+			newJobs.incrementAndGet();
+			totalJobsCount
 					.labels(job.getSource())
 					.inc();
 		} else {
-			log.error("\n\n**** SERVICE: incrementUpdatedJobsCount {}\n\n", job.getTitle());
-			statistics.incrementUpdatedJobsCount();
-			updatedJobsCounter
-					.labels(job.getSource())
-					.inc();
+			updatedJobs.incrementAndGet();
 		}
 	}
 
 	@Override
-	public void saveStatistics(Statistics statistics, String siteName) {
-		statistics.setRun(LocalDateTime.now().truncatedTo(SECONDS));
-		statistics.setId(siteName);
-		statistics.setSiteName(siteName);
-		if (!statisticsRepository.exists(statistics.getId())) {
-			log.error("\n\n^^^^^^^^^^^^^^^^^ SERVICE: saveStatistics of {} with {} new jobs and {} updated jobs\n\n",
-					siteName, statistics.getNewJobsFoundByRun(), statistics.getUpdatedJobsByRun());
-			statisticsRepository.save(statistics);
-		} else
-			log.error("\n\n######################## SERVICE: statistics with id {} exists\n\n", statistics.getId());
-	}
+	public void saveStatistics(String siteName) {
 
-	private static final Logger log = LoggerFactory.getLogger(StatisticsServiceImpl.class);
+		newJobsFoundPerRun
+				.labels(siteName)
+				.set(newJobs.get());
+
+		updatedJobsFoundPerRun
+				.labels(siteName)
+				.set(updatedJobs.get());
+
+		newJobs.set(0);
+		updatedJobs.set(0);
+	}
 }

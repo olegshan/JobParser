@@ -1,10 +1,8 @@
 package com.olegshan.controllers;
 
 import com.olegshan.entity.Job;
-import com.olegshan.entity.Statistics;
-import com.olegshan.repository.StatisticsRepository;
 import com.olegshan.service.JobService;
-import com.olegshan.tools.PageBox;
+import com.olegshan.util.PageBox;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.exporter.common.TextFormat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +18,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Collections;
-import java.util.List;
 
 @Controller
 public class ParseController {
 
 	private static final int PAGE_SIZE = 40;
-	private JobService           jobService;
-	private StatisticsRepository statisticsRepository;
+	private JobService jobService;
 
 	@Autowired
-	public ParseController(JobService jobService, StatisticsRepository statisticsRepository) {
+	public ParseController(JobService jobService) {
 		this.jobService = jobService;
-		this.statisticsRepository = statisticsRepository;
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
@@ -49,16 +43,6 @@ public class ParseController {
 		modelAndView.addObject("jobs", jobs);
 		modelAndView.addObject("pageBox", pageBox.getPageBox());
 
-		return modelAndView;
-	}
-
-	@RequestMapping(value = "/statistics", method = RequestMethod.GET)
-	public ModelAndView showStatistics() {
-
-		ModelAndView modelAndView = new ModelAndView("statistics");
-		List<Statistics> stats = statisticsRepository.findAll();
-		Collections.reverse(stats);
-		modelAndView.addObject("statistics", stats);
 		return modelAndView;
 	}
 

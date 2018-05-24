@@ -3,7 +3,7 @@ package com.olegshan.parser.siteparsers;
 import com.olegshan.exception.ParserException;
 import com.olegshan.sites.JobSite;
 import com.olegshan.sites.JobSite.Holder;
-import com.olegshan.tools.MonthsTools;
+import com.olegshan.util.TimeUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -69,10 +69,10 @@ public class JobsUaJobParser extends JobParser {
 	protected LocalDateTime getDateByLine(String dateLine) {
 		dateLine = dateLine.substring(dateLine.indexOf(NBSP) + 1, dateLine.lastIndexOf(NBSP)).trim();
 		String[] dateParts = dateLine.split(jobSite.split());
-		MonthsTools.removeZero(dateParts);
+		TimeUtil.removeZero(dateParts);
 
 		int day = parseInt(dateParts[0]);
-		int month = MonthsTools.MONTHS.get(dateParts[1].toLowerCase());
+		int month = TimeUtil.MONTHS.get(dateParts[1].toLowerCase());
 		int year = dateParts.length > 2 ? Integer.parseInt(dateParts[2]) : getYear(month);
 
 		return LocalDate.of(year, month, day).atTime(getTime());

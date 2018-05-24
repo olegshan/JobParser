@@ -3,7 +3,7 @@ package com.olegshan.parser.siteparsers;
 import com.olegshan.exception.ParserException;
 import com.olegshan.sites.JobSite;
 import com.olegshan.sites.JobSite.Holder;
-import com.olegshan.tools.MonthsTools;
+import com.olegshan.util.TimeUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.regex.Pattern;
 
+import static com.olegshan.util.TimeUtil.localTimeZone;
 import static java.lang.Integer.parseInt;
 
 public class RabotaUaJobParser extends JobParser {
@@ -74,7 +74,7 @@ public class RabotaUaJobParser extends JobParser {
 					dateLine = getElements(dateDoc, Holder.of("class", "f-date-holder"), true).first().text();
 				} catch (Exception e) {
 					//no date at all, sometimes it happens
-					LocalDateTime ldt = LocalDateTime.now(ZoneId.of("Europe/Athens"));
+					LocalDateTime ldt = LocalDateTime.now(localTimeZone());
 					log.warn("There was no date for job {}, return current date {}", url, ldt);
 					return ldt;
 				}
@@ -90,7 +90,7 @@ public class RabotaUaJobParser extends JobParser {
 		if (Pattern.matches("\\d{2}\\.\\d{2}\\.\\d{4}", dateLine)) {
 
 			dateParts = dateLine.split("\\.");
-			MonthsTools.removeZero(dateParts);
+			TimeUtil.removeZero(dateParts);
 			year = parseInt(dateParts[2]);
 			month = parseInt(dateParts[1]);
 			day = parseInt(dateParts[0]);
@@ -98,7 +98,7 @@ public class RabotaUaJobParser extends JobParser {
 		} else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}", dateLine)) {
 
 			dateParts = dateLine.split("-");
-			MonthsTools.removeZero(dateParts);
+			TimeUtil.removeZero(dateParts);
 			year = parseInt(dateParts[0]);
 			month = parseInt(dateParts[1]);
 			day = parseInt(dateParts[2]);
@@ -106,9 +106,9 @@ public class RabotaUaJobParser extends JobParser {
 		} else if (Pattern.matches("\\d{2} [а-я]{3} \\d{4}", dateLine)) {
 
 			dateParts = dateLine.split(" ");
-			MonthsTools.removeZero(dateParts);
+			TimeUtil.removeZero(dateParts);
 			day = parseInt(dateParts[0]);
-			month = MonthsTools.MONTHS.get(dateParts[1]);
+			month = TimeUtil.MONTHS.get(dateParts[1]);
 			year = parseInt(dateParts[2]);
 
 		} else

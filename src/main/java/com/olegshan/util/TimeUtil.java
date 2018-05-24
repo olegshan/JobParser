@@ -1,11 +1,13 @@
-package com.olegshan.tools;
+package com.olegshan.util;
 
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MonthsTools {
+public class TimeUtil {
 
-	public static final Map<String, Integer> MONTHS = new HashMap<String, Integer>() {{
+	public static final String               LOCAL_TIME_ZONE = "Europe/Athens";
+	public static final Map<String, Integer> MONTHS          = new HashMap<String, Integer>() {{
 
 		put("січня", 1);
 		put("лютого", 2);
@@ -59,6 +61,10 @@ public class MonthsTools {
 		put("november", 11);
 		put("december", 12);
 	}};
+
+	public static ZoneId localTimeZone() {
+		return ZoneId.of(LOCAL_TIME_ZONE);
+	}
 
 	//if day or month starts with '0'
 	public static void removeZero(String[] dateParts) {

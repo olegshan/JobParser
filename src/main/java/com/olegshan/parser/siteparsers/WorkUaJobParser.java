@@ -2,7 +2,7 @@ package com.olegshan.parser.siteparsers;
 
 import com.olegshan.exception.ParserException;
 import com.olegshan.sites.JobSite;
-import com.olegshan.tools.MonthsTools;
+import com.olegshan.util.TimeUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -37,7 +37,7 @@ public class WorkUaJobParser extends JobParser {
 		check(dateParts, "date parts", url);
 
 		int year = parseInt(dateParts[2]);
-		int month = MonthsTools.MONTHS.get(dateParts[1]);
+		int month = TimeUtil.MONTHS.get(dateParts[1]);
 		int day = parseInt(dateParts[0]);
 
 		return LocalDate.of(year, month, day).atTime(getTime());

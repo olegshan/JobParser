@@ -1,4 +1,4 @@
-package com.olegshan.tools;
+package com.olegshan.util;
 
 public class PageBox {
 

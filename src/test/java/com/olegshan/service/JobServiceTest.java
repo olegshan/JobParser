@@ -15,11 +15,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import static com.olegshan.util.TimeUtil.localTimeZone;
 import static java.time.LocalDateTime.now;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -42,24 +42,24 @@ public class JobServiceTest extends AbstractTest {
 	private JobRepository jobRepository;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		Job job;
 		Random random = new Random();
 		for (int i = 0; i < 10; i++) {
 			//jobs are saved into database with random dates
 			job = new Job("Title" + i, "Description" + i, "Company" + i, "Site" + i, JOB_URL + i,
-					now(ZoneId.of("Europe/Athens")).minusDays(random.nextInt(20)));
+					now(localTimeZone()).minusDays(random.nextInt(20)));
 			jobService.save(job);
 		}
 	}
 
 	@Test
-	public void jobsInSetUpMethodWereSaved() throws Exception {
+	public void jobsInSetUpMethodWereSaved() {
 		assertEquals("There should be 10 elements in the database", jobRepository.findAll().size(), 10);
 	}
 
 	@Test
-	public void savingOfNewJobWithTheSameUrlAndDifferentDateUpdatesExistingJob() throws Exception {
+	public void savingOfNewJobWithTheSameUrlAndDifferentDateUpdatesExistingJob() {
 		Job job = jobRepository.findOne(JOB_URL + 5);
 		assertEquals("Title5", job.getTitle());
 		LocalDateTime newDate = job.getDate().minusDays(1);
@@ -76,7 +76,7 @@ public class JobServiceTest extends AbstractTest {
 	}
 
 	@Test
-	public void savingOfJobWithTheSameUrlAndSameDateDoesNotUpdateExistingJob() throws Exception {
+	public void savingOfJobWithTheSameUrlAndSameDateDoesNotUpdateExistingJob() {
 		Job job = jobRepository.findOne(JOB_URL + 7);
 		assertEquals("Title7", job.getTitle());
 		job.setTitle("New title");
@@ -89,7 +89,7 @@ public class JobServiceTest extends AbstractTest {
 	}
 
 	@Test
-	public void jobsAreRetrievedFromDatabaseSortedByDateInDescendingOrder() throws Exception {
+	public void jobsAreRetrievedFromDatabaseSortedByDateInDescendingOrder() {
 		Page<Job> jobs = jobService.getJobs(new PageRequest(CURRENT_PAGE, PAGE_SIZE, Sort.Direction.DESC, "date"));
 		assertEquals(PAGE_SIZE + " elements should be retrieved", PAGE_SIZE, jobs.getContent().size());
 		assertTrue("The jobs should be sorted from new to old", isSortedDescending(jobs));
@@ -102,7 +102,7 @@ public class JobServiceTest extends AbstractTest {
 	}
 
 	@After
-	public void tearDown() throws Exception {
+	public void tearDown() {
 		jobRepository.deleteAll();
 	}
 }

@@ -8,7 +8,5 @@ public interface JobService {
 
 	void save(Job job);
 
-	void saveStatistics(String siteName);
-
 	Page<Job> getJobs(Pageable request);
 }

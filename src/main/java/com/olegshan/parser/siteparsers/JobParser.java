@@ -3,7 +3,7 @@ package com.olegshan.parser.siteparsers;
 import com.olegshan.exception.ParserException;
 import com.olegshan.parser.Parser;
 import com.olegshan.sites.JobSite;
-import com.olegshan.tools.MonthsTools;
+import com.olegshan.util.TimeUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 
+import static com.olegshan.util.TimeUtil.localTimeZone;
 import static java.lang.Integer.parseInt;
 
 public class JobParser {
@@ -75,19 +75,19 @@ public class JobParser {
 
 	protected LocalDateTime getDateByLine(String dateLine) {
 		String[] dateParts = dateLine.split(jobSite.split());
-		MonthsTools.removeZero(dateParts);
+		TimeUtil.removeZero(dateParts);
 		return LocalDate.of(parseInt(dateParts[2]), parseInt(dateParts[1]), parseInt(dateParts[0])).atTime(getTime());
 	}
 
 	protected LocalTime getTime() {
-		return LocalTime.now(ZoneId.of("Europe/Athens"));
+		return LocalTime.now(localTimeZone());
 	}
 
 	//in case we parse in January jobs of last December. Needed for jobs.ua and hh.ua
 	int getYear(int month) {
-		if (month > LocalDate.now(ZoneId.of("Europe/Athens")).getMonthValue())
+		if (month > LocalDate.now(localTimeZone()).getMonthValue())
 			return LocalDate.now().getYear() - 1;
-		return LocalDate.now(ZoneId.of("Europe/Athens")).getYear();
+		return LocalDate.now(localTimeZone()).getYear();
 	}
 
 	Elements getElements(Element element, JobSite.Holder holder) {
