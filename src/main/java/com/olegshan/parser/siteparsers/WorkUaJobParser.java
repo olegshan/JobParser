@@ -48,6 +48,6 @@ public class WorkUaJobParser extends JobParser {
 		Document jobDoc = getDoc(url);
 		Elements companyBlock = getElements(jobDoc, jobSite.company());
 		check(companyBlock, "company block", url);
-		return removeNbsp(companyBlock.get(0).getElementsByTag("a").text());
+		return removeNbsp(companyBlock.get(0).getElementsByTag("a").get(0).text());
 	}
 }
