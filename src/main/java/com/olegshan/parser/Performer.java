@@ -1,6 +1,7 @@
 package com.olegshan.parser;
 
 import com.olegshan.sites.JobSite;
+import io.prometheus.client.Gauge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,11 @@ public class Performer {
 	private List<JobSite> sites;
 	private Parser        parser;
 	private boolean       isParsingRunning;
+
+	private static final Gauge lastRun = Gauge.build()
+			.name("last_run")
+			.help("Last run.")
+			.register();
 
 	@Autowired
 	public Performer(List<JobSite> sites, Parser parser) {
@@ -31,5 +37,6 @@ public class Performer {
 			parser.parse(jobSite);
 		}
 		isParsingRunning = false;
+		lastRun.setToCurrentTime();
 	}
 }
