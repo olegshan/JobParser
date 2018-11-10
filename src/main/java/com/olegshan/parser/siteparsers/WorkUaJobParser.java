@@ -33,7 +33,7 @@ public class WorkUaJobParser extends JobParser {
 	@Override
 	public LocalDateTime getDate(Element job, String url) throws ParserException {
 		String title = getTitleBlock(job).attr("title");
-		String[] dateParts = title.substring(title.indexOf("вакансия от ") + "вакансия от ".length()).split(jobSite.split());
+		String[] dateParts = title.substring(title.indexOf("вакансія від ") + "вакансія від ".length()).split(jobSite.split());
 		check(dateParts, "date parts", url);
 
 		int year = parseInt(dateParts[2]);
