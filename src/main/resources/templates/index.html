@@ -9,33 +9,31 @@
                 <small data-th-text="${job.title}"></small>
             </h2>
         </a>
-        <p data-th-text="${job.description}"></p>
-        <div class="under">
-            <span data-th-text="${job.dateToDisplay}"></span>
-            <mark data-th-text="${job.company}"></mark>
-            <span data-th-text="${job.source}"></span>
-        </div>
+        <p class="description" data-th-text="${job.description}"></p>
+        <span class="under" data-th-text="${job.dateToDisplay}"></span>
+        <span class="company" data-th-text="${job.company}"></span>
+        <span class="under" data-th-text="${job.source}"></span>
     </div>
 
     <div th:if="${jobs.getTotalPages() > 1}" class="text-center">
         <ul class="pagination">
-            <li>
-                <a th:if="not ${jobs.getNumber() == 0}" class="pageLink" th:href="@{/(page=1)}">&laquo;</a>
+            <li class="page-item">
+                <a th:if="not ${jobs.getNumber() == 0}" class="page-link" th:href="@{/(page=1)}">&laquo;</a>
             </li>
-            <li>
-                <a th:if="not ${jobs.getNumber() == 0}" class="pageLink"
+            <li class="page-item">
+                <a th:if="not ${jobs.getNumber() == 0}" class="page-link"
                    th:href="@{/(page=${jobs.getNumber()})}">&larr;</a>
             </li>
-            <li th:class="${jobs.getNumber() == (page - 1)} ? 'active pointer-disabled'"
+            <li th:class="${jobs.getNumber() == (page - 1)} ? active"
                 th:each="page : ${#numbers.sequence(pageBox.getFirstPage(), pageBox.getLastPage())}">
-                <a class="pageLink" th:href="@{/(page=${page})}" th:text="${page}"></a>
+                <a class="page-link" th:href="@{/(page=${page})}" th:text="${page}"></a>
             </li>
-            <li>
-                <a th:if="not ${jobs.getNumber() + 1 == jobs.getTotalPages()}" class="pageLink"
+            <li class="page-item">
+                <a th:if="not ${jobs.getNumber() + 1 == jobs.getTotalPages()}" class="page-link"
                    th:href="@{/(page=${jobs.getNumber() + 2})}">&rarr;</a>
             </li>
-            <li>
-                <a th:if="not ${jobs.getNumber() + 1 == jobs.getTotalPages()}" class="pageLink"
+            <li class="page-item">
+                <a th:if="not ${jobs.getNumber() + 1 == jobs.getTotalPages()}" class="page-link"
                    th:href="@{/(page=${jobs.getTotalPages()})}">&raquo;</a>
             </li>
         </ul>

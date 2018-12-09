@@ -13,10 +13,6 @@
     font-size: 14px;
 }
 
-.logo small, .logo span, .logo h2 {
-    color: cadetblue;
-}
-
 .logo a:hover {
     text-decoration: none;
 }
@@ -26,8 +22,50 @@
     float: none;
 }
 
-.title small:hover {
-    color: cadetblue;
+.logo small, .logo span {
+    color: #ffc66d;
+}
+
+.logo h2, .title small:hover, .under, .footer {
+    color: #cc7832;
+}
+
+.title small, .about small {
+    color: #ffc66d;
+}
+
+.description, .about p {
+    color: #6a8759
+}
+
+.company {
+    color: #bbb529
+}
+
+.footer a, .about a {
+    color: #6796a3
+}
+
+.pagination>li>a {
+    background-color: transparent;
+    color: #cc7832;
+    border: none;
+}
+
+.pagination>li>a:hover {
+    background-color: #ffc66d;
+}
+
+.pagination>li.active>a {
+    background-color: #cc7832;
+}
+
+.pagination>li.active>a:hover {
+    background-color: #cc7832;
+}
+
+body {
+    background-color: #2b2b2b;
 }
 
 .twitter {
