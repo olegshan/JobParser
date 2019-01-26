@@ -2,9 +2,8 @@ package com.olegshan.sites;
 
 import com.olegshan.parser.siteparsers.JobParser;
 import com.olegshan.parser.siteparsers.JobsUaJobParser;
-import org.springframework.stereotype.Component;
 
-@Component
+//@Component // no Java vacancies are on this site anymore, excluded
 public class JobsUa implements JobSite {
 
 	private static final String SITE_NAME        = "Jobs.ua";
