@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class RabotaUa implements JobSite {
 
 	private static final String SITE_NAME        = "Rabota.ua";
-	private static final String SITE_URL         = "https://rabota.ua/zapros/java/%D0%BA%D0%B8%D0%B5%D0%B2";
+	private static final String SITE_URL         = "https://rabota.ua/jobsearch/vacancy_list?regionId=1&keyWords=java";
 	private static final String URL_PREFIX       = "https://rabota.ua";
 	private static final String SPLIT            = "";
 	private static final Holder JOB_BOX          = Holder.of("class", "f-vacancylist-vacancyblock");
