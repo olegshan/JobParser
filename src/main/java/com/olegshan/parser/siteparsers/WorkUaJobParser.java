@@ -50,10 +50,9 @@ public class WorkUaJobParser extends JobParser {
 
 	@Override
 	public String getCompany(Element job, String url) throws ParserException {
-		Document jobDoc = getDoc(url);
-		Elements companyBlock = getElements(jobDoc, jobSite.company());
-		check(companyBlock, "company block", url);
-		Elements company = companyBlock.get(0).getElementsByTag("a");
+		Elements company = job.getElementsByTag("b");
+		check(company, "company", url);
+
 		return (company != null && !company.isEmpty()) ? removeNbsp(company.get(0).text()) : "Anonymous company";
 	}
 }
