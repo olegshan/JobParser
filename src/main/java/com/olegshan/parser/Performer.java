@@ -13,30 +13,30 @@ import static com.olegshan.util.TimeUtil.LOCAL_TIME_ZONE;
 @Component
 public class Performer {
 
-	private List<JobSite> sites;
-	private Parser        parser;
-	private boolean       isParsingRunning;
+    private List<JobSite> sites;
+    private Parser        parser;
+    private boolean       isParsingRunning;
 
-	private static final Gauge lastRun = Gauge.build()
-			.name("last_run")
-			.help("Last run.")
-			.register();
+    private static final Gauge lastRun = Gauge.build()
+        .name("last_run")
+        .help("Last run.")
+        .register();
 
-	@Autowired
-	public Performer(List<JobSite> sites, Parser parser) {
-		this.sites = sites;
-		this.parser = parser;
-	}
+    @Autowired
+    public Performer(List<JobSite> sites, Parser parser) {
+        this.sites = sites;
+        this.parser = parser;
+    }
 
-	@Scheduled(cron = "0 1 7-23 * * *", zone = LOCAL_TIME_ZONE)
-	public void perform() {
-		if (isParsingRunning)
-			return;
-		isParsingRunning = true;
-		for (JobSite jobSite : sites) {
-			parser.parse(jobSite);
-		}
-		isParsingRunning = false;
-		lastRun.setToCurrentTime();
-	}
+    @Scheduled(cron = "0 1 7-23 * * *", zone = LOCAL_TIME_ZONE)
+    public void perform() {
+        if (isParsingRunning)
+            return;
+        isParsingRunning = true;
+        for (JobSite jobSite : sites) {
+            parser.parse(jobSite);
+        }
+        isParsingRunning = false;
+        lastRun.setToCurrentTime();
+    }
 }

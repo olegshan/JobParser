@@ -5,65 +5,45 @@ import com.olegshan.parser.siteparsers.RabotaUaJobParser;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RabotaUa implements JobSite {
+public class RabotaUa extends JobSite {
 
-	private static final String SITE_NAME        = "Rabota.ua";
-	private static final String SITE_URL         = "https://rabota.ua/jobsearch/vacancy_list?regionId=1&keyWords=java";
-	private static final String URL_PREFIX       = "https://rabota.ua";
-	private static final String SPLIT            = "";
-	private static final Holder JOB_BOX          = Holder.of("class", "f-vacancylist-vacancyblock");
-	private static final Holder TITLE_BOX        = Holder.of("class", "fd-beefy-gunso");
-	private static final Holder COMPANY_DATA     = Holder.of("class", "f-vacancylist-companyname");
-	private static final Holder DESCRIPTION_DATA = Holder.of("class", "f-vacancylist-shortdescr");
-	private static final Holder DATE_DATA        = Holder.of("", "");
+    @Override
+    public String name() {
+        return "Rabota.ua";
+    }
 
-	@Override
-	public String name() {
-		return SITE_NAME;
-	}
+    @Override
+    public String url() {
+        return "https://rabota.ua/jobsearch/vacancy_list?regionId=1&keyWords=java";
+    }
 
-	@Override
-	public String url() {
-		return SITE_URL;
-	}
+    @Override
+    public String urlPrefix() {
+        return "https://rabota.ua";
+    }
 
-	@Override
-	public String urlPrefix() {
-		return URL_PREFIX;
-	}
+    @Override
+    public Holder jobBox() {
+        return Holder.of("class", "f-vacancylist-vacancyblock");
+    }
 
-	@Override
-	public String split() {
-		return SPLIT;
-	}
+    @Override
+    public Holder titleBox() {
+        return Holder.of("class", "fd-beefy-gunso");
+    }
 
-	@Override
-	public Holder jobBox() {
-		return JOB_BOX;
-	}
+    @Override
+    public Holder company() {
+        return Holder.of("class", "f-vacancylist-companyname");
+    }
 
-	@Override
-	public Holder titleBox() {
-		return TITLE_BOX;
-	}
+    @Override
+    public Holder description() {
+        return Holder.of("class", "f-vacancylist-shortdescr");
+    }
 
-	@Override
-	public Holder company() {
-		return COMPANY_DATA;
-	}
-
-	@Override
-	public Holder description() {
-		return DESCRIPTION_DATA;
-	}
-
-	@Override
-	public Holder date() {
-		return DATE_DATA;
-	}
-
-	@Override
-	public JobParser getParser() {
-		return new RabotaUaJobParser(this);
-	}
+    @Override
+    public JobParser getParser() {
+        return new RabotaUaJobParser(this);
+    }
 }

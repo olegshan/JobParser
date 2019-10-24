@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface JobService {
 
-	void save(Job job);
+    void save(Job job);
 
-	Page<Job> getJobs(Pageable request);
+    Page<Job> getJobs(Pageable request);
 }

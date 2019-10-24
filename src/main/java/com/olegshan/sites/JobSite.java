@@ -2,40 +2,58 @@ package com.olegshan.sites;
 
 import com.olegshan.parser.siteparsers.JobParser;
 
-public interface JobSite {
+public abstract class JobSite {
 
-	String name();
+    public abstract String name();
 
-	String url();
+    public abstract String url();
 
-	String urlPrefix();
+    public String urlPrefix() {
+        return "";
+    }
 
-	String split();
+    public String split() {
+        return "";
+    }
 
-	Holder jobBox();
+    public Holder jobBox() {
+        return Holder.empty();
+    }
 
-	Holder titleBox();
+    public Holder titleBox() {
+        return Holder.empty();
+    }
 
-	Holder company();
+    public Holder company() {
+        return Holder.empty();
+    }
 
-	Holder description();
+    public Holder description() {
+        return Holder.empty();
+    }
 
-	Holder date();
+    public Holder date() {
+        return Holder.empty();
+    }
 
-	default JobParser getParser() {
-		return new JobParser(this);
-	}
+    public JobParser getParser() {
+        return new JobParser(this);
+    }
 
-	class Holder {
-		public String key;
-		public String value;
+    public static class Holder {
+        public String key;
+        public String value;
 
-		public static Holder of(String key, String value) {
-			Holder holder = new Holder();
-			holder.key = key;
-			holder.value = value;
+        public static Holder of(String key, String value) {
+            Holder holder = new Holder();
+            holder.key = key;
+            holder.value = value;
 
-			return holder;
-		}
-	}
+            return holder;
+        }
+
+        public static Holder empty() {
+            return Holder.of("", "");
+        }
+    }
 }

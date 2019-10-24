@@ -13,29 +13,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class ParseControllerTest extends AbstractTest {
 
-	private MockMvc               mockMvc;
-	@Autowired
-	private WebApplicationContext webApplicationContext;
+    private MockMvc               mockMvc;
+    @Autowired
+    private WebApplicationContext webApplicationContext;
 
-	@Before
-	public void setUp() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	}
+    @Before
+    public void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
 
-	@Test
-	public void showJobsReturnsCorrectModelAndView() throws Exception {
+    @Test
+    public void showJobsReturnsCorrectModelAndView() throws Exception {
 
-		mockMvc.perform(get("/"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("index"))
-				.andExpect(model().attributeExists("jobs"))
-				.andExpect(model().attributeExists("pageBox"));
-	}
+        mockMvc.perform(get("/"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("index"))
+            .andExpect(model().attributeExists("jobs"))
+            .andExpect(model().attributeExists("pageBox"));
+    }
 
-	@Test
-	public void aboutPageTest() throws Exception {
-		mockMvc.perform(get("/about"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("about"));
-	}
+    @Test
+    public void aboutPageTest() throws Exception {
+        mockMvc.perform(get("/about"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("about"));
+    }
 }

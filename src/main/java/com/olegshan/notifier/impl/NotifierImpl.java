@@ -12,25 +12,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotifierImpl implements Notifier {
 
-	@Value("${mail.recipient}")
-	private String     recipient;
-	private MailSender mailSender;
+    @Value("${mail.recipient}")
+    private String     recipient;
+    private MailSender mailSender;
 
-	@Autowired
-	public NotifierImpl(MailSender mailSender) {
-		this.mailSender = mailSender;
-	}
+    @Autowired
+    public NotifierImpl(MailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
-	public void notifyAdmin(String issue) {
+    public void notifyAdmin(String issue) {
 
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setTo(recipient);
-		message.setSubject("jParser issue");
-		message.setText(issue + "\n\nhttp://www.jparser.info");
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(recipient);
+        message.setSubject("jParser issue");
+        message.setText(issue + "\n\nhttp://www.jparser.info");
 
-		mailSender.send(message);
-		log.info("Admin was notified about following issue: " + issue + "\n");
-	}
+        mailSender.send(message);
+        log.info("Admin was notified about following issue: " + issue + "\n");
+    }
 
-	private static final Logger log = LoggerFactory.getLogger(NotifierImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(NotifierImpl.class);
 }

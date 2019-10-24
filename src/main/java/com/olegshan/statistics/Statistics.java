@@ -10,22 +10,22 @@ import java.time.LocalDateTime;
 @Data
 public class Statistics {
 
-	@Id
-	private String        id;
-	private String        siteName;
-	private LocalDateTime run;
-	private int           newJobsFoundByRun;
-	private int           updatedJobsByRun;
+    @Id
+    private String        id;
+    private String        siteName;
+    private LocalDateTime run;
+    private int           newJobsFoundByRun;
+    private int           updatedJobsByRun;
 
-	public void setId(String siteName) {
-		id = siteName + run.toString();
-	}
+    public void setId(String siteName) {
+        id = siteName + run.toString();
+    }
 
-	public void incrementNewJobsCount() {
-		newJobsFoundByRun = newJobsFoundByRun + 1;
-	}
+    public void incrementNewJobsCount() {
+        newJobsFoundByRun = newJobsFoundByRun + 1;
+    }
 
-	public void incrementUpdatedJobsCount() {
-		updatedJobsByRun = updatedJobsByRun + 1;
-	}
+    public void incrementUpdatedJobsCount() {
+        updatedJobsByRun = updatedJobsByRun + 1;
+    }
 }

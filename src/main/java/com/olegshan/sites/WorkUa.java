@@ -5,65 +5,40 @@ import com.olegshan.parser.siteparsers.WorkUaJobParser;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WorkUa implements JobSite {
+public class WorkUa extends JobSite {
 
-	private static final String SITE_NAME        = "Work.ua";
-	private static final String SITE_URL         = "https://www.work.ua/jobs-kyiv-java/";
-	private static final String URL_PREFIX       = "https://work.ua";
-	private static final String SPLIT            = " ";
-	private static final Holder JOB_BOX          = Holder.of("class", "card card-hover card-visited wordwrap job-link");
-	private static final Holder TITLE_BOX        = Holder.of("", "");
-	private static final Holder COMPANY_DATA     = Holder.of("class", "dl-horizontal");
-	private static final Holder DESCRIPTION_DATA = Holder.of("class", "overflow");
-	private static final Holder DATE_DATA        = Holder.of("", "");
+    @Override
+    public String name() {
+        return "Work.ua";
+    }
 
-	@Override
-	public String name() {
-		return SITE_NAME;
-	}
+    @Override
+    public String url() {
+        return "https://www.work.ua/jobs-kyiv-java/";
+    }
 
-	@Override
-	public String url() {
-		return SITE_URL;
-	}
+    @Override
+    public String urlPrefix() {
+        return "https://work.ua";
+    }
 
-	@Override
-	public String urlPrefix() {
-		return URL_PREFIX;
-	}
+    @Override
+    public String split() {
+        return " ";
+    }
 
-	@Override
-	public String split() {
-		return SPLIT;
-	}
+    @Override
+    public Holder jobBox() {
+        return Holder.of("class", "card card-hover card-visited wordwrap job-link");
+    }
 
-	@Override
-	public Holder jobBox() {
-		return JOB_BOX;
-	}
+    @Override
+    public Holder description() {
+        return Holder.of("class", "overflow");
+    }
 
-	@Override
-	public Holder titleBox() {
-		return TITLE_BOX;
-	}
-
-	@Override
-	public Holder company() {
-		return COMPANY_DATA;
-	}
-
-	@Override
-	public Holder description() {
-		return DESCRIPTION_DATA;
-	}
-
-	@Override
-	public Holder date() {
-		return DATE_DATA;
-	}
-
-	@Override
-	public JobParser getParser() {
-		return new WorkUaJobParser(this);
-	}
+    @Override
+    public JobParser getParser() {
+        return new WorkUaJobParser(this);
+    }
 }

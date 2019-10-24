@@ -22,38 +22,38 @@ import java.io.Writer;
 @Controller
 public class ParseController {
 
-	private static final int PAGE_SIZE = 40;
-	private JobService jobService;
+    private static final int        PAGE_SIZE = 40;
+    private              JobService jobService;
 
-	@Autowired
-	public ParseController(JobService jobService) {
-		this.jobService = jobService;
-	}
+    @Autowired
+    public ParseController(JobService jobService) {
+        this.jobService = jobService;
+    }
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView showJobs(@RequestParam(value = "page", required = false) Integer page) {
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ModelAndView showJobs(@RequestParam(value = "page", required = false) Integer page) {
 
-		ModelAndView modelAndView = new ModelAndView("index");
-		int currentPageNumber = (page == null || page < 1) ? 0 : page - 1;
+        ModelAndView modelAndView = new ModelAndView("index");
+        int currentPageNumber = (page == null || page < 1) ? 0 : page - 1;
 
-		Pageable request = new PageRequest(currentPageNumber, PAGE_SIZE, Sort.Direction.DESC, "date");
-		Page<Job> jobs = jobService.getJobs(request);
-		PageBox pageBox = new PageBox(jobs.getTotalPages(), jobs.getNumber());
+        Pageable request = new PageRequest(currentPageNumber, PAGE_SIZE, Sort.Direction.DESC, "date");
+        Page<Job> jobs = jobService.getJobs(request);
+        PageBox pageBox = new PageBox(jobs.getTotalPages(), jobs.getNumber());
 
-		modelAndView.addObject("jobs", jobs);
-		modelAndView.addObject("pageBox", pageBox.getPageBox());
+        modelAndView.addObject("jobs", jobs);
+        modelAndView.addObject("pageBox", pageBox.getPageBox());
 
-		return modelAndView;
-	}
+        return modelAndView;
+    }
 
-	@RequestMapping("/about")
-	public String about() {
-		return "about";
-	}
+    @RequestMapping("/about")
+    public String about() {
+        return "about";
+    }
 
-	@RequestMapping(path = "/metrics")
-	public void metrics(Writer responseWriter) throws IOException {
-		TextFormat.write004(responseWriter, CollectorRegistry.defaultRegistry.metricFamilySamples());
-		responseWriter.close();
-	}
+    @RequestMapping(path = "/metrics")
+    public void metrics(Writer responseWriter) throws IOException {
+        TextFormat.write004(responseWriter, CollectorRegistry.defaultRegistry.metricFamilySamples());
+        responseWriter.close();
+    }
 }

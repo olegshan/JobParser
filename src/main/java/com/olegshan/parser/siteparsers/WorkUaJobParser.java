@@ -14,21 +14,21 @@ import static java.lang.Integer.parseInt;
 
 public class WorkUaJobParser extends JobParser {
 
-	public WorkUaJobParser(JobSite jobSite) {
-		super(jobSite);
-	}
+    public WorkUaJobParser(JobSite jobSite) {
+        super(jobSite);
+    }
 
-	@Override
-	public Elements getJobBlocks(Document doc) throws ParserException {
-		Elements jobBlocks = getElements(doc, jobSite.jobBox(), true);
-		check(jobBlocks, "job blocks");
-		return jobBlocks;
-	}
+    @Override
+    public Elements getJobBlocks(Document doc) throws ParserException {
+        Elements jobBlocks = getElements(doc, jobSite.jobBox(), true);
+        check(jobBlocks, "job blocks");
+        return jobBlocks;
+    }
 
-	@Override
-	public Elements getTitleBlock(Element job) {
-		return job.getElementsByTag("a");
-	}
+    @Override
+    public Elements getTitleBlock(Element job) {
+        return job.getElementsByTag("a");
+    }
 
     @Override
     public String getTitle(Elements titleBlock) {
@@ -36,23 +36,23 @@ public class WorkUaJobParser extends JobParser {
     }
 
     @Override
-	public LocalDateTime getDate(Element job, String url) throws ParserException {
-		String title = getTitleBlock(job).attr("title");
-		String[] dateParts = title.substring(title.indexOf("вакансія від ") + "вакансія від ".length()).split(jobSite.split());
-		check(dateParts, "date parts", url);
+    public LocalDateTime getDate(Element job, String url) throws ParserException {
+        String title = getTitleBlock(job).attr("title");
+        String[] dateParts = title.substring(title.indexOf("вакансія від ") + "вакансія від ".length()).split(jobSite.split());
+        check(dateParts, "date parts", url);
 
-		int year = parseInt(dateParts[2]);
-		int month = TimeUtil.MONTHS.get(dateParts[1]);
-		int day = parseInt(dateParts[0]);
+        int year = parseInt(dateParts[2]);
+        int month = TimeUtil.MONTHS.get(dateParts[1]);
+        int day = parseInt(dateParts[0]);
 
-		return LocalDate.of(year, month, day).atTime(getTime());
-	}
+        return LocalDate.of(year, month, day).atTime(getTime());
+    }
 
-	@Override
-	public String getCompany(Element job, String url) throws ParserException {
-		Elements company = job.getElementsByTag("b");
-		check(company, "company", url);
+    @Override
+    public String getCompany(Element job, String url) throws ParserException {
+        Elements company = job.getElementsByTag("b");
+        check(company, "company", url);
 
-		return (company != null && !company.isEmpty()) ? removeNbsp(company.get(0).text()) : "Anonymous company";
-	}
+        return (company != null && !company.isEmpty()) ? removeNbsp(company.get(0).text()) : "Anonymous company";
+    }
 }
