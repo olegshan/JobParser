@@ -57,7 +57,7 @@ public class JobParser {
         return titleBlock.text();
     }
 
-    public String getDescription(Element job, String url) throws ParserException {
+    public String getDescription(Element job, String url) {
         return getElements(job, jobSite.description()).text();
     }
 

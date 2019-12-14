@@ -36,6 +36,11 @@ public class WorkUaJobParser extends JobParser {
     }
 
     @Override
+    public String getDescription(Element job, String url) {
+        return getElements(job, jobSite.description(), true).text();
+    }
+
+    @Override
     public LocalDateTime getDate(Element job, String url) throws ParserException {
         String title = getTitleBlock(job).attr("title");
         String[] dateParts = title.substring(title.indexOf("вакансія від ") + "вакансія від ".length()).split(jobSite.split());
