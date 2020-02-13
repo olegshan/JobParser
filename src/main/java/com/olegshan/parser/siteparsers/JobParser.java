@@ -67,7 +67,7 @@ public class JobParser {
         return company;
     }
 
-    public LocalDateTime getDate(Element job, String url) throws ParserException {
+    public LocalDateTime getDate(Element job, String url) throws Exception {
         String dateLine = getElements(job, jobSite.date()).text();
         check(dateLine, "date", url);
         return getDateByLine(dateLine);

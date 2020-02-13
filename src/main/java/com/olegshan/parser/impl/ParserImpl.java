@@ -40,9 +40,8 @@ public class ParserImpl implements Parser {
 
         try {
             Document doc = jobParser.getDoc(jobSite.url());
-            Elements jobBlocks = jobParser.getJobBlocks(doc);
 
-            for (Element job : jobBlocks) {
+            for (Element job : jobParser.getJobBlocks(doc)) {
 
                 Elements titleBlock = jobParser.getTitleBlock(job);
                 url = jobParser.getUrl(titleBlock);

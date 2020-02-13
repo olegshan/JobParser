@@ -24,22 +24,22 @@ public class RabotaUa extends JobSite {
 
     @Override
     public Holder jobBox() {
-        return Holder.of("class", "f-vacancylist-vacancyblock");
+        return Holder.of("class", "card-body");
     }
 
     @Override
     public Holder titleBox() {
-        return Holder.of("class", "fd-beefy-gunso");
+        return Holder.of("class", "card-title");
     }
 
     @Override
     public Holder company() {
-        return Holder.of("class", "f-vacancylist-companyname");
+        return Holder.of("class", "company-profile-name");
     }
 
     @Override
     public Holder description() {
-        return Holder.of("class", "f-vacancylist-shortdescr");
+        return Holder.of("class", "card-description");
     }
 
     @Override

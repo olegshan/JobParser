@@ -1,21 +1,19 @@
 package com.olegshan.parser.siteparsers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.olegshan.exception.ParserException;
 import com.olegshan.sites.JobSite;
-import com.olegshan.sites.JobSite.Holder;
-import com.olegshan.util.TimeUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.regex.Pattern;
 
 import static com.olegshan.util.TimeUtil.localTimeZone;
-import static java.lang.Integer.parseInt;
 
 public class RabotaUaJobParser extends JobParser {
 
@@ -51,70 +49,30 @@ public class RabotaUaJobParser extends JobParser {
         return company;
     }
 
-    /**
-     * There are several problems here.
-     * First: there are different types of date tags, used on rabota.ua on different pages
-     * Second: sometimes date format is dd.mm.yyyy, sometimes — yyyy-mm-dd and sometimes — dd mmm yyyy.
-     * Third: sometimes there is no date at all.
-     */
     @Override
-    public LocalDateTime getDate(Element job, String url) throws ParserException {
-
+    public LocalDateTime getDate(Element job, String url) throws Exception {
         Document dateDoc = getDoc(url);
-        String dateLine;
 
-        Elements dateElements = getElements(dateDoc, Holder.of("id", "d-date"));
+        Elements scriptElements = dateDoc.getElementsByTag("script");
 
-        if (!dateElements.isEmpty())
-            dateLine = getElements(dateElements.get(0), Holder.of("class", "d-ph-value")).text();
-        else {
-            dateLine = getElements(dateDoc, Holder.of("itemprop", "datePosted")).text();
-            if (dateLine == null || dateLine.trim().length() == 0) {
-                try {
-                    dateLine = getElements(dateDoc, Holder.of("class", "f-date-holder"), true).first().text();
-                } catch (Exception e) {
-                    //no date at all, sometimes it happens
-                    LocalDateTime ldt = LocalDateTime.now(localTimeZone());
-                    log.warn("There was no date for job {}, return current date {}", url, ldt);
-                    return ldt;
-                }
-            }
+        String varScript = null;
+
+        for (Element scriptElement : scriptElements) {
+            if (scriptElement.data().contains("var ruavars"))
+                varScript = scriptElement.data();
         }
-        return getDateByLine(dateLine, url);
-    }
 
-    private LocalDateTime getDateByLine(String dateLine, String url) throws ParserException {
-        String[] dateParts;
-        int year, month, day;
+        if (StringUtils.isEmpty(varScript)) {
+            LocalDateTime ldt = LocalDateTime.now(localTimeZone());
+            log.warn("There was no date for job {}, return current date {}", url, ldt);
+            return ldt;
+        }
 
-        if (Pattern.matches("\\d{2}\\.\\d{2}\\.\\d{4}", dateLine)) {
+        String json = varScript.substring(varScript.indexOf("{"), varScript.lastIndexOf("}") + 1);
+        JsonNode jsonNode = new ObjectMapper().readTree(json);
+        String vacancyDate = jsonNode.get("vacancy_VacancyDate").toString().replaceAll("\\\"", "");
 
-            dateParts = dateLine.split("\\.");
-            TimeUtil.removeZero(dateParts);
-            year = parseInt(dateParts[2]);
-            month = parseInt(dateParts[1]);
-            day = parseInt(dateParts[0]);
-
-        } else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}", dateLine)) {
-
-            dateParts = dateLine.split("-");
-            TimeUtil.removeZero(dateParts);
-            year = parseInt(dateParts[0]);
-            month = parseInt(dateParts[1]);
-            day = parseInt(dateParts[2]);
-
-        } else if (Pattern.matches("\\d{2} [а-я]{3} \\d{4}", dateLine)) {
-
-            dateParts = dateLine.split(" ");
-            TimeUtil.removeZero(dateParts);
-            day = parseInt(dateParts[0]);
-            month = TimeUtil.MONTHS.get(dateParts[1]);
-            year = parseInt(dateParts[2]);
-
-        } else
-            throw new ParserException("Cannot parse date of following job: " + url + "\ndateLine is: " + dateLine);
-
-        return LocalDate.of(year, month, day).atTime(getTime());
+        return LocalDateTime.parse(vacancyDate);
     }
 
     private static final Logger log = LoggerFactory.getLogger(RabotaUaJobParser.class);
