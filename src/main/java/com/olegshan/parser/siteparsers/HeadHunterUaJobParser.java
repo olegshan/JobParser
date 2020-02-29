@@ -1,7 +1,10 @@
 package com.olegshan.parser.siteparsers;
 
+import com.olegshan.exception.ParserException;
 import com.olegshan.sites.JobSite;
 import com.olegshan.util.TimeUtil;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,5 +27,11 @@ public class HeadHunterUaJobParser extends JobParser {
         int year = getYear(month);
 
         return LocalDate.of(year, month, day).atTime(getTime());
+    }
+
+    @Override
+    public String getCompany(Element job, String url) throws ParserException {
+        Document innerJob = getDoc(url);
+        return super.getCompany(innerJob, url);
     }
 }

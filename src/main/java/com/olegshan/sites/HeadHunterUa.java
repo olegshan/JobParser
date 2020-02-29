@@ -36,7 +36,7 @@ public class HeadHunterUa extends JobSite {
 
     @Override
     public Holder company() {
-        return Holder.of("data-qa", "vacancy-serp__vacancy-employer");
+        return Holder.of("class", "vacancy-company-name-wrapper");
     }
 
     @Override
